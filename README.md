@@ -20,7 +20,7 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 # 📋 How to Join
 
 ### Step 1: Register Your Interest
-- Drop a message in the `#coding-challenge` Slack/Teams channel
+- Drop a message in the `#coding-challenge` Google Chat channel
 - Or email the organizer: [organizer@company.com]
 
 ### Step 2: Form Your Team
