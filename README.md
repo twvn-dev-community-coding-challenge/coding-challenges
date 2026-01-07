@@ -20,7 +20,7 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 # 📋 How to Join
 
 ### Step 1: Register Your Interest
-- Drop a message in the `#coding-challenge` Google Chat channel
+- Drop a message in the `#twvn-coding-challenge` Google Chat space ([https://chat.google.com/room/AAQADlZAmk0?cls=7](https://chat.google.com/room/AAQADlZAmk0?cls=7))
 - Or email the organizer: [organizer@company.com]
 
 ### Step 2: Form Your Team
@@ -230,7 +230,7 @@ Adjust:
 # 💬 Communication & Support
 
 ### 📢 Main Channel
-- **Google Chat Channel**: `#coding-challenge`
+- **Google Chat Space**: `#twvn-coding-challenge` ([https://chat.google.com/room/AAQADlZAmk0?cls=7](https://chat.google.com/room/AAQADlZAmk0?cls=7))
 - Use this for: Questions, teammate search, general discussion
 
 ### 🆘 Getting Help
@@ -327,7 +327,7 @@ Your submission should include:
 **A:** It happens! Explain what was supposed to happen. Judges value your understanding and design decisions over a perfect demo.
 
 ### Q: How much time should I really spend?
-**A:** Aim for **6–8 hours total** over 2–3 weeks. That's roughly 2–3 hours per week. Don't overwork—this should be fun!
+**A:** Aim for **4–6 hours total** over 2–3 weeks. That's roughly 2 hours per week. Don't overwork—this should be fun!
 
 ### Q: Can I use code from previous projects?
 **A:** You can reuse your own patterns and approaches, but the solution should be built for this specific challenge. No copy-pasting entire projects.
@@ -339,15 +339,15 @@ Your submission should include:
 **A:** Nope! It's optional. If you do use them (GitHub Copilot, ChatGPT, Cursor, etc.), document how they helped for bonus points.
 
 ### Q: What if I have a question not listed here?
-**A:** Ask in `#coding-challenge` or email the organizer. No question is too small!
+**A:** Ask in `#twvn-coding-challenge` ([https://chat.google.com/room/AAQADlZAmk0?cls=7](https://chat.google.com/room/AAQADlZAmk0?cls=7)) or email the organizer. No question is too small!
 
 ---
 
 # 📞 Contact & Organizers
 
-- **Main Organizer**: [Name] – [email]
-- **Technical Mentors**: [Check `#coding-challenge` channel pinned messages]
-- **Google Chat Channel**: `#coding-challenge`
+- **Main Organizer**: [Steve Lam] – [tai.lam@thoughtworks.com], [Tom Tang] – [tom.tang@thoughtworks.com]
+- **Technical Mentors**: [Check `#twvn-coding-challenge` channel pinned messages]
+- **Google Chat Space**: `#twvn-coding-challenge`
 
 **Have ideas to improve the event?** We'd love to hear them! DM the organizer or share in the retro session.
 
@@ -355,7 +355,7 @@ Your submission should include:
 
 # 🚀 Ready to Start?
 
-1. ✅ Join the `#coding-challenge` channel
+1. ✅ Join the `#twvn-coding-challenge` space ([https://chat.google.com/room/AAQADlZAmk0?cls=7](https://chat.google.com/room/AAQADlZAmk0?cls=7)).
 2. ✅ Mark the kickoff event in your calendar
 3. ✅ Start thinking about who you'd like to team up with
 4. ✅ Get excited—this is going to be fun! 🎉
