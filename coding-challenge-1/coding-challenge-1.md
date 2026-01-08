@@ -231,6 +231,19 @@ Each team submits:
 
 ---
 
+# 🏅 Knowledge Badges
+
+This challenge awards the following **explicit skills**:
+
+- 🟢 *API/Library Design Fundamentals*
+- 🟢 *State Management Basics*
+- 🟢 *Algorithm Design*
+- 🟢 *Unit Testing & Edge Cases*
+- 🟢 *Clean Code Practices*
+- 🟢 *Requirement Analysis*
+
+---
+
 # 🧮 Scoring Template
 
 ## 🏆 Total: **100 Points**

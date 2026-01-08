@@ -20,11 +20,10 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 # 📋 How to Join
 
 ### Step 1: Register Your Interest
-- Drop a message in the `#twvn-coding-challenge` Google Chat space ([https://chat.google.com/room/AAQADlZAmk0?cls=7](https://chat.google.com/room/AAQADlZAmk0?cls=7))
-- Or email the organizer: [Steve Lam] – [tai.lam@thoughtworks.com], [Tom Tang] – [tom.tang@thoughtworks.com]
+- Drop a message in the `#Vietnam Dev Community` Google Chat space ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7))
 
 ### Step 2: Form Your Team
-- **Option A**: Join solo (you'll get paired with others)
+- **Option A**: Join solo
 - **Option B**: Form a team of 2–3 people
 - **Option C**: Ask in the channel for teammates
 
@@ -76,11 +75,11 @@ A good challenge should:
 
 ### Recommended Setup
 
-- **Teams of 2–3**
+- **Teams of 1–3**
 - **Pairing** encouraged:
     - Rotate pairs every challenge
     - Mix senior + junior intentionally
-- Solo allowed (but fewer bonus points)
+- Solo allowed.
 
 📌 **Pairing rule**
 
@@ -230,7 +229,7 @@ Adjust:
 # 💬 Communication & Support
 
 ### 📢 Main Channel
-- **Google Chat Space**: `#twvn-coding-challenge` ([https://chat.google.com/room/AAQADlZAmk0?cls=7](https://chat.google.com/room/AAQADlZAmk0?cls=7))
+- **Google Chat Space**: `#Vietnam Dev Community` ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7))
 - Use this for: Questions, teammate search, general discussion
 
 ### 🆘 Getting Help
@@ -320,9 +319,6 @@ Your submission should include:
 ### Q: What if I can't finish in time?
 **A:** Partial solutions are 100% welcome! Submit what you have and explain what you would do next. You'll still learn and might still win!
 
-### Q: Can I work solo?
-**A:** Yes, but we encourage pairing for the learning experience. Solo participants are eligible for all awards but may get fewer collaboration points.
-
 ### Q: What if my solution breaks during the demo?
 **A:** It happens! Explain what was supposed to happen. Judges value your understanding and design decisions over a perfect demo.
 
@@ -339,15 +335,15 @@ Your submission should include:
 **A:** Nope! It's optional. If you do use them (GitHub Copilot, ChatGPT, Cursor, etc.), document how they helped for bonus points.
 
 ### Q: What if I have a question not listed here?
-**A:** Ask in `#twvn-coding-challenge` ([https://chat.google.com/room/AAQADlZAmk0?cls=7](https://chat.google.com/room/AAQADlZAmk0?cls=7)) or email the organizer. No question is too small!
+**A:** Ask in `#Vietnam Dev Community` ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7)) or email the organizer. No question is too small!
 
 ---
 
 # 📞 Contact & Organizers
 
 - **Main Organizer**: [Steve Lam] – [tai.lam@thoughtworks.com], [Tom Tang] – [tom.tang@thoughtworks.com]
-- **Technical Mentors**: [Check `#twvn-coding-challenge` channel pinned messages]
-- **Google Chat Space**: `#twvn-coding-challenge`
+- **Technical Mentors**: [Check `#Vietnam Dev Community` channel pinned messages]
+- **Google Chat Space**: `#Vietnam Dev Community`
 
 **Have ideas to improve the event?** We'd love to hear them! DM the organizer or share in the retro session.
 
@@ -355,7 +351,7 @@ Your submission should include:
 
 # 🚀 Ready to Start?
 
-1. ✅ Join the `#twvn-coding-challenge` space ([https://chat.google.com/room/AAQADlZAmk0?cls=7](https://chat.google.com/room/AAQADlZAmk0?cls=7)).
+1. ✅ Join the `#Vietnam Dev Community` space ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7)).
 2. ✅ Mark the kickoff event in your calendar
 3. ✅ Start thinking about who you'd like to team up with
 4. ✅ Get excited—this is going to be fun! 🎉
