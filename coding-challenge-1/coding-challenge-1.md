@@ -63,6 +63,24 @@ This is **not** about completeness — it’s about **clarity and correctness**.
 
 ---
 
+### 4️⃣ Design Pattern Requirement
+
+- Your solution **must apply at least one design pattern**
+- Suggested patterns (choose what fits your design):
+  - **Strategy Pattern** – for rotation algorithms
+  - **Singleton Pattern** – for team state management
+  - **Iterator Pattern** – for cycling through members
+  - **Factory Pattern** – for creating rotation instances
+  - **State Pattern** – for managing rotation state
+  - Or any other relevant pattern that improves your design
+
+📌 Be prepared to explain:
+- Which pattern(s) you chose
+- Why it was appropriate for this problem
+- How it improved your solution
+
+---
+
 ## 🚫 Explicitly Out of Scope
 
 To avoid over-engineering:
@@ -227,6 +245,7 @@ Each team submits:
 - README (max 1 page) including:
   - How to run
   - Rotation approach
+  - Design pattern(s) used and why
   - One trade-off they consciously made
 
 ---
@@ -238,6 +257,7 @@ This challenge awards the following **explicit skills**:
 - 🟢 *API/Library Design Fundamentals*
 - 🟢 *State Management Basics*
 - 🟢 *Algorithm Design*
+- 🟢 *Design Pattern Application*
 - 🟢 *Unit Testing & Edge Cases*
 - 🟢 *Clean Code Practices*
 - 🟢 *Requirement Analysis*
@@ -246,28 +266,29 @@ This challenge awards the following **explicit skills**:
 
 # 🧮 Scoring Template
 
-## 🏆 Total: **100 Points**
+## 🏆 Total: **100 Points** (+ up to 10 bonus)
 
 ---
 
-## 1️⃣ Core Logic Correctness — **40 pts**
+## 1️⃣ Core Logic Correctness — **45 pts**
 
 | Criteria                | Points |
 | ----------------------- | ------ |
 | No immediate repetition | 10     |
 | Skips inactive members  | 10     |
-| Fair rotation           | 10     |
+| Fair rotation           | 15     |
 | Correct rotation order  | 10     |
 
 ---
 
 ## 2️⃣ Code Quality & Design — **25 pts**
 
-| Criteria                         | Points |
-| -------------------------------- | ------ |
-| Readability & naming             | 10     |
-| Separation of concerns           | 10     |
-| Simplicity (no over-engineering) | 5      |
+| Criteria                          | Points |
+| --------------------------------- | ------ |
+| Design pattern implementation     | 10     |
+| Readability & naming              | 5      |
+| Separation of concerns            | 5      |
+| Simplicity (no over-engineering)  | 5      |
 
 ---
 
@@ -280,12 +301,13 @@ This challenge awards the following **explicit skills**:
 
 ---
 
-## 4️⃣ Communication & Demo — **10 pts**
+## 4️⃣ Communication & Demo — **15 pts**
 
-| Criteria          | Points |
-| ----------------- | ------ |
-| Clear explanation | 5      |
-| README clarity    | 5      |
+| Criteria                      | Points |
+| ----------------------------- | ------ |
+| Clear explanation             | 5      |
+| Design pattern justification  | 5      |
+| README clarity                | 5      |
 
 ---
 
