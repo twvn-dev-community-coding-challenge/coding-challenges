@@ -259,6 +259,25 @@ Adjust:
 4. **Have fun** – This isn't a job interview, it's a celebration
 
 ---
+# Branching Guideline (Start Coding)
+
+To keep the main branch clean and make it easy for others to review your work, please create a dedicated branch before you start coding.
+
+✅ Rules
+- Do not commit directly to main
+- Create a branch right after you clone the repo
+- Use clear branch naming so we can quickly identify teams
+
+✅ Branch naming format
+Use one of the following:
+
+`coding-challenge-{number}/<your_team-name | your_name>`
+
+Example: coding-challenge-1/rustaceans, coding-challenge-1/stevelam
+
+At the end, open a Pull Request (PR) into main for submission + review
+
+---
 
 # 📝 Submission Template
 
