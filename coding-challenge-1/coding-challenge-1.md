@@ -241,12 +241,14 @@ To help you understand the requirements, here are detailed text examples:
 
 Each team submits:
 
-- Git repository
+- Git repository with **commit history** (frequent commits showing development progression)
 - README (max 1 page) including:
   - How to run
   - Rotation approach
   - Design pattern(s) used and why
   - One trade-off they consciously made
+
+📌 **Important**: If claiming TDD bonus points, your commit history should clearly show tests written before implementation code.
 
 ---
 
@@ -259,6 +261,7 @@ This challenge awards the following **explicit skills**:
 - 🟢 *Algorithm Design*
 - 🟢 *Design Pattern Application*
 - 🟢 *Unit Testing & Edge Cases*
+- 🟢 *Test-Driven Development (TDD)*
 - 🟢 *Clean Code Practices*
 - 🟢 *Requirement Analysis*
 
@@ -266,7 +269,7 @@ This challenge awards the following **explicit skills**:
 
 # 🧮 Scoring Template
 
-## 🏆 Total: **100 Points** (+ up to 10 bonus)
+## 🏆 Total: **100 Points** (+ up to 20 bonus)
 
 ---
 
@@ -311,9 +314,12 @@ This challenge awards the following **explicit skills**:
 
 ---
 
-## 🌟 Bonus Points (Max +10)
+## 🌟 Bonus Points (Max +20)
 
 | Bonus              | Points |
 | ------------------ | ------ |
+| TDD approach       | +10    |
 | Junior-led demo    | +5     |
 | Elegant simplicity | +5     |
+
+📌 **Note on TDD Bonus**: To claim the TDD bonus points, your commit history must demonstrate that tests were written before implementation. Make sure to commit frequently throughout development to show your TDD workflow (red → green → refactor).
