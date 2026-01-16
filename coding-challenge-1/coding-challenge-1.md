@@ -50,7 +50,7 @@ This is **not** about completeness — it’s about **clarity and correctness**.
 - Rules:
   - Must not return the **same member twice in a row**
   - Must **skip inactive members**
-  - Rotation must be **fair over time**
+  - Rotation must be **fair over time** ("How will you ensure fairness over time, or a number of rotations?")
 
 ---
 
