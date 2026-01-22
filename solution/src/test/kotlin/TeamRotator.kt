@@ -1,6 +1,4 @@
-class TeamRotator {
-    fun addMembers(membersList: List<Member>) {
-    }
+class TeamRotator(membersList: List<Member>) {
 
     fun memberList(): List<Member> {
         return listOf(Member("AnhLe"), Member("Nam"));
