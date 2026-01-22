@@ -46,4 +46,14 @@ class TeamRotatorTest {
         assertEquals(Member("AnhLe"), member)
 
     }
+    @Test
+    fun `rotate 2nd time return 2nd of list`() {
+        val membersList = listOf(Member("AnhLe"), Member("Nam"));
+        val teamRotator = TeamRotator(membersList);
+
+        teamRotator.rotate()
+        val member: Member = teamRotator.rotate()
+        assertEquals(Member("Nam"), member)
+
+    }
 }
