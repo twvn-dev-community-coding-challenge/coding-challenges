@@ -12,7 +12,7 @@ class TeamRotator {
     }
 
     fun rotate(): Member {
-        return Member("AnhLe")
+        return membersList[0]
     }
 
 }
