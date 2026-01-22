@@ -11,4 +11,8 @@ class TeamRotator {
         return membersList;
     }
 
+    fun rotate(): Member {
+        return Member("AnhLe")
+    }
+
 }
