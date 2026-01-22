@@ -54,6 +54,24 @@ class TeamRotatorTest {
         teamRotator.rotate()
         val member: Member = teamRotator.rotate()
         assertEquals(Member("Nam"), member)
+    }
 
+    @Test
+    fun `can rotate to the end of list`() {
+        val membersList = listOf(
+            Member("AnhLe"),
+            Member("Nam"),
+            Member("Hang"),
+            Member("Bob"),
+            Member("Martin"),
+        );
+        val teamRotator = TeamRotator(membersList);
+
+        teamRotator.rotate()
+        teamRotator.rotate()
+        teamRotator.rotate()
+        teamRotator.rotate()
+        val member: Member = teamRotator.rotate()
+        assertEquals(Member("Martin"), member)
     }
 }
