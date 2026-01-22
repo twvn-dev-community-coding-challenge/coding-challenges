@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 class TeamRotatorTest {
     @Test
@@ -6,7 +7,10 @@ class TeamRotatorTest {
         val membersList = listOf(Member("AnhLe"));
         val teamRotator = TeamRotator(membersList);
 
-        teamRotator.memberList() == listOf(Member("AnhLe"))
+        assertEquals(
+            teamRotator.memberList(),
+            listOf(Member("AnhLe"))
+        )
     }
 
     @Test
@@ -14,6 +18,8 @@ class TeamRotatorTest {
         val membersList = listOf(Member("AnhLe"), Member("Nam"));
         val teamRotator = TeamRotator(membersList);
 
-        teamRotator.memberList() == listOf(Member("AnhLe"), Member("Nam"))
+        assertEquals(
+            teamRotator.memberList(),
+            listOf(Member("AnhLe"), Member("Nam")));
     }
 }

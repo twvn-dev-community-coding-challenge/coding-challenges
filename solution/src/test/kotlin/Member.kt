@@ -1,3 +1,3 @@
-class Member(fullName: String) {
+data class Member(val fullName: String) {
 
 }
