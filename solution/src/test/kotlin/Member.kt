@@ -1,0 +1,3 @@
+class Member(fullName: String) {
+
+}
