@@ -1,7 +1,7 @@
-class TeamRotator(membersList: List<Member>) {
+class TeamRotator(val membersList: List<Member>) {
 
     fun memberList(): List<Member> {
-        return listOf(Member("AnhLe"), Member("Nam"));
+        return membersList;
     }
 
 }
