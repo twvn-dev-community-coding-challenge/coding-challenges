@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -22,7 +21,8 @@ class TeamRotatorTest {
 
         assertEquals(
             teamRotator.memberList(),
-            listOf(Member("AnhLe"), Member("Nam")));
+            listOf(Member("AnhLe"), Member("Nam"))
+        );
     }
 
     @Test
@@ -35,5 +35,15 @@ class TeamRotatorTest {
             }
         )
         assertEquals("Cannot rotate list of no member", error.message)
+    }
+
+    @Test
+    fun `rotate first time return first of list`() {
+        val membersList = listOf(Member("AnhLe"), Member("Nam"));
+        val teamRotator = TeamRotator(membersList);
+
+        val member: Member = teamRotator.rotate()
+        assertEquals(Member("AnhLe"), member)
+
     }
 }
