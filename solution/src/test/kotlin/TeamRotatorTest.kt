@@ -154,6 +154,11 @@ class TeamRotatorTest {
                 Member("AnhLe"),
                 teamRotator.lastSelectedMember()
             )
+            teamRotator.rotate()
+            assertEquals(
+                Member("Hang"),
+                teamRotator.lastSelectedMember()
+            )
         }
     }
 }
