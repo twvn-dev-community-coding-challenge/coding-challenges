@@ -22,4 +22,8 @@ class TeamRotator {
         if (rotateCount >= membersList.size) rotateCount = 0
     }
 
+    fun lastSelectedMember(): Member {
+        return Member("AnhLe");
+    }
+
 }
