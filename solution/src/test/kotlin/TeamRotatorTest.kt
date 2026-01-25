@@ -160,6 +160,39 @@ class TeamRotatorTest {
                 teamRotator.lastSelectedMember()
             )
         }
+
+        @Test
+        fun `list of 1 rotate N members should track last selected member`() {
+            val teamRotator = TeamRotator(listOf(
+                Member("AnhLe"),
+                Member("Nam"),
+                Member("Hang"),
+                Member("Bob"),
+                Member("Martin"),
+            ));
+            teamRotator.rotateNMembers(3)
+            assertEquals(
+                Member("Hang"),
+                teamRotator.lastSelectedMember()
+            )
+        }
+
+        @Test
+        fun `list of many rotate N members should track last selected member`() {
+            val teamRotator = TeamRotator(listOf(
+                Member("AnhLe"),
+                Member("Nam"),
+                Member("Hang"),
+                Member("Bob"),
+                Member("Martin"),
+            ));
+            teamRotator.rotateNMembers(3)
+            teamRotator.rotateNMembers(4)
+            assertEquals(
+                Member("Nam"),
+                teamRotator.lastSelectedMember()
+            )
+        }
     }
 
     @Nested
