@@ -1,7 +1,7 @@
 class TeamRotator {
 
     val membersList: List<Member>
-    private var rotateCount: Int = 0;
+    private var lastSelectedIndex: Int = -1;
     constructor(membersList: List<Member>) {
         if(membersList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
         this.membersList = membersList
@@ -12,18 +12,13 @@ class TeamRotator {
     }
 
     fun rotate(): Member {
-        val result = membersList[rotateCount]
-        updateRotationIndex()
+        lastSelectedIndex++
+        val result = membersList[lastSelectedIndex]
         return result
     }
 
-    private fun updateRotationIndex() {
-        rotateCount++
-        if (rotateCount >= membersList.size) rotateCount = 0
-    }
-
     fun lastSelectedMember(): Member {
-        return Member("AnhLe");
+        return membersList[lastSelectedIndex];
     }
 
 }
