@@ -13,6 +13,7 @@ class TeamRotator {
 
     fun rotate(): Member {
         lastSelectedIndex++
+        if(lastSelectedIndex >= membersList.size) lastSelectedIndex = 0
         val result = membersList[lastSelectedIndex]
         return result
     }
