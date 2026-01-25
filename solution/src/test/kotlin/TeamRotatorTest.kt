@@ -119,7 +119,27 @@ class TeamRotatorTest {
             teamRotator.rotate()
             assertEquals(
                 teamRotator.lastSelectedMember(),
-                Member("AnhLe"))
+                Member("AnhLe")
+            )
+        }
+
+        @Test
+        fun `list of 2 rotate 1 twice remember should track last selected member`() {
+            val teamRotator = TeamRotator(listOf(
+                Member("AnhLe"),
+                Member("Hang")
+            ));
+            teamRotator.rotate()
+            assertEquals(
+                Member("AnhLe"),
+                teamRotator.lastSelectedMember()
+            )
+
+            teamRotator.rotate()
+            assertEquals(
+                Member("Hang"),
+                teamRotator.lastSelectedMember()
+            )
         }
     }
 }
