@@ -5,7 +5,7 @@ import kotlin.test.assertFailsWith
 
 class TeamRotatorTest {
     @Nested
-    inner class RotateOne {
+    inner class `rotate one` {
         @Test
         fun `team rotator can have a list of 1 member`() {
             val membersList = listOf(Member("AnhLe"));
@@ -80,7 +80,21 @@ class TeamRotatorTest {
         }
 
         @Test
-        fun `can rotate repeat the list`() {
+        fun `can rotate repeat the list of one`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("Bob"),
+                )
+            );
+
+            teamRotator.rotate()
+            teamRotator.rotate()
+            val member: Member = teamRotator.rotate()
+            assertEquals(Member("Bob"), member)
+        }
+
+        @Test
+        fun `can rotate repeat the list of many`() {
             val teamRotator = TeamRotator(
                 listOf(
                     Member("Bob"),
