@@ -185,5 +185,74 @@ class TeamRotatorTest {
                 rotatedMembers
             )
         }
+
+        @Test
+        fun `rotate 2 members second time return second members in the list`() {
+            val membersList = listOf(
+                Member("AnhLe"),
+                Member("Nam"),
+                Member("Hang"),
+                Member("Bob"),
+                Member("Martin"),
+            );
+            val teamRotator = TeamRotator(membersList);
+
+            teamRotator.rotateNMembers(2)
+            val rotatedMembers: List<Member> = teamRotator.rotateNMembers(2);
+
+            assertEquals(
+                listOf(
+                    Member("Hang"),
+                    Member("Bob"),
+                ),
+                rotatedMembers
+            )
+        }
+
+        @Test
+        fun `rotate 3 members second time return the list with repetition`() {
+            val membersList = listOf(
+                Member("AnhLe"),
+                Member("Nam"),
+                Member("Hang"),
+                Member("Bob"),
+                Member("Martin"),
+            );
+            val teamRotator = TeamRotator(membersList);
+
+            teamRotator.rotateNMembers(3)
+            val rotatedMembers: List<Member> = teamRotator.rotateNMembers(3);
+
+            assertEquals(
+                listOf(
+                    Member("Bob"),
+                    Member("Martin"),
+                    Member("AnhLe"),
+                ),
+                rotatedMembers
+            )
+        }
+
+        @Test
+        fun `rotate n members where n is larger than list size`() {
+            val membersList = listOf(
+                Member("AnhLe"),
+                Member("Nam"),
+                Member("Hang"),
+            );
+            val teamRotator = TeamRotator(membersList);
+
+            val rotatedMembers: List<Member> = teamRotator.rotateNMembers(4);
+
+            assertEquals(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam"),
+                    Member("Hang"),
+                    Member("AnhLe"),
+                ),
+                rotatedMembers
+            )
+        }
     }
 }
