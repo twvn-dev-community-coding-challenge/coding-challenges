@@ -1,8 +1,9 @@
 - rotate 1 member (DONE)
 - rotate repeat list for 1 (DONE)
-- track last selected member
+- track last selected member rotate 1(DONE)
 - rotate n member
-- rotate repeat list
+- track last selected member rotate n member(DONE)
+- rotate n can repeat list
 - tracking member Is Active
 - rotate skip is active
 - Duplicate name need to add character
