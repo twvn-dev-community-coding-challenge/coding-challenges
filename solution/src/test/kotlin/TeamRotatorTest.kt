@@ -108,4 +108,18 @@ class TeamRotatorTest {
             assertEquals(Member("Bob"), member)
         }
     }
+
+    @Nested
+    inner class `Track last selected member` {
+
+        @Test
+        fun `list of one rotate 1 remember should track last selected member`() {
+            val membersList = listOf(Member("AnhLe"));
+            val teamRotator = TeamRotator(membersList);
+            teamRotator.rotate()
+            assertEquals(
+                teamRotator.lastSelectedMember(),
+                Member("AnhLe"))
+        }
+    }
 }
