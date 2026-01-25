@@ -141,5 +141,19 @@ class TeamRotatorTest {
                 teamRotator.lastSelectedMember()
             )
         }
+        @Test
+        fun `list reset can track last selected member`() {
+            val teamRotator = TeamRotator(listOf(
+                Member("AnhLe"),
+                Member("Hang")
+            ));
+            teamRotator.rotate()
+            teamRotator.rotate()
+            teamRotator.rotate()
+            assertEquals(
+                Member("AnhLe"),
+                teamRotator.lastSelectedMember()
+            )
+        }
     }
 }
