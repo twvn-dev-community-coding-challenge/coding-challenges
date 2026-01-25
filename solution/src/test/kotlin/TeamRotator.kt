@@ -1,7 +1,7 @@
 class TeamRotator {
 
     val membersList: List<Member>
-    var rotateCount: Int = 0;
+    private var rotateCount: Int = 0;
     constructor(membersList: List<Member>) {
         if(membersList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
         this.membersList = membersList
