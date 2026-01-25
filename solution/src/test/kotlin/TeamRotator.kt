@@ -26,4 +26,12 @@ class TeamRotator {
         return membersList[lastSelectedIndex];
     }
 
+    fun rotateNMembers(n: Int): List<Member> {
+        val result = mutableListOf<Member>();
+        for (i in 1..n) {
+            val member = rotate();
+            result.add(member);
+        }
+        return result;
+    }
 }
