@@ -78,5 +78,20 @@ class TeamRotatorTest {
             val member: Member = teamRotator.rotate()
             assertEquals(Member("Martin"), member)
         }
+
+        @Test
+        fun `can rotate repeat the list`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("Bob"),
+                    Member("Martin"),
+                )
+            );
+
+            teamRotator.rotate()
+            teamRotator.rotate()
+            val member: Member = teamRotator.rotate()
+            assertEquals(Member("Bob"), member)
+        }
     }
 }
