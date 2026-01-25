@@ -118,8 +118,8 @@ class TeamRotatorTest {
             val teamRotator = TeamRotator(membersList);
             teamRotator.rotate()
             assertEquals(
-                teamRotator.lastSelectedMember(),
-                Member("AnhLe")
+                Member("AnhLe"),
+                teamRotator.lastSelectedMember()
             )
         }
 
