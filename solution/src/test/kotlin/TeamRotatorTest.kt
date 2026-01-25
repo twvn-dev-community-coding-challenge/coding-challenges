@@ -161,4 +161,29 @@ class TeamRotatorTest {
             )
         }
     }
+
+    @Nested
+    inner class `rotate n members` {
+        @Test
+        fun `rotate 2 members first time return first 2 members in the list`() {
+            val membersList = listOf(
+                Member("AnhLe"),
+                Member("Nam"),
+                Member("Hang"),
+                Member("Bob"),
+                Member("Martin"),
+            );
+            val teamRotator = TeamRotator(membersList);
+
+            val rotatedMembers: List<Member> = teamRotator.rotateNMembers(2);
+
+            assertEquals(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam"),
+                ),
+                rotatedMembers
+            )
+        }
+    }
 }
