@@ -14,6 +14,7 @@ class TeamRotator {
     fun rotate(): Member {
         val result = membersList[rotateCount]
         rotateCount++
+        if(rotateCount >= membersList.size) rotateCount = 0
         return result
     }
 
