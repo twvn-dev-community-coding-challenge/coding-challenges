@@ -1,77 +1,82 @@
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class TeamRotatorTest {
-    @Test
-    fun `team rotator can have a list of 1 member`() {
-        val membersList = listOf(Member("AnhLe"));
-        val teamRotator = TeamRotator(membersList);
+    @Nested
+    inner class RotateOne {
+        @Test
+        fun `team rotator can have a list of 1 member`() {
+            val membersList = listOf(Member("AnhLe"));
+            val teamRotator = TeamRotator(membersList);
 
-        assertEquals(
-            teamRotator.memberList(),
-            listOf(Member("AnhLe"))
-        )
-    }
+            assertEquals(
+                teamRotator.memberList(),
+                listOf(Member("AnhLe"))
+            )
+        }
 
-    @Test
-    fun `team rotator can have a list of 2 members`() {
-        val membersList = listOf(Member("AnhLe"), Member("Nam"));
-        val teamRotator = TeamRotator(membersList);
+        @Test
+        fun `team rotator can have a list of 2 members`() {
+            val membersList = listOf(Member("AnhLe"), Member("Nam"));
+            val teamRotator = TeamRotator(membersList);
 
-        assertEquals(
-            teamRotator.memberList(),
-            listOf(Member("AnhLe"), Member("Nam"))
-        );
-    }
+            assertEquals(
+                teamRotator.memberList(),
+                listOf(Member("AnhLe"), Member("Nam"))
+            );
+        }
 
-    @Test
-    fun `team rotator cannot have a list of no member`() {
-        val membersList = listOf<Member>();
+        @Test
+        fun `team rotator cannot have a list of no member`() {
+            val membersList = listOf<Member>();
 
-        val error = assertFailsWith<IllegalArgumentException>(
-            block = {
-                val teamRotator = TeamRotator(membersList)
-            }
-        )
-        assertEquals("Cannot rotate list of no member", error.message)
-    }
+            val error = assertFailsWith<IllegalArgumentException>(
+                block = {
+                    val teamRotator = TeamRotator(membersList)
+                }
+            )
+            assertEquals("Cannot rotate list of no member", error.message)
+        }
 
-    @Test
-    fun `rotate first time return first of list`() {
-        val membersList = listOf(Member("AnhLe"), Member("Nam"));
-        val teamRotator = TeamRotator(membersList);
+        @Test
+        fun `rotate first time return first of list`() {
+            val membersList = listOf(Member("AnhLe"), Member("Nam"));
+            val teamRotator = TeamRotator(membersList);
 
-        val member: Member = teamRotator.rotate()
-        assertEquals(Member("AnhLe"), member)
+            val member: Member = teamRotator.rotate()
+            assertEquals(Member("AnhLe"), member)
 
-    }
-    @Test
-    fun `rotate 2nd time return 2nd of list`() {
-        val membersList = listOf(Member("AnhLe"), Member("Nam"));
-        val teamRotator = TeamRotator(membersList);
+        }
 
-        teamRotator.rotate()
-        val member: Member = teamRotator.rotate()
-        assertEquals(Member("Nam"), member)
-    }
+        @Test
+        fun `rotate 2nd time return 2nd of list`() {
+            val membersList = listOf(Member("AnhLe"), Member("Nam"));
+            val teamRotator = TeamRotator(membersList);
 
-    @Test
-    fun `can rotate to the end of list`() {
-        val membersList = listOf(
-            Member("AnhLe"),
-            Member("Nam"),
-            Member("Hang"),
-            Member("Bob"),
-            Member("Martin"),
-        );
-        val teamRotator = TeamRotator(membersList);
+            teamRotator.rotate()
+            val member: Member = teamRotator.rotate()
+            assertEquals(Member("Nam"), member)
+        }
 
-        teamRotator.rotate()
-        teamRotator.rotate()
-        teamRotator.rotate()
-        teamRotator.rotate()
-        val member: Member = teamRotator.rotate()
-        assertEquals(Member("Martin"), member)
+        @Test
+        fun `can rotate to the end of list`() {
+            val membersList = listOf(
+                Member("AnhLe"),
+                Member("Nam"),
+                Member("Hang"),
+                Member("Bob"),
+                Member("Martin"),
+            );
+            val teamRotator = TeamRotator(membersList);
+
+            teamRotator.rotate()
+            teamRotator.rotate()
+            teamRotator.rotate()
+            teamRotator.rotate()
+            val member: Member = teamRotator.rotate()
+            assertEquals(Member("Martin"), member)
+        }
     }
 }
