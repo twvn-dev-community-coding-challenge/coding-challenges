@@ -1,0 +1,51 @@
+{
+  "name": "examples",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/examples",
+  "projectType": "application",
+  "targets": {
+    "example1": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example1-basic-rotation.ts"
+      }
+    },
+    "example2": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example2-no-repetition.ts"
+      }
+    },
+    "example3": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example3-skip-inactive.ts"
+      }
+    },
+    "example4": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example4-next-n-members.ts"
+      }
+    },
+    "example5": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example5-single-active.ts"
+      }
+    },
+    "example6": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example6-all-inactive.ts"
+      }
+    },
+    "all": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run examples:example1 && nx run examples:example2 && nx run examples:example3 && nx run examples:example4 && nx run examples:example5 && nx run examples:example6"
+      }
+    }
+  },
+  "tags": []
+}

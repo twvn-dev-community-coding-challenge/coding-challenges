@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+lib/
+build/
+*.tsbuildinfo
+
+# Coverage
+coverage/
+*.lcov
+
+# NX
+.nx/cache
+.nx/workspace-data
+
+# Logs
+*.log
+
+# Lock files
+yarn.lock
+package-lock.json
+
+# Generated files
+*.d.ts.map

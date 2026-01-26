@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "outDir": "../../lib/apps/examples",
+    "baseUrl": "../../",
+    "paths": {
+      "@team-rotator/core": ["packages/team-rotator/lib"]
+    }
+  },
+  "include": ["*.ts"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@team-rotator/examples",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@team-rotator/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  }
+}
