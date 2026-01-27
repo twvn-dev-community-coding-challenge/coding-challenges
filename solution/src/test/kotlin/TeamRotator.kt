@@ -34,4 +34,17 @@ class TeamRotator {
         }
         return result;
     }
+
+    fun markMemberInactiveByName(memberName: String) {
+        for (member in membersList) {
+            if(member.fullName.compareTo(memberName, true) > 0){
+                member.deactivate()
+            }
+        }
+    }
+
+    fun isMemberActive(memberName: String): Boolean {
+        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) > 0 }
+        return member?.isActive ?: false
+    }
 }
