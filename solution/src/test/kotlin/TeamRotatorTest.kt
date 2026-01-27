@@ -8,8 +8,7 @@ class TeamRotatorTest {
     inner class `rotate one` {
         @Test
         fun `team rotator can have a list of 1 member`() {
-            val membersList = listOf(Member("AnhLe"));
-            val teamRotator = TeamRotator(membersList);
+            val teamRotator = TeamRotator(listOf(Member("AnhLe")));
 
             assertEquals(
                 teamRotator.memberList(),
@@ -19,8 +18,10 @@ class TeamRotatorTest {
 
         @Test
         fun `team rotator can have a list of 2 members`() {
-            val membersList = listOf(Member("AnhLe"), Member("Nam"));
-            val teamRotator = TeamRotator(membersList);
+            val teamRotator = TeamRotator(listOf(
+                Member("AnhLe"),
+                Member("Nam")
+            ));
 
             assertEquals(
                 teamRotator.memberList(),
@@ -30,11 +31,11 @@ class TeamRotatorTest {
 
         @Test
         fun `team rotator cannot have a list of no member`() {
-            val membersList = listOf<Member>();
+            val listOfNoMember = listOf<Member>();
 
             val error = assertFailsWith<IllegalArgumentException>(
                 block = {
-                    val teamRotator = TeamRotator(membersList)
+                    val teamRotator = TeamRotator(listOfNoMember)
                 }
             )
             assertEquals("Cannot rotate list of no member", error.message)
@@ -42,8 +43,10 @@ class TeamRotatorTest {
 
         @Test
         fun `rotate first time return first of list`() {
-            val membersList = listOf(Member("AnhLe"), Member("Nam"));
-            val teamRotator = TeamRotator(membersList);
+            val teamRotator = TeamRotator(listOf(
+                Member("AnhLe"),
+                Member("Nam")
+            ));
 
             val member: Member = teamRotator.rotate()
             assertEquals(Member("AnhLe"), member)
@@ -52,7 +55,10 @@ class TeamRotatorTest {
 
         @Test
         fun `rotate 2nd time return 2nd of list`() {
-            val membersList = listOf(Member("AnhLe"), Member("Nam"));
+            val membersList = listOf(
+                Member("AnhLe"),
+                Member("Nam")
+            );
             val teamRotator = TeamRotator(membersList);
 
             teamRotator.rotate()
@@ -121,10 +127,12 @@ class TeamRotatorTest {
 
         @Test
         fun `list of 2 rotate 1 twice remember should track last selected member`() {
-            val teamRotator = TeamRotator(listOf(
-                Member("AnhLe"),
-                Member("Hang")
-            ));
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Hang")
+                )
+            );
             teamRotator.rotate()
             assertEquals(
                 Member("AnhLe"),
@@ -137,12 +145,15 @@ class TeamRotatorTest {
                 teamRotator.lastSelectedMember()
             )
         }
+
         @Test
         fun `list reset can track last selected member`() {
-            val teamRotator = TeamRotator(listOf(
-                Member("AnhLe"),
-                Member("Hang")
-            ));
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Hang")
+                )
+            );
             teamRotator.rotate()
             teamRotator.rotate()
             teamRotator.rotate()
@@ -159,13 +170,15 @@ class TeamRotatorTest {
 
         @Test
         fun `list of 1 rotate N members should track last selected member`() {
-            val teamRotator = TeamRotator(listOf(
-                Member("AnhLe"),
-                Member("Nam"),
-                Member("Hang"),
-                Member("Bob"),
-                Member("Martin"),
-            ));
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam"),
+                    Member("Hang"),
+                    Member("Bob"),
+                    Member("Martin"),
+                )
+            );
             teamRotator.rotateNMembers(3)
             assertEquals(
                 Member("Hang"),
@@ -175,13 +188,15 @@ class TeamRotatorTest {
 
         @Test
         fun `list of many rotate N members should track last selected member`() {
-            val teamRotator = TeamRotator(listOf(
-                Member("AnhLe"),
-                Member("Nam"),
-                Member("Hang"),
-                Member("Bob"),
-                Member("Martin"),
-            ));
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam"),
+                    Member("Hang"),
+                    Member("Bob"),
+                    Member("Martin"),
+                )
+            );
             teamRotator.rotateNMembers(3)
             teamRotator.rotateNMembers(4)
             assertEquals(
