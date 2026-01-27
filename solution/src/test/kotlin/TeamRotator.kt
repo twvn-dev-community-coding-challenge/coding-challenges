@@ -36,11 +36,8 @@ class TeamRotator {
     }
 
     fun markMemberInactiveByName(memberName: String) {
-        for (member in membersList) {
-            if(member.fullName.compareTo(memberName, true) > 0){
-                member.deactivate()
-            }
-        }
+        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) > 0 }
+        member?.deactivate()
     }
 
     fun isMemberActive(memberName: String): Boolean {
