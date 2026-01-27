@@ -56,8 +56,7 @@ class TeamRotatorTest {
             val teamRotator = TeamRotator(membersList);
 
             teamRotator.rotate()
-            val member: Member = teamRotator.rotate()
-            assertEquals(Member("Nam"), member)
+            assertEquals(Member("Nam"), teamRotator.rotate())
         }
 
         @Test
@@ -75,8 +74,7 @@ class TeamRotatorTest {
             teamRotator.rotate()
             teamRotator.rotate()
             teamRotator.rotate()
-            val member: Member = teamRotator.rotate()
-            assertEquals(Member("Martin"), member)
+            assertEquals(Member("Martin"), teamRotator.rotate())
         }
 
         @Test
@@ -89,8 +87,7 @@ class TeamRotatorTest {
 
             teamRotator.rotate()
             teamRotator.rotate()
-            val member: Member = teamRotator.rotate()
-            assertEquals(Member("Bob"), member)
+            assertEquals(Member("Bob"), teamRotator.rotate())
         }
 
         @Test
@@ -104,8 +101,7 @@ class TeamRotatorTest {
 
             teamRotator.rotate()
             teamRotator.rotate()
-            val member: Member = teamRotator.rotate()
-            assertEquals(Member("Bob"), member)
+            assertEquals(Member("Bob"), teamRotator.rotate())
         }
     }
 
@@ -199,83 +195,80 @@ class TeamRotatorTest {
     inner class `rotate n members` {
         @Test
         fun `rotate 2 members first time return first 2 members in the list`() {
-            val membersList = listOf(
-                Member("AnhLe"),
-                Member("Nam"),
-                Member("Hang"),
-                Member("Bob"),
-                Member("Martin"),
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam"),
+                    Member("Hang"),
+                    Member("Bob"),
+                    Member("Martin"),
+                )
             );
-            val teamRotator = TeamRotator(membersList);
-
-            val rotatedMembers: List<Member> = teamRotator.rotateNMembers(2);
 
             assertEquals(
                 listOf(
                     Member("AnhLe"),
                     Member("Nam"),
                 ),
-                rotatedMembers
+                teamRotator.rotateNMembers(2)
             )
         }
 
         @Test
         fun `rotate 2 members second time return second members in the list`() {
-            val membersList = listOf(
-                Member("AnhLe"),
-                Member("Nam"),
-                Member("Hang"),
-                Member("Bob"),
-                Member("Martin"),
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam"),
+                    Member("Hang"),
+                    Member("Bob"),
+                    Member("Martin"),
+                )
             );
-            val teamRotator = TeamRotator(membersList);
 
             teamRotator.rotateNMembers(2)
-            val rotatedMembers: List<Member> = teamRotator.rotateNMembers(2);
 
             assertEquals(
                 listOf(
                     Member("Hang"),
                     Member("Bob"),
                 ),
-                rotatedMembers
+                teamRotator.rotateNMembers(2)
             )
         }
 
         @Test
         fun `rotate 3 members second time return the list with repetition`() {
-            val membersList = listOf(
-                Member("AnhLe"),
-                Member("Nam"),
-                Member("Hang"),
-                Member("Bob"),
-                Member("Martin"),
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam"),
+                    Member("Hang"),
+                    Member("Bob"),
+                    Member("Martin"),
+                )
             );
-            val teamRotator = TeamRotator(membersList);
 
             teamRotator.rotateNMembers(3)
-            val rotatedMembers: List<Member> = teamRotator.rotateNMembers(3);
-
             assertEquals(
                 listOf(
                     Member("Bob"),
                     Member("Martin"),
                     Member("AnhLe"),
                 ),
-                rotatedMembers
+                teamRotator.rotateNMembers(3)
             )
         }
 
         @Test
         fun `rotate n members where n is larger than list size`() {
-            val membersList = listOf(
-                Member("AnhLe"),
-                Member("Nam"),
-                Member("Hang"),
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam"),
+                    Member("Hang"),
+                )
             );
-            val teamRotator = TeamRotator(membersList);
-
-            val rotatedMembers: List<Member> = teamRotator.rotateNMembers(4);
 
             assertEquals(
                 listOf(
@@ -284,7 +277,7 @@ class TeamRotatorTest {
                     Member("Hang"),
                     Member("AnhLe"),
                 ),
-                rotatedMembers
+                teamRotator.rotateNMembers(4)
             )
         }
     }
