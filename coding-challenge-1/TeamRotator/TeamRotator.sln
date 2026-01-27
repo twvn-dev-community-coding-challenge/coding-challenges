@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamRotator", "TeamRotator.csproj", "{64F476D3-0299-4D2C-903B-2DAC699DC576}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamRotator.Tests", "TeamRotator.Tests\TeamRotator.Tests.csproj", "{24EC2FFA-779A-426D-A31E-4C54ED07AB42}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{64F476D3-0299-4D2C-903B-2DAC699DC576}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64F476D3-0299-4D2C-903B-2DAC699DC576}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64F476D3-0299-4D2C-903B-2DAC699DC576}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64F476D3-0299-4D2C-903B-2DAC699DC576}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24EC2FFA-779A-426D-A31E-4C54ED07AB42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24EC2FFA-779A-426D-A31E-4C54ED07AB42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24EC2FFA-779A-426D-A31E-4C54ED07AB42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24EC2FFA-779A-426D-A31E-4C54ED07AB42}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
