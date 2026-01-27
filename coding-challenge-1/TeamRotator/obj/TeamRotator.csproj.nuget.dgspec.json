@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/TeamRotator.csproj": {}
+    "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/TeamRotator.csproj": {}
   },
   "projects": {
-    "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/TeamRotator.csproj": {
+    "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/TeamRotator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/TeamRotator.csproj",
+        "projectUniqueName": "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/TeamRotator.csproj",
         "projectName": "TeamRotator",
-        "projectPath": "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/TeamRotator.csproj",
-        "packagesPath": "/Users/lantruong/.nuget/packages/",
-        "outputPath": "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/obj/",
+        "projectPath": "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/TeamRotator.csproj",
+        "packagesPath": "/Users/kimthai/.nuget/packages/",
+        "outputPath": "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/lantruong/.nuget/NuGet/NuGet.Config"
+          "/Users/kimthai/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -43,6 +43,30 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
+          "dependencies": {
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[8.8.0, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[18.0.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "xunit.v3.assert": {
+              "target": "Package",
+              "version": "[3.2.2, )"
+            },
+            "xunit.v3.core": {
+              "target": "Package",
+              "version": "[3.2.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

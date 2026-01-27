@@ -1,0 +1,36 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=013478f8_002D8892_002D4bcb_002Db4a6_002De4e38681635e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_ShouldRotateSequentially_WhenAllMembersActive" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.RotationServiceTests.GetNext_ShouldRotateSequentially_WhenAllMembersActive&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1dd11724_002De1da_002D4d03_002Db657_002Dde8c71e030ec/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotatorTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=21381fe7_002D4057_002D4a04_002D9033_002Df16f28a96bf9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotatorTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=57c918a3_002Da14d_002D4da4_002Db74e_002D9db433346a60/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_ShouldThrowException_WhenNoMembersActive" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotator.Tests.RotationServiceTests.GetNext_ShouldThrowException_WhenNoMembersActive&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=72c6c10e_002D04c0_002D499c_002Da96a_002D0de383ca2901/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotatorTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bfa1398e_002Dfbcc_002D474d_002Da097_002D2fa82636a8be/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotatorTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ed4c2951_002Decec_002D48dc_002Dbca1_002D50db46b3051a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_ShouldThrowException_WhenNoMembersActive #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotator.Tests.RotationServiceTests.GetNext_ShouldThrowException_WhenNoMembersActive&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
