@@ -122,31 +122,6 @@ A good challenge should:
 3. **Design decisions & trade-offs (3 min)**
 4. **Lessons learned (2 min)**
 
-# 🧮 Scoring System (Gamification Core)
-
-## 🏆 Total Score: 100 points
-
-### 1️⃣ Technical Quality (40 pts)
-
-- Correctness & clarity (15)
-- Architecture & design (15)
-- Testing & reliability (10)
-
----
-
-### 2️⃣ Learning & Innovation (25 pts)
-
-- New tech used (10)
-- Smart trade-offs explained (10)
-- AI/tool usage explained (5)
-
----
-
-### 3️⃣ Collaboration (20 pts)
-
-- Pairing quality (10)
-- Knowledge sharing (10)
-
 ---
 
 ### 4️⃣ Presentation & Communication (15 pts)
@@ -155,15 +130,6 @@ A good challenge should:
 - Clear README (5)
 
 ---
-
-## 🌟 Bonus Points
-
-| Bonus | Points |
-| --- | --- |
-| Junior-led demo | +5 |
-| Great documentation | +5 |
-| Elegant simplicity | +5 |
-| Helping another team | +5 |
 
 # 📊 Leaderboard Design
 
