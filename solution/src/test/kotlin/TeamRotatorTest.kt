@@ -231,7 +231,7 @@ class TeamRotatorTest {
         }
 
         @Test
-        fun `rotate 2 members second time return second members in the list`() {
+        fun `rotate multiple times not over the list return correct members in the list`() {
             val teamRotator = TeamRotator(
                 listOf(
                     Member("AnhLe"),
@@ -254,7 +254,7 @@ class TeamRotatorTest {
         }
 
         @Test
-        fun `rotate 3 members second time return the list with repetition`() {
+        fun `rotate many times can return the list with repetition`() {
             val teamRotator = TeamRotator(
                 listOf(
                     Member("AnhLe"),
@@ -277,7 +277,7 @@ class TeamRotatorTest {
         }
 
         @Test
-        fun `rotate n members where n is larger than list size`() {
+        fun `rotate n members where n is larger than list size return repetition`() {
             val teamRotator = TeamRotator(
                 listOf(
                     Member("AnhLe"),
