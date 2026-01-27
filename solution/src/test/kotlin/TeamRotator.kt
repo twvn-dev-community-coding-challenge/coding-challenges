@@ -37,7 +37,8 @@ class TeamRotator {
 
     fun markMemberInactiveByName(memberName: String) {
         val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) > 0 }
-        member?.deactivate()
+        if(member == null) throw MemberNotFoundException(memberName)
+        member.deactivate()
     }
 
     fun isMemberActive(memberName: String): Boolean {
