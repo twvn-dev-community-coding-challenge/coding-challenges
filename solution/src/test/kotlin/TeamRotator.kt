@@ -2,8 +2,9 @@ class TeamRotator {
 
     val membersList: List<Member>
     private var lastSelectedIndex: Int = -1;
+
     constructor(membersList: List<Member>) {
-        if(membersList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
+        if (membersList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
         this.membersList = membersList
     }
 
@@ -37,7 +38,7 @@ class TeamRotator {
 
     fun markMemberInactiveByName(memberName: String) {
         val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) > 0 }
-        if(member == null) throw MemberNotFoundException(memberName)
+        if (member == null) throw MemberNotFoundException(memberName)
         member.deactivate()
     }
 
