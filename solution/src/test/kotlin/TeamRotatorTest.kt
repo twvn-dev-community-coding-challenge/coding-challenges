@@ -19,10 +19,12 @@ class TeamRotatorTest {
 
         @Test
         fun `team rotator can have a list of 2 members`() {
-            val teamRotator = TeamRotator(listOf(
-                Member("AnhLe"),
-                Member("Nam")
-            ));
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
 
             assertEquals(
                 teamRotator.memberList(),
@@ -44,10 +46,12 @@ class TeamRotatorTest {
 
         @Test
         fun `rotate first time return first of list`() {
-            val teamRotator = TeamRotator(listOf(
-                Member("AnhLe"),
-                Member("Nam")
-            ));
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
 
             val member: Member = teamRotator.rotate()
             assertEquals(Member("AnhLe"), member)
@@ -311,6 +315,21 @@ class TeamRotatorTest {
 
             teamRotator.markMemberInactiveByName("AnhLe")
             assertFalse(teamRotator.isMemberActive("AnhLe"))
+        }
+
+        @Test
+        fun `rotation of one should skip inactive member`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+            teamRotator.markMemberInactiveByName("AnhLe")
+            assertEquals(
+                Member("Nam"),
+                teamRotator.rotate()
+            )
         }
 
         @Test
