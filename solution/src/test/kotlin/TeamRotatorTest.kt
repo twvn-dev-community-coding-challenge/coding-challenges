@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 
 class TeamRotatorTest {
     @Nested
@@ -295,5 +296,22 @@ class TeamRotatorTest {
                 teamRotator.rotateNMembers(4)
             )
         }
+    }
+
+    @Nested
+    inner class `inactive member` {
+        @Test
+        fun `can assign inactive member`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+
+            teamRotator.markMemberInactiveByName("AnhLe")
+            assertFalse(teamRotator.isMemberActive("AnhLe"))
+        }
+
     }
 }
