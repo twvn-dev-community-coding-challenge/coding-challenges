@@ -44,6 +44,7 @@ class TeamRotator {
 
     fun isMemberActive(memberName: String): Boolean {
         val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) > 0 }
-        return member?.isActive ?: false
+        if (member == null) throw MemberNotFoundException(memberName)
+        return member.isActive
     }
 }

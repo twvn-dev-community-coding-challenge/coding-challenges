@@ -330,5 +330,22 @@ class TeamRotatorTest {
             assertEquals("Member not found with name: unknown", error.message)
         }
 
+        @Test
+        fun `isMemberActive however member not found should throw error`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+
+            val error = assertFailsWith<MemberNotFoundException>(
+                block = {
+                    teamRotator.isMemberActive("unknown")
+                }
+            )
+            assertEquals("Member not found with name: unknown", error.message)
+        }
+
     }
 }
