@@ -301,7 +301,7 @@ class TeamRotatorTest {
     @Nested
     inner class `inactive member` {
         @Test
-        fun `can assign inactive member`() {
+        fun `can mark inactive member`() {
             val teamRotator = TeamRotator(
                 listOf(
                     Member("AnhLe"),
@@ -311,6 +311,23 @@ class TeamRotatorTest {
 
             teamRotator.markMemberInactiveByName("AnhLe")
             assertFalse(teamRotator.isMemberActive("AnhLe"))
+        }
+
+        @Test
+        fun `mark inactive member however member not found should throw error`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+
+            val error = assertFailsWith<MemberNotFoundException>(
+                block = {
+                    teamRotator.markMemberInactiveByName("unknown")
+                }
+            )
+            assertEquals("Member not found with name: unknown", error.message)
         }
 
     }
