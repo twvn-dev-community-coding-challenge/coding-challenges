@@ -124,13 +124,6 @@ A good challenge should:
 
 ---
 
-### 4️⃣ Presentation & Communication (15 pts)
-
-- Clear demo (10)
-- Clear README (5)
-
----
-
 # 📊 Leaderboard Design
 
 Displayed in:
