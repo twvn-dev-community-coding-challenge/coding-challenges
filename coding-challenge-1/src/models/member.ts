@@ -1,27 +1,15 @@
-export type MemberId = string | number;
+/**
+ * Represents a team member in the rotation system
+ */
+export interface Member {
+  id: number;
+  name: string;
+  isActive: boolean;
+}
 
-type MemberParams = {
-    id: MemberId;
-    name: string;
-    isActive: boolean;
-};
-
-export default class Member {
-    public readonly id: MemberId;
-    public readonly name: string;
-    private active: boolean;
-
-    constructor({ id, name, isActive }: MemberParams) {
-        this.id = id;
-        this.name = name;
-        this.active = isActive;
-    }
-
-    get isActive(): boolean {
-        return this.active;
-    }
-
-    setActive(isActive: boolean): void {
-        this.active = isActive;
-    }
+/**
+ * Factory function to create a Member
+ */
+export function createMember(id: number, name: string, isActive: boolean = true): Member {
+  return { id, name, isActive };
 }
