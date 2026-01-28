@@ -10,6 +10,12 @@ class TeamRotator {
 
     constructor(vararg memberNameList: String) {
         if (memberNameList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
+        val seen = mutableSetOf<String>()
+        for (name in memberNameList) {
+            if (!seen.add(name)) {
+                throw ListContainDuplicatedNameException(name)
+            }
+        }
         membersList = memberNameList.map { Member(it) }
     }
 

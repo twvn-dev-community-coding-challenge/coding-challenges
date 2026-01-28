@@ -14,7 +14,7 @@ class TeamRotatorTest {
 
             val error = assertFailsWith<ListContainDuplicatedNameException>(
                 block = {
-                    TeamRotator("AnhLe", "Nam");
+                    TeamRotator("AnhLe", "Nam", "Nam");
                 }
             )
             assertEquals("Name duplicated: Nam", error.message)

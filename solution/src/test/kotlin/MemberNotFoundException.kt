@@ -1,3 +1,1 @@
-class MemberNotFoundException(memberName: String) : RuntimeException("Member not found with name: $memberName") {
-
-}
+class MemberNotFoundException(memberName: String) : RuntimeException("Member not found with name: $memberName")
