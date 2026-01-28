@@ -7,7 +7,7 @@ import kotlin.test.assertTrue
 
 class TeamRotatorTest {
     @Nested
-    inner class `rotate one` {
+    inner class `create TeamRotator` {
         @Test
         fun `team rotator can have a list of 1 member`() {
             val teamRotator = TeamRotator(listOf(Member("AnhLe")));
@@ -44,7 +44,11 @@ class TeamRotatorTest {
             )
             assertEquals("Cannot rotate list of no member", error.message)
         }
+    }
 
+
+    @Nested
+    inner class `rotate one` {
         @Test
         fun `rotate first time return first of list`() {
             val teamRotator = TeamRotator(
