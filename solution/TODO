@@ -4,6 +4,7 @@
 - rotate n member (DONE)
 - track last selected member rotate n member(DONE)
 - rotate n can repeat list (DONE)
-- tracking member Is Active
-- rotate skip is active
-- Duplicate name need to add character
+- mark member as inactive (DONE)
+- rotate skip is active (DONE)
+- Duplicate name is not valid
+- mark member as active
