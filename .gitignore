@@ -1,0 +1,16 @@
+**/.venv/**
+
+**/.pytest_cache/**
+
+**/uv.lock
+
+**/__pycache__/**
+
+**/.coverage
+
+**/.vscode/**
+
+**/dist/**
+
+**/.DS_Store
+**/.DS_Store/**
