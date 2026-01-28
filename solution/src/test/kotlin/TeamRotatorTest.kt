@@ -335,6 +335,25 @@ class TeamRotatorTest {
         }
 
         @Test
+        fun `rotation of many should skip inactive member`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+            teamRotator.markMemberInactiveByName("AnhLe")
+            assertEquals(
+                listOf(
+                    Member("AnhLe"),
+                    Member("AnhLe"),
+                    Member("AnhLe"),
+                ),
+                teamRotator.rotateNMembers(3)
+            )
+        }
+
+        @Test
         fun `mark inactive member however member not found should throw error`() {
             val teamRotator = TeamRotator(
                 listOf(
