@@ -8,6 +8,17 @@ import kotlin.test.assertTrue
 class TeamRotatorTest {
     @Nested
     inner class `create TeamRotator` {
+
+        @Test
+        fun `team rotator can be create with non duplicate list of name`() {
+            val teamRotator = TeamRotator("AnhLe", "Nam");
+
+            assertEquals(
+                teamRotator.memberList(),
+                listOf(Member("AnhLe"), Member("Nam"))
+            )
+        }
+
         @Test
         fun `team rotator can have a list of 1 member`() {
             val teamRotator = TeamRotator(listOf(Member("AnhLe")));
