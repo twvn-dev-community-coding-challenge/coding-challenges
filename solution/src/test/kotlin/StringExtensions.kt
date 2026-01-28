@@ -1,0 +1,1 @@
+fun String.equalsIgnoreCase(memberName: String): Boolean = compareTo(memberName, true) == 0
