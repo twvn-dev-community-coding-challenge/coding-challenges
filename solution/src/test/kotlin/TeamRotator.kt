@@ -5,16 +5,17 @@ class TeamRotator {
 
     constructor(membersList: List<Member>) {
         if (membersList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
+        ensureNameNotDuplicate(membersList.map{ it.fullName }.toList())
         this.membersList = membersList
     }
 
     constructor(vararg memberNameList: String) {
         if (memberNameList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
-        ensureNameNotDuplicate(memberNameList)
+        ensureNameNotDuplicate(memberNameList.toList())
         membersList = memberNameList.map { Member(it) }
     }
 
-    private fun ensureNameNotDuplicate(memberNameList: Array<out String>) {
+    private fun ensureNameNotDuplicate(memberNameList: List<String>) {
         val seen = mutableSetOf<String>()
         for (name in memberNameList) {
             if (!seen.add(name)) {
