@@ -29,10 +29,26 @@ describe('TeamRotator - Iterator Pattern Implementation', () => {
 
   /**
    * Example 2: No Immediate Repetition
-   * Tests that the same member is not returned twice in a row
+   * Scenario: Alice was just selected manually or externally
    */
   describe('Example 2: No Immediate Repetition', () => {
-    it('should not return Alice immediately after Alice was last selected', () => {
+    it('should not return Alice immediately when she was last selected externally', () => {
+      // Arrange - Alice (id: 1) was last selected
+      const members: Member[] = [
+        createMember(1, 'Alice'),
+        createMember(2, 'Bob'),
+        createMember(3, 'Charlie')
+      ];
+      const rotator = new TeamRotator(members, 1); // Alice was last selected
+
+      // Act & Assert
+      expect(rotator.next()?.name).toBe('Bob'); // NOT Alice, because she was last
+      expect(rotator.next()?.name).toBe('Charlie');
+      expect(rotator.next()?.name).toBe('Alice'); // Now OK to return Alice
+      expect(rotator.next()?.name).toBe('Bob');
+    });
+
+    it('should not return the same member twice in a row during normal operation', () => {
       // Arrange
       const members: Member[] = [
         createMember(1, 'Alice'),

@@ -20,11 +20,12 @@ export class TeamRotator implements RotationIterator {
   private currentIndex: number = 0;
   private lastSelectedId: number | null = null;
 
-  constructor(members: Member[]) {
+  constructor(members: Member[], lastSelectedId?: number | null) {
     if (!members || members.length === 0) {
       throw new Error('Team must have at least one member');
     }
     this.members = [...members]; // Create a copy to avoid external mutations
+    this.lastSelectedId = lastSelectedId ?? null;
   }
 
   /**
@@ -76,10 +77,10 @@ export class TeamRotator implements RotationIterator {
   }
 
   /**
-   * Gets the next N members in rotation
+   * Gets the next N members in rotation (optimized single-pass)
    * Throws error if there are not enough active members
    *
-   * Time complexity: O(n * count)
+   * Time complexity: O(n) where n = number of members
    * Space complexity: O(count)
    */
   nextN(count: number): Member[] {
@@ -100,12 +101,32 @@ export class TeamRotator implements RotationIterator {
     }
 
     const result: Member[] = [];
+    let attempts = 0;
+    const maxAttempts = this.members.length * 2; // Allow up to 2 full cycles
 
-    for (let i = 0; i < count; i++) {
-      const member = this.next();
-      if (member) {
-        result.push(member);
+    // Collect count members in a single pass
+    while (result.length < count && attempts < maxAttempts) {
+      const candidate = this.members[this.currentIndex];
+
+      // Move to next index
+      this.currentIndex = (this.currentIndex + 1) % this.members.length;
+      attempts++;
+
+      // Skip inactive members
+      if (!candidate.isActive) {
+        continue;
       }
+
+      // Apply no-repeat rule: skip if this is the last selected
+      // Exception: if we've already added members to result, we can add it
+      // (no-repeat only applies between separate calls or at the start)
+      if (candidate.id === this.lastSelectedId && result.length === 0 && activeCount > 1) {
+        continue;
+      }
+
+      // Add to result
+      result.push(candidate);
+      this.lastSelectedId = candidate.id;
     }
 
     return result;
