@@ -10,14 +10,20 @@ class TeamRotatorTest {
     inner class `create TeamRotator` {
 
         @Test
-        fun `team rotator cannot be create with name list contain duplciation`() {
-
-            val error = assertFailsWith<ListContainDuplicatedNameException>(
+        fun `team rotator cannot be create with name list contain duplication`() {
+            val errorWithString = assertFailsWith<ListContainDuplicatedNameException>(
                 block = {
                     TeamRotator("AnhLe", "Nam", "Nam");
                 }
             )
-            assertEquals("Name duplicated: Nam", error.message)
+            assertEquals("Name duplicated: Nam", errorWithString.message)
+
+            val errorWithMember = assertFailsWith<ListContainDuplicatedNameException>(
+                block = {
+                    TeamRotator(listOf(Member("AnhLe"), Member("Nam"), Member("Nam")))
+                }
+            )
+            assertEquals("Name duplicated: Nam", errorWithMember.message)
 
         }
 
