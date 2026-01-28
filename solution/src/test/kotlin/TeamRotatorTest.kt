@@ -339,17 +339,20 @@ class TeamRotatorTest {
             val teamRotator = TeamRotator(
                 listOf(
                     Member("AnhLe"),
-                    Member("Nam")
+                    Member("Nam"),
+                    Member("Hang")
                 )
             );
             teamRotator.markMemberInactiveByName("AnhLe")
             assertEquals(
                 listOf(
-                    Member("AnhLe"),
-                    Member("AnhLe"),
-                    Member("AnhLe"),
+                    Member("Nam"),
+                    Member("Hang"),
+                    Member("Nam"),
+                    Member("Hang"),
+                    Member("Nam"),
                 ),
-                teamRotator.rotateNMembers(3)
+                teamRotator.rotateNMembers(5)
             )
         }
 
