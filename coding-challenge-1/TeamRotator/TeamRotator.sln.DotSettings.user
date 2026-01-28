@@ -4,9 +4,19 @@
     &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.RotationServiceTests.GetNext_ShouldRotateSequentially_WhenAllMembersActive&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0ced6ac4_002D6590_002D4860_002Da7ca_002D0fc4ad415db3/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder #5" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.TeamRotatorTests.GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1dd11724_002De1da_002D4d03_002Db657_002Dde8c71e030ec/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotatorTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1e479086_002D2146_002D4a97_002Db3b9_002Df571bcaab125/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.TeamRotatorTests.GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=21381fe7_002D4057_002D4a04_002D9033_002Df16f28a96bf9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
@@ -14,9 +24,19 @@
     &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotatorTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2dd4cbb8_002D051b_002D422d_002Db982_002D7eb942d26ddc/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotator.Tests.TeamRotatorTests.GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=57c918a3_002Da14d_002D4da4_002Db74e_002D9db433346a60/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_ShouldThrowException_WhenNoMembersActive" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotator.Tests.RotationServiceTests.GetNext_ShouldThrowException_WhenNoMembersActive&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6ddcbe0e_002D341b_002D4ea5_002D89ba_002D526b9be32477/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder #7" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.TeamRotatorTests.GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=72c6c10e_002D04c0_002D499c_002Da96a_002D0de383ca2901/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
@@ -24,9 +44,34 @@
     &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotatorTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7ebc5f58_002Db3b3_002D4e64_002Daf39_002D0ea59e4c2833/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.TeamRotatorTests.GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=853adb6a_002D0e59_002D417c_002D839d_002D14a167562f10/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.TeamRotatorTests.GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9fb3d477_002D31c3_002D4b60_002Dbb5d_002D1540c4258023/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotatorTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bfa1398e_002Dfbcc_002D474d_002Da097_002D2fa82636a8be/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TeamRotatorTests #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::64F476D3-0299-4D2C-903B-2DAC699DC576::net10.0::TeamRotatorTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d6f47b54_002Dadae_002D45ea_002D9fff_002D182a69647630/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder #8" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.TeamRotatorTests.GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e2b16997_002D8393_002D4692_002Db1ca_002D09f22deb7c9c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder #6" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::24EC2FFA-779A-426D-A31E-4C54ED07AB42::net10.0::TeamRotator.Tests.TeamRotatorTests.GetNext_MultipleMembersActive_ReturnsMembersInRoundRobinOrder&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ed4c2951_002Decec_002D48dc_002Dbca1_002D50db46b3051a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetNext_ShouldThrowException_WhenNoMembersActive #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;

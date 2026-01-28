@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TeamRotator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+408ea85039abfed85279b9f834052f8967061ec7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9437f0d3b84d73b7e2fd127deac40294bbba37a5")]
 [assembly: System.Reflection.AssemblyProductAttribute("TeamRotator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TeamRotator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

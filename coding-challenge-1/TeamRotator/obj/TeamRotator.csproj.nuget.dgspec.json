@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/TeamRotator.csproj": {}
+    "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/TeamRotator.csproj": {}
   },
   "projects": {
-    "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/TeamRotator.csproj": {
+    "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/TeamRotator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/TeamRotator.csproj",
+        "projectUniqueName": "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/TeamRotator.csproj",
         "projectName": "TeamRotator",
-        "projectPath": "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/TeamRotator.csproj",
-        "packagesPath": "/Users/kimthai/.nuget/packages/",
-        "outputPath": "/Users/kimthai/RiderProjects/coding-challenges/coding-challenge-1/TeamRotator/obj/",
+        "projectPath": "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/TeamRotator.csproj",
+        "packagesPath": "/Users/lantruong/.nuget/packages/",
+        "outputPath": "/Users/lantruong/My_Coding_Projects/CODING_PROJECT/coding-challenge-1/TeamRotator/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/kimthai/.nuget/NuGet/NuGet.Config"
+          "/Users/lantruong/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
