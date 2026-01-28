@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class TeamRotatorTest {
     @Nested
@@ -313,8 +314,9 @@ class TeamRotatorTest {
                 )
             );
 
-            teamRotator.markMemberInactiveByName("AnhLe")
-            assertFalse(teamRotator.isMemberActive("AnhLe"))
+            teamRotator.markMemberInactiveByName("Nam")
+            assertFalse(teamRotator.isMemberActive("Nam"))
+            assertTrue(teamRotator.isMemberActive("AnhLe"))
         }
 
         @Test
