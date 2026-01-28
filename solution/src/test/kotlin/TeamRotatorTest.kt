@@ -66,9 +66,9 @@ class TeamRotatorTest {
         fun `team rotator cannot have a list of no member`() {
             val listOfNoMember = listOf<Member>();
 
-            val error = assertFailsWith<IllegalArgumentException>(
+            val error = assertFailsWith<ListOfMemberCannotBeEmptyException>(
                 block = {
-                    val teamRotator = TeamRotator(listOfNoMember)
+                    TeamRotator(listOfNoMember)
                 }
             )
             assertEquals("Cannot rotate list of no member", error.message)

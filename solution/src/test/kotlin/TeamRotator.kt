@@ -4,13 +4,13 @@ class TeamRotator {
     private var lastSelectedIndex: Int = -1;
 
     constructor(membersList: List<Member>) {
-        if (membersList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
+        if (membersList.isEmpty()) throw ListOfMemberCannotBeEmptyException()
         ensureNameNotDuplicate(membersList.map{ it.fullName }.toList())
         this.membersList = membersList
     }
 
     constructor(vararg memberNameList: String) {
-        if (memberNameList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
+        if (memberNameList.isEmpty()) throw ListOfMemberCannotBeEmptyException()
         ensureNameNotDuplicate(memberNameList.toList())
         membersList = memberNameList.map { Member(it) }
     }
