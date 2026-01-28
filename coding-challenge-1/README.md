@@ -68,7 +68,7 @@ member_count = 5
     - The cyclic algorithm depends heavily on how we control the "index" or the member id, which always need to be incremental
     - Since we control the input member id, user experience and flexibility is sacrificed
     - Also, incremental member id means that if cyclic does occur, at worst, the get_next() time complexity would be O(n), where n is the total members
-        - Which also means that even if a member is inactive, we still need to traverse sequentially through them to the next valid member
+        - Which also means that even if a member is inactive, we still need to traverse sequentially through and filter them out until reaching next valid member
     - Since this a coding challenge, in-memory approach member store might be fine, but it can soon blows up if member dictionary kept increasing
 
 
@@ -85,8 +85,7 @@ member_count = 5
 ## With More Time, We Would...
 - More dynamic user creation, change status
     - Current operations only account for single user approach
-- Due to the cons of get_next() mentioned above, if we could find a way to only process active members, without redudant traversal would be great
-    - 
+- Due to the cons of get_next() mentioned above, if we could find a way to only process active members, without redudant traversal and inactive filtering would be great
 
 ## AI Tools Used (if any)
 - Chatgpt:
