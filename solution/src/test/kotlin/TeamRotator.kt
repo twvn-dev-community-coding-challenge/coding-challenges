@@ -14,8 +14,10 @@ class TeamRotator {
 
     fun rotate(): Member {
         rotateLastSelectedIndex()
-        val result = membersList[lastSelectedIndex]
-        return result
+        val member = membersList[lastSelectedIndex]
+        if(!member.isActive)
+            rotateLastSelectedIndex()
+        return membersList[lastSelectedIndex]
     }
 
     private fun rotateLastSelectedIndex() {
@@ -37,13 +39,13 @@ class TeamRotator {
     }
 
     fun markMemberInactiveByName(memberName: String) {
-        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) > 0 }
+        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) == 0 }
         if (member == null) throw MemberNotFoundException(memberName)
         member.deactivate()
     }
 
     fun isMemberActive(memberName: String): Boolean {
-        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) > 0 }
+        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) == 0 }
         if (member == null) throw MemberNotFoundException(memberName)
         return member.isActive
     }
