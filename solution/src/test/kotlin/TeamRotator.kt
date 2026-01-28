@@ -8,6 +8,11 @@ class TeamRotator {
         this.membersList = membersList
     }
 
+    constructor(vararg memberNameList: String) {
+        if (memberNameList.isEmpty()) throw IllegalArgumentException("Cannot rotate list of no member")
+        membersList = memberNameList.map { Member(it) }
+    }
+
     fun memberList(): List<Member> {
         return membersList;
     }
