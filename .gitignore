@@ -1,0 +1,12 @@
+# Build folders
+bin/
+obj/
+
+# IDE Settings
+.idea/
+.vs/
+*.user
+*.DotSettings.user
+
+# OS Junk
+.DS_Store
