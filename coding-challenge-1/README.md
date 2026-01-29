@@ -10,7 +10,8 @@
 1. **Prerequisites**: Ensure you have the [.NET 6.0 SDK](https://dotnet.microsoft.com/download) or later installed.
 2. **Clone the project**:
 ```bash
-git clone [your-repo-url]
+git clone https://github.com/twvn-dev-community-coding-challenge/coding-challenges.git
+git checkout coding-challenge-1/NoSleep
 cd TeamRotator
 
 ```
