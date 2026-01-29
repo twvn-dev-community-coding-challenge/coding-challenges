@@ -27,7 +27,7 @@ class TeamRotator {
     fun rotate(): Member {
         rotateLastSelectedIndex()
         val member = membersList[lastSelectedIndex]
-        if (!member.isActive)
+        if (!member.isActive())
             rotateLastSelectedIndex()
         return membersList[lastSelectedIndex]
     }
@@ -61,7 +61,7 @@ class TeamRotator {
             it.fullName.equalsIgnoreCase(memberName)
         }
         if (member == null) throw MemberNotFoundException(memberName)
-        return member.isActive
+        return member.isActive()
     }
 
     fun markMemberActiveByName(memberName: String) {
