@@ -1,0 +1,56 @@
+{
+  "info": {
+    "_postman_id": "b5c0d56e-9456-4df2-9187-77e1ff49ce1f",
+    "name": "coding-challenge-1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20079091"
+  },
+  "item": [
+    {
+      "name": "health-check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:1902/api/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "1902",
+          "path": [
+            "api",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get-next",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:1902/api/next?count=1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "1902",
+          "path": [
+            "api",
+            "next"
+          ],
+          "query": [
+            {
+              "key": "count",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

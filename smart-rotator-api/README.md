@@ -123,6 +123,20 @@ curl http://localhost:1902/api/next?count=2
 curl http://localhost:1902/api/next?count=4
 ```
 
+### 📮 Postman Collection
+
+A Postman collection is available for easy API testing:
+
+**Location:** `postman/coding-challenge-1.postman_collection.json`
+
+**How to use:**
+1. Open Postman
+2. Click **Import** button
+3. Select the file `postman/coding-challenge-1.postman_collection.json`
+4. The collection includes:
+   - `health-check` - GET `/api/health`
+   - `get-next` - GET `/api/next?count=1`
+
 ## 🏗️ Architecture & Design Patterns
 
 ### Project Structure
