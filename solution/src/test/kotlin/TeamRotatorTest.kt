@@ -353,6 +353,21 @@ class TeamRotatorTest {
         }
 
         @Test
+        fun `mark the same inactive member multiple times should still be inactive`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+
+            teamRotator.markMemberInactiveByName("Nam")
+            teamRotator.markMemberInactiveByName("Nam")
+            assertFalse(teamRotator.isMemberActive("Nam"))
+            assertTrue(teamRotator.isMemberActive("AnhLe"))
+        }
+
+        @Test
         fun `rotation of one should skip inactive member`() {
             val teamRotator = TeamRotator(
                 listOf(
