@@ -388,6 +388,23 @@ class TeamRotatorTest {
         }
 
         @Test
+        fun `rotation of one can skip multiple inactive members`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Hang"),
+                    Member("Nam")
+                )
+            );
+            teamRotator.markMemberInactiveByName("Hang")
+            teamRotator.markMemberInactiveByName("AnhLe")
+            assertEquals(
+                Member("Nam"),
+                teamRotator.rotate()
+            )
+        }
+
+        @Test
         fun `rotation of many should skip inactive member`() {
             val teamRotator = TeamRotator(
                 listOf(
