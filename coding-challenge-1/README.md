@@ -52,6 +52,7 @@ members = {
     - The number of active members and the total member number is tracked separately
     - The pointer is incremented and wrapped using modulo arithmetic
 - This allows iteration to “loop back” to the beginning once the end is reached.
+- This approach also take into account duplications, since at most, get_next() can only get total active members (in the case where get next exceed active members), and duplication only happens when the cycle loops back to its original starting point (which won't happen due to n-1 nature of sequences)
 - Example:
 ```
 formula: incremental key % members
