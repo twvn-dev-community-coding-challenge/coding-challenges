@@ -28,9 +28,9 @@ class TeamRotator {
 
     fun rotate(): Member {
         rotateLastSelectedIndex()
-        val member = membersList[lastSelectedIndex]
-        if (!member.isActive())
+        while (!membersList[lastSelectedIndex].isActive()){
             rotateLastSelectedIndex()
+        }
         return membersList[lastSelectedIndex]
     }
 
