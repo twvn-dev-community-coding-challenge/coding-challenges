@@ -95,5 +95,6 @@ member_count = 5
 
 ## AI Tools Used (if any)
 - Chatgpt:
+    - UV project setup
     - Pytest syntax, and test case generations
     - Packaging setup
