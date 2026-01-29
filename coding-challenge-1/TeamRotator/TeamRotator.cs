@@ -1,32 +1,52 @@
+namespace TeamRotator;
 
-namespace TeamRotator
+public class TeamRotator
 {
-    public class TeamRotator
+    private readonly List<Member> _members = new();
+    private int? _lastSelectedId;
+
+    public void AddMember(int id, string name, bool isActive = true)
     {
-        private readonly LinkedList<Member> _members = new LinkedList<Member>();
-    
-        public void AddMember(int id, string name)
+        _members.Add(new Member(id, name, isActive));
+    }
+
+    public void SetManualLastSelected(int id)
+    {
+        _lastSelectedId = id;
+    }
+
+    public List<Member> GetNext(int count = 1)
+    {
+        var result = new List<Member>();
+
+        for (var i = 0; i < count; i++)
         {
-            var member = new Member(id, name);
-            _members.AddLast(member);
+            var nextMember = FindNextValidMember();
+            result.Add(nextMember);
+            _lastSelectedId = nextMember.Id;
         }
 
-        public IEnumerable<Member> GetNext(int count)
+        return result;
+    }
+
+    private Member FindNextValidMember()
+    {
+        var activeMembers = _members.Where(m => m.IsActive).ToList();
+
+        if (!activeMembers.Any()) throw new InvalidOperationException("No active members available");
+
+        if (activeMembers.Count == 1) return activeMembers.First();
+
+        var lastIndex = _members.FindIndex(m => m.Id == _lastSelectedId);
+
+        for (var i = 1; i <= _members.Count; i++)
         {
-            var result = new List<Member>();
-            for (int i = 0; i < count; i++)
-            {
-                if (_members.Count == 0) break;
+            var currentIndex = (lastIndex + i) % _members.Count;
+            var candidate = _members[currentIndex];
 
-                var currentMember = _members.First.Value;
-
-                _members.RemoveFirst();
-                _members.AddLast(currentMember);
-
-                result.Add(currentMember);
-            }
-
-            return result;
+            if (candidate.IsActive && candidate.Id != _lastSelectedId) return candidate;
         }
+
+        return activeMembers.First();
     }
 }

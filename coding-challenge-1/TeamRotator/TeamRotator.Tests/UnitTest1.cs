@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Xunit;
-using FluentAssertions;
 using System;
 using System.Linq;
 namespace TeamRotator.Tests
