@@ -1,15 +1,9 @@
-import org.example.ListContainDuplicatedNameException
-import org.example.ListOfMemberCannotBeEmptyException
 import org.example.Member
-import org.example.MemberNotFoundException
 import org.example.NoActiveMembersAvailable
 import org.example.TeamRotator
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class AcceptanceTest {
     @Test
