@@ -441,7 +441,7 @@ class TeamRotatorTest {
                     teamRotator.markMemberInactiveByName("unknown")
                 }
             )
-            assertEquals("org.example.Member not found with name: unknown", error.message)
+            assertEquals("Member not found with name: unknown", error.message)
         }
 
         @Test
@@ -507,7 +507,7 @@ class TeamRotatorTest {
                     teamRotator.markMemberActiveByName("unknown")
                 }
             )
-            assertEquals("org.example.Member not found with name: unknown", error.message)
+            assertEquals("Member not found with name: unknown", error.message)
         }
     }
 
@@ -525,6 +525,6 @@ class TeamRotatorTest {
                 teamRotator.isMemberActive("unknown")
             }
         )
-        assertEquals("org.example.Member not found with name: unknown", error.message)
+        assertEquals("Member not found with name: unknown", error.message)
     }
 }
