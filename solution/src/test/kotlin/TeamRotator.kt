@@ -63,5 +63,11 @@ class TeamRotator {
         if (member == null) throw MemberNotFoundException(memberName)
         return member.isActive
     }
+
+    fun markMemberActiveByName(memberName: String) {
+        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) == 0 }
+        if (member == null) throw MemberNotFoundException(memberName)
+        member.activate()
+    }
 }
 

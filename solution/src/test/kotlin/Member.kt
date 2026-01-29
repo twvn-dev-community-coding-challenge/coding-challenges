@@ -3,4 +3,8 @@ data class Member(val fullName: String, var isActive: Boolean = true) {
         isActive = false;
     }
 
+    fun activate() {
+        isActive = true
+    }
+
 }
