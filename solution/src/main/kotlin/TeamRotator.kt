@@ -27,11 +27,17 @@ class TeamRotator {
     }
 
     fun rotate(): Member {
+        throwErrorIfAllMemberInactive()
         rotateLastSelectedIndex()
         while (!membersList[lastSelectedIndex].isActive()){
             rotateLastSelectedIndex()
         }
         return membersList[lastSelectedIndex]
+    }
+
+    private fun throwErrorIfAllMemberInactive() {
+        val firstOrNull: Member? = membersList.firstOrNull { it.isActive() }
+        if(firstOrNull == null) throw NoActiveMembersAvailable();
     }
 
     private fun rotateLastSelectedIndex() {

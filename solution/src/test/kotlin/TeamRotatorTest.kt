@@ -2,6 +2,7 @@ import org.example.ListContainDuplicatedNameException
 import org.example.ListOfMemberCannotBeEmptyException
 import org.example.Member
 import org.example.MemberNotFoundException
+import org.example.NoActiveMembersAvailable
 import org.example.TeamRotator
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -441,6 +442,25 @@ class TeamRotatorTest {
                 }
             )
             assertEquals("org.example.Member not found with name: unknown", error.message)
+        }
+
+        @Test
+        fun `all members inactive when rotate should have error`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+
+            teamRotator.markMemberInactiveByName("AnhLe")
+            teamRotator.markMemberInactiveByName("Nam")
+            val error = assertFailsWith<NoActiveMembersAvailable>(
+                block = {
+                    teamRotator.rotate()
+                }
+            )
+            assertEquals("No active members available", error.message)
         }
     }
 
