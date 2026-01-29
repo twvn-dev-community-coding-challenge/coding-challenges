@@ -439,4 +439,23 @@ class TeamRotatorTest {
         }
 
     }
+
+    @Nested
+    inner class `mark member as active` {
+        @Test
+        fun `can mark inactive member`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+
+            teamRotator.markMemberInactiveByName("Nam")
+            teamRotator.markMemberActiveByName("Nam")
+            assertTrue(teamRotator.isMemberActive("Nam"))
+        }
+
+    }
+
 }
