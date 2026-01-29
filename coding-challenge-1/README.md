@@ -51,6 +51,7 @@ coding-challenge-1/
 │       ├── example4-next-n-members.ts
 │       ├── example5-single-active.ts
 │       ├── example6-all-inactive.ts
+│       ├── example7-add-new-member.ts
 │       ├── tsconfig.json
 │       ├── package.json
 │       └── project.json       # NX project configuration
@@ -63,7 +64,7 @@ coding-challenge-1/
 ## 🛠️ Tech Stack
 
 - **NX Monorepo** - Monorepo management and build system
-- **Node.js >= 20.0.0** - Runtime environment (managed via `.nvmrc`)
+- **Node.js LTS** - Runtime environment (managed via `.nvmrc`)
 - **TypeScript** - Type-safe development
 - **Jest** - Testing framework with >90% code coverage requirement
 - **Yarn** - Package manager
@@ -81,8 +82,8 @@ coding-challenge-1/
 
 ### Prerequisites
 
-- **Node.js**: Version >= 20.0.0 (specified in `.nvmrc` and `engines` field)
-- **Yarn**: Version >= 1.22.22 (specified in `packageManager` field)
+- **Node.js**: Version `>= 20.0.0` (specified in `.nvmrc` and `engines` field)
+- **Yarn**: Version `>= 1.22.22` (specified in `packageManager` field)
 
 ### Setup
 
