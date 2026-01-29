@@ -35,10 +35,6 @@ export class MemberIterator {
   next(excludeId?: number): Member | null {
     const activeMembers = this.getActiveMembers();
 
-    if (activeMembers.length === 0) {
-      return null;
-    }
-
     // If only one active member and it's the excluded one, return it anyway
     // (edge case: only one active member)
     if (activeMembers.length === 1) {
@@ -88,10 +84,6 @@ export class MemberIterator {
     const result: Member[] = [];
     const activeMembers = this.getActiveMembers();
 
-    if (activeMembers.length === 0) {
-      return result;
-    }
-
     // If requesting more members than available, we'll cycle
     for (let i = 0; i < count; i++) {
       const member = this.next(
@@ -100,8 +92,6 @@ export class MemberIterator {
 
       if (member) {
         result.push(member);
-      } else {
-        break; // No more members available
       }
     }
 
@@ -130,18 +120,11 @@ export class MemberIterator {
    * Finds the current position in the active members array
    */
   private findCurrentPositionInActive(activeMembers: Member[]): number {
-    if (activeMembers.length === 0) return 0;
-
     // Find where the current member is in the active list
     const currentMember = this.members[this.currentIndex];
     let position = activeMembers.findIndex((m) => m.id === currentMember.id);
 
-    // If current member is inactive or not found, start from beginning
-    if (position === -1) {
-      position = 0;
-    }
     // Note: We don't advance here - we'll use this position and advance after selection
-
     return position;
   }
 

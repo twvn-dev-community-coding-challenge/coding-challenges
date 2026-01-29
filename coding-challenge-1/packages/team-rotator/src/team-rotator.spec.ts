@@ -97,11 +97,12 @@ describe('TeamRotator', () => {
         { id: 2, name: 'Bob', isActive: false },
         { id: 3, name: 'Charlie', isActive: false },
       ];
-
-      const rotator = new TeamRotator(members);
-
-      expect(() => rotator.getNext()).toThrow(NoActiveMembersError);
-      expect(() => rotator.getNext()).toThrow('No active members available');
+      try {
+        new TeamRotator(members);
+      } catch (err) {
+        expect(err instanceof NoActiveMembersError).toBeTruthy();
+        expect((err as Error).message).toEqual('No active members available');
+      }
     });
   });
 

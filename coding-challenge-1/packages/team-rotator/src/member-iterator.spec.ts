@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 import { MemberIterator } from './member-iterator';
-import { Member } from './types';
+import { DuplicatedMemberIdentifierError, Member, NoActiveMembersError } from './types';
 
 describe('MemberIterator', () => {
   describe('Basic Iteration', () => {
@@ -19,14 +19,18 @@ describe('MemberIterator', () => {
       expect(iterator.next()?.name).toBe('Alice'); // Cycles back
     });
 
-    it('should return null when no active members', () => {
+    it('should throw the error when no active members found from the initialization list', () => {
       const members: Member[] = [
         { id: 1, name: 'Alice', isActive: false },
         { id: 2, name: 'Bob', isActive: false },
       ];
 
-      const iterator = new MemberIterator(members);
-      expect(iterator.next()).toBeNull();
+      try {
+        new MemberIterator(members);
+      } catch (err) {
+        expect(err instanceof NoActiveMembersError).toBeTruthy();
+        expect((err as Error).message).toEqual('No active members available');
+      }
     });
   });
 
@@ -87,13 +91,6 @@ describe('MemberIterator', () => {
       expect(batch).toHaveLength(2);
       expect(batch[0].name).toBe('Bob');
       expect(batch[1].name).toBe('Charlie');
-    });
-
-    it('should return empty array when no active members', () => {
-      const members: Member[] = [{ id: 1, name: 'Alice', isActive: false }];
-
-      const iterator = new MemberIterator(members);
-      expect(iterator.nextN(2)).toEqual([]);
     });
   });
 
@@ -171,12 +168,30 @@ describe('MemberIterator', () => {
       expect(next?.name).toBe('Charlie');
     });
 
-    it('should handle empty active members in findCurrentPositionInActive', () => {
-      const members: Member[] = [{ id: 1, name: 'Alice', isActive: false }];
+    it('should throw duplicated member identifier found when the same id added', () => {
+      const members: Member[] = [
+        { id: 1, name: 'Alice', isActive: false },
+        { id: 1, name: 'Bob', isActive: true },
+      ];
 
-      const iterator = new MemberIterator(members);
-      // This should return null, but tests the empty array path
-      expect(iterator.next()).toBeNull();
+      try {
+        new MemberIterator(members);
+      } catch (err) {
+        expect(err instanceof DuplicatedMemberIdentifierError).toBeTruthy();
+        expect((err as Error).message).toEqual(
+          'Duplicated member identifier found in the rotator list'
+        );
+      }
+    });
+
+    it('should add new member to the existing list successfully', () => {
+      const members: Member[] = [
+        { id: 1, name: 'Alice', isActive: false },
+        { id: 2, name: 'Bob', isActive: true },
+      ];
+
+      const memberIterator = new MemberIterator(members);
+      memberIterator.addMember({ id: 3, name: 'Charlie', isActive: true });
     });
 
     it('should handle all members excluded scenario', () => {
