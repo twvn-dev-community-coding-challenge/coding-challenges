@@ -11,6 +11,11 @@
 - Step 5: pip install dist/<lib_name>.whl
 - Step 6: Import and run in notebooks or python code
     - Ref: Refers to samples/samples.ipynb for concrete sample
+### To run tests
+- Step 1 -> 3 froma above
+- Step 4: cd into tests/
+- Step 5: Run pytest
+
 
 ## Approach and decisions
 ### Classes
