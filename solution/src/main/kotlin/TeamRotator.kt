@@ -53,23 +53,23 @@ class TeamRotator {
     }
 
     fun markMemberInactiveByName(memberName: String) {
-        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) == 0 }
-        if (member == null) throw MemberNotFoundException(memberName)
+        val member = findMemberByNameIgnoreCaseOrNull(memberName) ?: throw MemberNotFoundException(memberName)
         member.deactivate()
     }
 
     fun isMemberActive(memberName: String): Boolean {
-        val member = membersList.firstOrNull {
-            it.fullName.equalsIgnoreCase(memberName)
-        }
-        if (member == null) throw MemberNotFoundException(memberName)
+        val member = findMemberByNameIgnoreCaseOrNull(memberName) ?: throw MemberNotFoundException(memberName)
         return member.isActive()
     }
 
     fun markMemberActiveByName(memberName: String) {
-        val member = membersList.firstOrNull { it.fullName.compareTo(memberName, true) == 0 }
-        if (member == null) throw MemberNotFoundException(memberName)
+        val member = findMemberByNameIgnoreCaseOrNull(memberName) ?: throw MemberNotFoundException(memberName)
         member.activate()
+    }
+
+    private fun findMemberByNameIgnoreCaseOrNull(memberName: String): Member? {
+        val member = membersList.firstOrNull { it.fullName.equalsIgnoreCase(memberName) }
+        return member
     }
 }
 
