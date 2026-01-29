@@ -36,7 +36,16 @@ export class RotationController {
     getNext = (req: Request, res: Response) => {
         try {
             // Parse count from query string, default to 1 if not provided
-            const count = req.query.count ? parseInt(req.query.count as string) : 1;
+            const countParam = req.query.count as string;
+            const count = countParam ? parseInt(countParam, 10) : 1;
+            
+            // Check if count is a valid number
+            if (isNaN(count)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Count must be a valid number',
+                });
+            }
 
             // Validate count at controller level for early rejection
             if (count < 1) {

@@ -49,7 +49,7 @@ describe('RotationController', () => {
         jest.spyOn(dataModule, 'getMemberlist').mockReturnValue(fullActimembers);
     });
 
-    it('should return error when count is invalid', () => {
+    it('should return error when count is not valid number', () => {
         mockRequest.query = { count: '0' };
         controller.getNext(mockRequest as Request, mockResponse as Response);
         expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -57,6 +57,18 @@ describe('RotationController', () => {
             expect.objectContaining({
                 success: false,
                 message: 'Count must be at least 1',
+            })
+        );
+    });
+
+     it('should return error when count is not a number', () => {
+        mockRequest.query = { count: 'aaaa' };
+        controller.getNext(mockRequest as Request, mockResponse as Response);
+        expect(mockResponse.status).toHaveBeenCalledWith(400);
+        expect(mockResponse.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                success: false,
+                message: 'Count must be a valid number',
             })
         );
     });

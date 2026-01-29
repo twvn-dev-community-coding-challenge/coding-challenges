@@ -234,19 +234,20 @@ Request → Controller → Service → Strategy → Response
 
 ## 🧪 Testing Coverage
 
-### Test Cases Implemented (9 tests)
+### Test Cases Implemented (10 tests)
 
 | # | Test Case | Challenge Requirement |
 |---|-----------|----------------------|
-| 1 | Error when count is invalid (< 1) | Input validation |
-| 2 | Default count of 1 when not provided | Default behavior |
-| 3 | Return multiple members when count > 1 | Example 4: Next N members |
-| 4 | Error if count > member list length | Edge case validation |
-| 5 | No immediate repetition | Example 2: No repetition |
-| 6 | Error when not enough active members | Edge case |
-| 7 | Error when no active members available | Example 6: All inactive |
-| 8 | Correct behavior when index and ID are out of sync | Edge case recovery |
-| 9 | Error if member ID not found in list | Error handling |
+| 1 | Error when count is invalid number (< 1) | Input validation |
+| 2 | Error when count is not a number | Input validation |
+| 3 | Default count of 1 when not provided | Default behavior |
+| 4 | Return multiple members when count > 1 | Example 4: Next N members |
+| 5 | Error if count > member list length | Edge case validation |
+| 6 | No immediate repetition | Example 2: No repetition |
+| 7 | Error when not enough active members | Edge case |
+| 8 | Error when no active members available | Example 6: All inactive |
+| 9 | Correct behavior when index and ID are out of sync | Edge case recovery |
+| 10 | Error if member ID not found in list | Error handling |
 
 ### Running Tests
 
@@ -258,7 +259,8 @@ yarn test
 ```
  PASS  src/__tests__/component.test.ts
   RotationController
-    ✓ should return error when count is invalid
+    ✓ should return error when count is not valid number
+    ✓ should return error when count is not a number
     ✓ should use default count of 1 when not provided
     ✓ should return multiple members when count > 1
     ✓ should return error if count > length of memberList
@@ -269,7 +271,7 @@ yarn test
     ✓ should throw error if member ID not found in list
 
 Test Suites: 1 passed, 1 total
-Tests:       9 passed, 9 total
+Tests:       10 passed, 10 total
 ```
 
 ## 📊 Design Decisions & Trade-offs
