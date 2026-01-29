@@ -61,80 +61,70 @@ describe('RotationController', () => {
         );
     });
 
-    it('should use default count of 1 when not provided', (done) => {
+    it('should use default count of 1 when not provided', () => {
         mockRequest.query = {};
 
         controller.getNext(mockRequest as Request, mockResponse as Response);
 
-        setTimeout(() => {
-            expect(mockResponse.json).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    success: true,
-                    data: expect.arrayContaining([
-                        expect.objectContaining({
-                            id: 1,
-                            name: 'Alice'
-                        }),
-                    ]),
-                })
-            );
-            done();
-        }, 0);
+        expect(mockResponse.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                success: true,
+                data: expect.arrayContaining([
+                    expect.objectContaining({
+                        id: 1,
+                        name: 'Alice'
+                    }),
+                ]),
+            })
+        );
     });
 
-    it('should return multiple members when count > 1', (done) => {
+    it('should return multiple members when count > 1', () => {
         mockRequest.query = { count: '3' };
 
         controller.getNext(mockRequest as Request, mockResponse as Response);
 
-        setTimeout(() => {
-            expect(mockResponse.json).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    success: true,
-                    data: expect.arrayContaining([
-                        expect.objectContaining({ name: 'Alice' }),
-                        expect.objectContaining({ name: 'Bob' }),
-                        expect.objectContaining({ name: 'Charlie' }),
-                    ]),
-                })
-            );
-            done();
-        }, 0);
+        expect(mockResponse.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                success: true,
+                data: expect.arrayContaining([
+                    expect.objectContaining({ name: 'Alice' }),
+                    expect.objectContaining({ name: 'Bob' }),
+                    expect.objectContaining({ name: 'Charlie' }),
+                ]),
+            })
+        );
     });
 
-    it('should return error if count > length of memberList', (done) => {
+    it('should return error if count > length of memberList', () => {
         mockRequest.query = { count: '5' };
 
         controller.getNext(mockRequest as Request, mockResponse as Response);
-
-        setTimeout(() => {
-            expect(mockResponse.status).toHaveBeenCalledWith(400);
-            expect(mockResponse.json).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    success: false,
-                    message: 'Count cannot exceed total number of members (4)',
-                })
-            );
-            done();
-        }, 0);
+        expect(mockResponse.status).toHaveBeenCalledWith(400);
+        expect(mockResponse.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                success: false,
+                message: 'Count cannot exceed total number of members (4)',
+            })
+        );
     });
 
 
-    it('should no immediate repetition', (done) => {
+    it('should no immediate repetition', () => {
         mockRequest.query = { count: '2' };
         controller.getNext(mockRequest as Request, mockResponse as Response);
-        setTimeout(() => {
-            expect(mockResponse.json).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    success: true,
-                    data: expect.arrayContaining([
-                        expect.objectContaining({ name: 'Alice' }),
-                        expect.objectContaining({ name: 'Bob' }),
-                    ]),
-                })
-            );
-            done();
-        }, 0);
+        expect(mockResponse.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                success: true,
+                data: expect.arrayContaining([
+                    expect.objectContaining({ name: 'Alice' }),
+                    expect.objectContaining({ name: 'Bob' }),
+                ]),
+            })
+        );
+
+        mockResponse.json = jest.fn().mockReturnThis();
+
         // second call
         controller.getNext(mockRequest as Request, mockResponse as Response);
 
@@ -147,6 +137,8 @@ describe('RotationController', () => {
                 ]),
             })
         );
+
+        mockResponse.json = jest.fn().mockReturnThis();
 
         // final call 
         controller.getNext(mockRequest as Request, mockResponse as Response);
@@ -164,7 +156,7 @@ describe('RotationController', () => {
     });
 
 
-    it('should return error when not enough active members to fulfill request', (done) => {
+    it('should return error when not enough active members to fulfill request', () => {
 
         jest.spyOn(dataModule, 'getMemberlist').mockReturnValue(partialActiveMembers);
 
@@ -178,7 +170,6 @@ describe('RotationController', () => {
                 success: false,
             })
         );
-        done();
     });
 
 
@@ -198,4 +189,44 @@ describe('RotationController', () => {
 
     });
 
+    it('should return correcct in case member index and id are out of sync', () => {
+        service = new RotationService();
+        service['lastSelectedMemberIndex'] = 1; // Points to Bob
+        service['lastSelectedMemberId'] = 3;    // But last selected id is Charlie
+        controller = new RotationController(service);
+
+        mockRequest.query = { count: '2' };
+
+        controller.getNext(mockRequest as Request, mockResponse as Response);
+
+        expect(mockResponse.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                success: true,
+                data: expect.arrayContaining([
+                    expect.objectContaining({ name: 'Diana' }),
+                    expect.objectContaining({ name: 'Alice' }),
+                ]),
+            })
+        );
+
+    });
+
+    it('should throw error if member id not found in list', () => {
+        service = new RotationService();
+        service['lastSelectedMemberIndex'] = 2; // Points to Charlie
+        service['lastSelectedMemberId'] = 999;  // Invalid id
+        controller = new RotationController(service);
+
+        mockRequest.query = { count: '2' };
+
+        controller.getNext(mockRequest as Request, mockResponse as Response);
+        expect(mockResponse.status).toHaveBeenCalledWith(500);
+        expect(mockResponse.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                success: false,
+                message: 'not found lastMemberId in members list'
+            })
+        );
+
+    });
 });

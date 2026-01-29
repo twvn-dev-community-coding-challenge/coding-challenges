@@ -6,9 +6,9 @@ import { Member } from '../utils/types'
  */
 export const DEFAULT_MEMBERS: Member[] = [
     { id: 1, name: 'Alice', isActive: true },
-    { id: 2, name: 'Bob', isActive: false },
-    { id: 3, name: 'Charlie', isActive: false },
-    { id: 4, name: 'Diana', isActive: false },
+    { id: 2, name: 'Bob', isActive: true },
+    { id: 3, name: 'Charlie', isActive: true },
+    { id: 4, name: 'Diana', isActive: true },
 ];
 
 export const getMemberlist = (): Member[] => {
