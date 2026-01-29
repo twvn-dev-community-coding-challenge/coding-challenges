@@ -79,6 +79,15 @@ export class TeamRotator {
   }
 
   /**
+   * Add new member to the current rotator list (new member will come last)
+   * @param member
+   * @throws DuplicatedMemberIdentifierError if duplicated member id found from the list
+   */
+  addNewMember(member: Member): void {
+    this.iterator.addMember(member);
+  }
+
+  /**
    * Gets the last selected member ID
    * @returns Last selected member ID or null
    */

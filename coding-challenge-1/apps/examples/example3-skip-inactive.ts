@@ -15,7 +15,7 @@ const members: Member[] = [
   { id: 4, name: 'Diana', isActive: true },
 ];
 
-console.log('=== Example 3: Skipping Inactive Members ===\n');
+console.log('🚀 Example 3: Skipping Inactive Members ===\n');
 console.log('Team Setup:');
 members.forEach((m) => {
   const status = m.isActive ? 'active' : 'inactive ← unavailable';

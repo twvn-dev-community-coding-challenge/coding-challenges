@@ -10,7 +10,7 @@
   "scripts": {
     "test": "nx test team-rotator",
     "test:coverage": "nx test team-rotator --coverage",
-    "build": "tsc -p packages/team-rotator/tsconfig.lib.json",
+    "build": "nx run-many -t build",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" && eslint . --ext .ts,.tsx,.js,.jsx --fix",

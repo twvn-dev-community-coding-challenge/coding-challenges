@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@team-rotator/core": "workspace:*"
+    "@team-rotator/core": "*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

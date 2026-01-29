@@ -4,12 +4,20 @@
   "sourceRoot": "packages/team-rotator/src",
   "projectType": "library",
   "targets": {
-    "build": {
+    "clean": {
       "executor": "nx:run-commands",
-      "outputs": ["lib/packages/team-rotator"],
+      "options": {
+        "command": "rm -rf {projectRoot}/lib"
+      }
+    },
+    "build": {
+      "dependsOn": ["clean"],
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/lib/packages/team-rotator"],
       "options": {
         "command": "tsc -p packages/team-rotator/tsconfig.lib.json"
-      }
+      },
+      "parallelism": false
     },
     "test": {
       "executor": "@nx/jest:jest",

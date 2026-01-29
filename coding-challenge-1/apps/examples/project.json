@@ -1,49 +1,55 @@
 {
-  "name": "examples",
+  "name": "example",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/examples",
   "projectType": "application",
   "targets": {
-    "example1": {
+    "1": {
       "executor": "nx:run-commands",
       "options": {
         "command": "ts-node -r tsconfig-paths/register apps/examples/example1-basic-rotation.ts"
       }
     },
-    "example2": {
+    "2": {
       "executor": "nx:run-commands",
       "options": {
         "command": "ts-node -r tsconfig-paths/register apps/examples/example2-no-repetition.ts"
       }
     },
-    "example3": {
+    "3": {
       "executor": "nx:run-commands",
       "options": {
         "command": "ts-node -r tsconfig-paths/register apps/examples/example3-skip-inactive.ts"
       }
     },
-    "example4": {
+    "4": {
       "executor": "nx:run-commands",
       "options": {
         "command": "ts-node -r tsconfig-paths/register apps/examples/example4-next-n-members.ts"
       }
     },
-    "example5": {
+    "5": {
       "executor": "nx:run-commands",
       "options": {
         "command": "ts-node -r tsconfig-paths/register apps/examples/example5-single-active.ts"
       }
     },
-    "example6": {
+    "6": {
       "executor": "nx:run-commands",
       "options": {
         "command": "ts-node -r tsconfig-paths/register apps/examples/example6-all-inactive.ts"
       }
     },
+    "7": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example7-add-new-member.ts"
+      }
+    },
     "all": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "nx run examples:example1 && nx run examples:example2 && nx run examples:example3 && nx run examples:example4 && nx run examples:example5 && nx run examples:example6"
+        "command": "nx run example:1 && nx run example:2 && nx run example:3 && nx run example:4 && nx run example:5 && nx run example:6 && nx run example:7"
       }
     }
   },

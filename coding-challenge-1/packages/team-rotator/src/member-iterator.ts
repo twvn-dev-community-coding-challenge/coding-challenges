@@ -1,4 +1,4 @@
-import { Member } from './types';
+import { DuplicatedMemberIdentifierError, Member, NoActiveMembersError } from './types';
 
 /**
  * Iterator Pattern Implementation
@@ -13,7 +13,18 @@ export class MemberIterator {
   private hasStarted: boolean = false;
 
   constructor(members: Member[]) {
+    this.validateMemberList(members);
     this.members = members;
+  }
+
+  /**
+   * Add new member to the current rotator list (new member will come last)
+   * @param member
+   * @throws DuplicatedMemberIdentifierError if duplicated member id found from the list
+   */
+  addMember(member: Member): void {
+    this.validateMemberList([...this.members, member]);
+    this.members.push(member);
   }
 
   /**
@@ -95,6 +106,17 @@ export class MemberIterator {
     }
 
     return result;
+  }
+
+  private validateMemberList(members: Member[]) {
+    if (members.length === 0 || members.every(({ isActive }) => !isActive)) {
+      throw new NoActiveMembersError();
+    }
+
+    const memberIdsSet = new Set(members.map(({ id }) => id));
+    if (members.length !== memberIdsSet.size) {
+      throw new DuplicatedMemberIdentifierError();
+    }
   }
 
   /**

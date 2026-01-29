@@ -9,6 +9,8 @@ lib/
 build/
 *.tsbuildinfo
 
+*coding-challenge-*.md
+
 # Coverage
 coverage/
 *.lcov

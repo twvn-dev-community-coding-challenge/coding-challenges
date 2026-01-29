@@ -14,7 +14,7 @@ const members: Member[] = [
   { id: 3, name: 'Charlie', isActive: false },
 ];
 
-console.log('=== Example 5: Edge Case - Only One Active Member ===\n');
+console.log('🚀 Example 5: Edge Case - Only One Active Member ===\n');
 console.log('Team Setup:');
 members.forEach((m) => {
   const status = m.isActive ? 'active ← only active member' : 'inactive';

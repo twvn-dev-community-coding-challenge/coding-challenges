@@ -276,12 +276,12 @@ The `apps/examples/` folder contains an example application demonstrating all sc
 yarn build
 
 # Run specific example using NX
-nx run examples:example1
-nx run examples:example2
+nx run example:1
+nx run example:2
 # ... etc
 
 # Or run all examples
-nx run examples:all
+nx run example:all
 
 # Or directly with ts-node
 npx ts-node -r tsconfig-paths/register apps/examples/example1-basic-rotation.ts

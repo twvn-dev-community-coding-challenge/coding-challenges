@@ -14,7 +14,7 @@ const members: Member[] = [
   { id: 3, name: 'Charlie', isActive: false },
 ];
 
-console.log('=== Example 6: Edge Case - All Members Inactive ===\n');
+console.log('🚀 Example 6: Edge Case - All Members Inactive ===\n');
 console.log('Team Setup:');
 members.forEach((m) => console.log(`- ${m.name} (id: ${m.id}, inactive)`));
 console.log('\nRotation Results:');

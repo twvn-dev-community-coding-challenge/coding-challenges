@@ -14,7 +14,7 @@ const members: Member[] = [
   { id: 3, name: 'Charlie', isActive: true },
 ];
 
-console.log('=== Example 2: No Immediate Repetition ===\n');
+console.log('🚀 Example 2: No Immediate Repetition ===\n');
 console.log('Team Setup:');
 members.forEach((m) => console.log(`- ${m.name} (id: ${m.id}, active: ${m.isActive})`));
 console.log('- Alice ← last selected\n');

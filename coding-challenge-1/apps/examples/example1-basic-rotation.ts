@@ -15,7 +15,7 @@ const members: Member[] = [
   { id: 4, name: 'Diana', isActive: true },
 ];
 
-console.log('=== Example 1: Basic Rotation ===\n');
+console.log('🚀 Example 1: Basic Rotation ===\n');
 console.log('Team Setup:');
 members.forEach((m) => console.log(`- ${m.name} (id: ${m.id}, active: ${m.isActive})`));
 console.log('\nRotation Results:');

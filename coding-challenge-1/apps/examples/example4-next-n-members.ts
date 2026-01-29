@@ -15,7 +15,7 @@ const members: Member[] = [
   { id: 4, name: 'Diana', isActive: true },
 ];
 
-console.log('=== Example 4: Requesting Next N Members ===\n');
+console.log('🚀 Example 4: Requesting Next N Members ===\n');
 console.log('Team Setup:');
 members.forEach((m) => console.log(`- ${m.name} (id: ${m.id}, active: ${m.isActive})`));
 console.log('\nRotation Results:');
@@ -23,9 +23,10 @@ console.log('\nRotation Results:');
 const rotator = new TeamRotator(members);
 
 for (let i = 1; i <= 3; i++) {
-  const batch = rotator.getNextN(2);
+  const n = Math.round(Math.random() * 5) + 1;
+  const batch = rotator.getNextN(n);
   const names = batch.map((m) => m.name).join(', ');
-  console.log(`Call getNext(n=2) → Returns: [${names}]`);
+  console.log(`Call getNext(n=${n}) → Returns: [${names}]`);
 }
 
 console.log('\n✅ Demonstrates returning multiple members at once.\n');

@@ -16,3 +16,13 @@ export class NoActiveMembersError extends Error {
     this.name = 'NoActiveMembersError';
   }
 }
+
+/**
+ * Error thrown when duplicated member id found
+ */
+export class DuplicatedMemberIdentifierError extends Error {
+  constructor(message: string = 'Duplicated member identifier found in the rotator list') {
+    super(message);
+    this.name = 'DuplicatedMemberIdentifierError';
+  }
+}
