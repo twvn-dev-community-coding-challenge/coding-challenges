@@ -1,3 +1,8 @@
+import org.example.ListContainDuplicatedNameException
+import org.example.ListOfMemberCannotBeEmptyException
+import org.example.Member
+import org.example.MemberNotFoundException
+import org.example.TeamRotator
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -418,7 +423,7 @@ class TeamRotatorTest {
                     teamRotator.markMemberInactiveByName("unknown")
                 }
             )
-            assertEquals("Member not found with name: unknown", error.message)
+            assertEquals("org.example.Member not found with name: unknown", error.message)
         }
     }
 
@@ -465,7 +470,7 @@ class TeamRotatorTest {
                     teamRotator.markMemberActiveByName("unknown")
                 }
             )
-            assertEquals("Member not found with name: unknown", error.message)
+            assertEquals("org.example.Member not found with name: unknown", error.message)
         }
     }
 
@@ -483,6 +488,6 @@ class TeamRotatorTest {
                 teamRotator.isMemberActive("unknown")
             }
         )
-        assertEquals("Member not found with name: unknown", error.message)
+        assertEquals("org.example.Member not found with name: unknown", error.message)
     }
 }

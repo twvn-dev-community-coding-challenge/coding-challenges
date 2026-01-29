@@ -1,3 +1,5 @@
+package org.example
+
 class TeamRotator {
 
     val membersList: List<Member>
