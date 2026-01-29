@@ -455,7 +455,36 @@ class TeamRotatorTest {
             teamRotator.markMemberActiveByName("Nam")
             assertTrue(teamRotator.isMemberActive("Nam"))
         }
+        @Test
+        fun `mark the same active member multiple times should still be active`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
 
+            teamRotator.markMemberActiveByName("Nam")
+            teamRotator.markMemberActiveByName("Nam")
+            assertTrue(teamRotator.isMemberActive("Nam"))
+        }
+
+        @Test
+        fun `mark active member however member not found should throw error`() {
+            val teamRotator = TeamRotator(
+                listOf(
+                    Member("AnhLe"),
+                    Member("Nam")
+                )
+            );
+
+            val error = assertFailsWith<MemberNotFoundException>(
+                block = {
+                    teamRotator.markMemberActiveByName("unknown")
+                }
+            )
+            assertEquals("Member not found with name: unknown", error.message)
+        }
     }
 
 }
