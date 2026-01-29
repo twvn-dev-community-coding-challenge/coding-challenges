@@ -5,8 +5,8 @@ from member_management.status import Status
 
 
 class MemberManager:
-    def __init__(self, members: Dict[int, Member] = {}):
-        self.members = members
+    def __init__(self):
+        self.members = {}
         self.counter = 0
         self.member_count = 0
         self.active_count = 0

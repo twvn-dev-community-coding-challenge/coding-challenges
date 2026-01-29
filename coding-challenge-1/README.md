@@ -85,6 +85,7 @@ member_count = 5
 ## With More Time, We Would...
 - More dynamic user creation, change status
     - Current operations only account for single user approach
+- get_next() could implement python generators, to reduce memory usage, because at worst, if we decide to get all members, a list of all members will be created, which doubles the memory usage O(2n) since the original dict of members existed.
 - Due to the cons of get_next() mentioned above, if we could find a way to only process active members, without redudant traversal and inactive filtering would be great
 
 ## AI Tools Used (if any)
