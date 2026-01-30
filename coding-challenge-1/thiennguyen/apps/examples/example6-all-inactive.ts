@@ -19,10 +19,9 @@ console.log('Team Setup:');
 members.forEach((m) => console.log(`- ${m.name} (id: ${m.id}, inactive)`));
 console.log('\nRotation Results:');
 
-const rotator = new TeamRotator(members);
 
 try {
-  rotator.getNext();
+  new TeamRotator(members);
   console.log('ERROR: Should have thrown an error!');
 } catch (error) {
   const err = error as Error;
