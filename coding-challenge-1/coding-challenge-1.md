@@ -75,6 +75,7 @@ This is **not** about completeness — it’s about **clarity and correctness**.
   - Or any other relevant pattern that improves your design
 
 📌 Be prepared to explain:
+
 - Which pattern(s) you chose
 - Why it was appropriate for this problem
 - How it improved your solution
@@ -242,7 +243,9 @@ To help you understand the requirements, here are detailed text examples:
 Each team submits:
 
 - Git repository with **commit history** (frequent commits showing development progression)
-- README (max 1 page) including:
+- Code placed in the folder structure: `coding-challenge-1/<your-team-name>/`
+  - Example: `coding-challenge-1/rustaceans/` or `coding-challenge-1/stevelam/`
+- README (max 1 page) in your team folder including:
   - How to run
   - Rotation approach
   - Design pattern(s) used and why

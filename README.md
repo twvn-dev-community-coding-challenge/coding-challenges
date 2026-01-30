@@ -2,7 +2,7 @@ Coding Challenge 2026
 
 ---
 
-## 👋 Welcome!
+## 👋 Welcome
 
 Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or just starting your journey, this event is designed for **YOU**. This is a safe, fun space to experiment with new technologies, learn from your peers, and grow your skills—all while having a great time!
 
@@ -20,23 +20,28 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 # 📋 How to Join
 
 ### Step 1: Register Your Interest
+
 - Drop a message in the `#Vietnam Dev Community` Google Chat space ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7))
 
 ### Step 2: Form Your Team
+
 - **Option A**: Join solo
 - **Option B**: Form a team of 2–3 people
 - **Option C**: Ask in the channel for teammates
 
 ### Step 3: Attend Kickoff
+
 - We'll announce the challenge.
 - You'll get access to the challenge repository.
 - Timeline and submission details will be shared.
 
-### Step 4: Code & Learn!
+### Step 4: Code & Learn
+
 - Commit at least **2–3 hours per week**
 - Ask questions in the channel anytime
 
 ### Step 5: Submit & Present
+
 - Submit your code + README by the deadline
 - Present your solution on Demo Day
 - Celebrate with the team! 🎉
@@ -77,14 +82,14 @@ A good challenge should:
 
 - **Teams of 1–3**
 - **Pairing** encouraged:
-    - Rotate pairs every challenge
-    - Mix senior + junior intentionally
+  - Rotate pairs every challenge
+  - Mix senior + junior intentionally
 - Solo allowed.
 
 📌 **Pairing rule**
 
 > Juniors gain confidence, seniors gain leadership points.
-> 
+>
 
 # ⏱️ Time Rules
 
@@ -107,11 +112,11 @@ A good challenge should:
 
 📁 Each team submits:
 
-- Source code repo
-- README with:
-    - Design decisions.
-    - Trade-offs.
-    - What they’d do with more time.
+- Source code in folder: `coding-challenge-{number}/<your-team-name>/`
+- README in your team folder with:
+  - Design decisions.
+  - Trade-offs.
+  - What they’d do with more time.
 
 # 🎤 Demo Day Format
 
@@ -142,7 +147,7 @@ Fields:
 💡 **Important**
 
 > Reset leaderboard every quarter to keep it fresh.
-> 
+>
 
 # 🏅 Knowledge Badges
 
@@ -188,10 +193,12 @@ Adjust:
 # 💬 Communication & Support
 
 ### 📢 Main Channel
+
 - **Google Chat Space**: `#Vietnam Dev Community` ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7))
 - Use this for: Questions, teammate search, general discussion
 
 ### 🆘 Getting Help
+
 - **Mentorship**: Senior devs volunteer to help—just ask!
 - **Stuck?** Post in the channel, we're all here to help
 
@@ -200,41 +207,70 @@ Adjust:
 # 🎓 Tips for First-Timers
 
 ### Before You Start
+
 1. **Read the challenge carefully** – Understand the requirements before coding
 2. **Start simple** – Get something working, then improve it
 3. **Don't aim for perfect** – "Good enough" is the goal
 4. **Ask questions early** – Don't struggle alone for days
 
 ### During Development
+
 1. **Time-box your work** – Set a timer for 2–3 hour blocks
 2. **Commit frequently** – Small commits are easier to manage
 3. **Document as you go** – Write down your decisions and trade-offs
 4. **Test your solution** – Even basic tests count!
 
 ### For Demo Day
+
 1. **Practice your demo** – Run through it once before presenting
 2. **Focus on learning** – Share what you learned, not just what you built
 3. **Be honest** – "I tried X but it didn't work" is valuable!
 4. **Have fun** – This isn't a job interview, it's a celebration
 
 ---
-# Branching Guideline (Start Coding)
 
-To keep the main branch clean and make it easy for others to review your work, please create a dedicated branch before you start coding.
+# Branching Guideline & Folder Structure (Start Coding)
 
-✅ Rules
+To keep the main branch clean and make it easy for others to review your work, please follow these guidelines:
+
+## ✅ Branch Naming Rules
+
 - Do not commit directly to main
 - Create a branch right after you clone the repo
 - Use clear branch naming so we can quickly identify teams
 
-✅ Branch naming format
-Use one of the following:
+**Branch naming format:**
 
-`coding-challenge-{number}/<your_team-name | your_name>`
+`coding-challenge-{number}/<your-team-name | your-name>`
 
-Example: coding-challenge-1/rustaceans, coding-challenge-1/stevelam
+Example: `coding-challenge-1/rustaceans`, `coding-challenge-1/stevelam`
 
-At the end, open a Pull Request (PR) into main for submission + review
+## 📁 Folder Structure Rules
+
+Place all your code under your team's dedicated folder:
+
+`coding-challenge-{number}/<your-team-name>/`
+
+**Examples:**
+
+- `coding-challenge-1/rustaceans/` - Team folder for the Rustaceans team
+- `coding-challenge-1/stevelam/` - Individual folder for Steve Lam
+- `coding-challenge-2/ai-enthusiasts/` - Team folder for challenge 2
+
+Your folder should contain:
+
+- All source code
+- README.md (see submission template below)
+- Tests
+- Any configuration files
+
+## 🎯 Submission Process
+
+1. Create your branch: `coding-challenge-1/<your-team-name>`
+2. Create your folder: `coding-challenge-1/<your-team-name>/`
+3. Add your code and README to your folder
+4. Commit frequently with clear messages
+5. Open a Pull Request (PR) into main for submission + review
 
 ---
 
@@ -243,7 +279,9 @@ At the end, open a Pull Request (PR) into main for submission + review
 Your submission should include:
 
 ### 1. Code Repository
-- Well-organized structure
+
+- Place all code in: `coding-challenge-{number}/<your-team-name>/`
+- Well-organized structure within your team folder
 - Clear file naming
 - Comments where needed
 
@@ -281,6 +319,7 @@ Your submission should include:
 ```
 
 ### 3. Demo Preparation
+
 - 5-minute live demo OR recorded video
 - Slides (optional, not required)
 
@@ -289,30 +328,39 @@ Your submission should include:
 # ❓ FAQ
 
 ### Q: I'm a junior developer. Is this too advanced for me?
+
 **A:** Not at all! This event is designed for **all levels**. You'll be paired with others, and learning is valued as much as the solution itself. Many juniors have won past challenges!
 
 ### Q: I don't know any "new" technologies. Can I still participate?
+
 **A:** Yes! You can use familiar tech and still score well. The "new tech" category is just one part of scoring. Focus on solid fundamentals and clear communication.
 
 ### Q: What if I can't finish in time?
+
 **A:** Partial solutions are 100% welcome! Submit what you have and explain what you would do next. You'll still learn and might still win!
 
 ### Q: What if my solution breaks during the demo?
+
 **A:** It happens! Explain what was supposed to happen. Judges value your understanding and design decisions over a perfect demo.
 
 ### Q: How much time should I really spend?
+
 **A:** Aim for **4–6 hours total** over 2–3 weeks. That's roughly 2 hours per week. Don't overwork—this should be fun!
 
 ### Q: Can I use code from previous projects?
+
 **A:** You can reuse your own patterns and approaches, but the solution should be built for this specific challenge. No copy-pasting entire projects.
 
 ### Q: What languages/frameworks are allowed?
+
 **A:** Unless the challenge specifies, use whatever you want! Want to try Rust? Go for it. Comfortable with Python? Perfect!
 
 ### Q: Do I need to use AI tools?
+
 **A:** Nope! It's optional. If you do use them (GitHub Copilot, ChatGPT, Cursor, etc.), document how they helped for bonus points.
 
 ### Q: What if I have a question not listed here?
+
 **A:** Ask in `#Vietnam Dev Community` ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7)) or email the organizer. No question is too small!
 
 ---
