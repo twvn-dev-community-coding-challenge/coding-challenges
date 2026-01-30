@@ -25,12 +25,18 @@ npm test
 
 ```
 
-3. **Run the CLI:**
+3. **Run the example:**
 
 ```bash
 npm run build
 npm start
 
+```
+
+4. **Run the CLI:**
+
+```bash
+npx ts-node src/cli.ts
 ```
 
 ---
