@@ -1,4 +1,4 @@
-import { Member } from './models/Member';
+import { Member } from './models/member';
 import { RotationIterator } from './interfaces/RotationIterator';
 
 /**
@@ -36,7 +36,6 @@ export class TeamRotator implements RotationIterator {
    * Space complexity: O(1)
    */
   next(): Member | null {
-    const startIndex = this.currentIndex;
     let firstAttempt: Member | null = null;
     let attempts = 0;
 

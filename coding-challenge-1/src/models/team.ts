@@ -1,4 +1,6 @@
-import Member, { MemberId } from "./member.js";
+import { Member } from "./member.js";
+
+export type MemberId = number;
 
 export default class Team {
     public readonly members: Member[];

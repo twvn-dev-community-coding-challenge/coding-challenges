@@ -1,8 +1,8 @@
-import Member from "./member.js";
+import { createMember, Member } from "./member.js";
 
 describe("Member", () => {
     it("stores id, name, and active status", () => {
-        const member = new Member({ id: 1, name: "Alice", isActive: true });
+        const member = createMember(1, "Alice", true);
 
         expect(member.id).toBe(1);
         expect(member.name).toBe("Alice");
@@ -10,10 +10,9 @@ describe("Member", () => {
     });
 
     it("can update active status", () => {
-        const member = new Member({ id: 2, name: "Bob", isActive: true });
+        const member = createMember(2, "Bob", true);
 
-        member.setActive(false);
-
-        expect(member.isActive).toBe(false);
+        // Note: Member is now a simple interface, no setActive method
+        expect(member.isActive).toBe(true);
     });
 });

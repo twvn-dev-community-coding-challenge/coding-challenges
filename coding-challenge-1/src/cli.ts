@@ -2,7 +2,7 @@
 
 import * as readline from 'readline';
 import { TeamRotator } from './TeamRotator';
-import { createMember, Member } from './models/Member';
+import { createMember, Member } from './models/member';
 
 // CLI state
 let rotator: TeamRotator | null = null;

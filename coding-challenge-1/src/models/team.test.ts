@@ -1,12 +1,12 @@
-import Member from "./member.js";
+import { createMember } from "./member.js";
 import Team from "./team.js";
 
 describe("Team", () => {
     it("returns only active members", () => {
         const members = [
-            new Member({ id: 1, name: "Alice", isActive: true }),
-            new Member({ id: 2, name: "Bob", isActive: false }),
-            new Member({ id: 3, name: "Charlie", isActive: true }),
+            createMember(1, "Alice", true),
+            createMember(2, "Bob", false),
+            createMember(3, "Charlie", true),
         ];
         const team = new Team(members);
 
@@ -16,11 +16,11 @@ describe("Team", () => {
     });
 
     it("tracks the last selected member id", () => {
-        const members = [new Member({ id: "a1", name: "Diana", isActive: true })];
+        const members = [createMember(1, "Diana", true)];
         const team = new Team(members);
 
-        team.setLastSelectedMemberId("a1");
+        team.setLastSelectedMemberId(1);
 
-        expect(team.lastSelectedMemberId).toBe("a1");
+        expect(team.lastSelectedMemberId).toBe(1);
     });
 });

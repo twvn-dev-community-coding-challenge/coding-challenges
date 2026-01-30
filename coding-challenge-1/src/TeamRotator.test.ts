@@ -1,5 +1,5 @@
 import { TeamRotator } from './TeamRotator';
-import { createMember, Member } from './models/Member';
+import { createMember, Member } from './models/member';
 
 describe('TeamRotator - Iterator Pattern Implementation', () => {
   /**

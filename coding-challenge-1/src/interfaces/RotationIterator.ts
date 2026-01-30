@@ -1,4 +1,4 @@
-import { Member } from '../models/Member';
+import { Member } from '../models/member';
 
 /**
  * Iterator Pattern Interface

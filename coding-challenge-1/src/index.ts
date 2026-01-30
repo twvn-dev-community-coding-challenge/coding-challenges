@@ -1,5 +1,5 @@
 import { TeamRotator } from './TeamRotator';
-import { createMember } from './models/Member';
+import { createMember } from './models/member';
 
 /**
  * Example usage of the TeamRotator API
