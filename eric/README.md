@@ -2,9 +2,6 @@
 
 A fair and efficient team rotation service built with Node.js and TypeScript. This API ensures balanced member selection with no immediate repetition, following SOLID principles and design patterns.
 
-## 👥 Team Members
-
-- [Your Name] (role/team)
 
 ## 🎯 Features
 
@@ -30,7 +27,7 @@ A fair and efficient team rotation service built with Node.js and TypeScript. Th
 Requires: Install Docker first
 
 ```bash
-cd smart-rotator-api
+cd eric
 docker compose up
 ```
 
@@ -142,7 +139,7 @@ A Postman collection is available for easy API testing:
 ### Project Structure
 
 ```
-smart-rotator-api/
+eric/
 ├── src/
 │   ├── index.ts                  # Express app entry point
 │   ├── controllers/
@@ -299,7 +296,7 @@ Tests:       10 passed, 10 total
 - ✅ Self-healing: recovers automatically if index/ID become out of sync
 
 **Cons**:
-- ❌ Slightly more complex than tracking index alone
+- ❌ Slightly more complex than tracking id alone
 
 ### Decision 2: In-Memory State with Centralized Data File
 **Choice**: Use `getMemberlist()` function from `src/data/members.ts`
@@ -307,6 +304,12 @@ Tests:       10 passed, 10 total
 **Pros**:
 - ✅ Simplicity and fast access
 - ✅ Meets challenge requirements (no database required)
+**Cons**:
+- ❌ Data lost on server restart
+- ❌ Does not scale to distributed systems
+- ❌ No persistence for audit trails
+
+**Cons**
 
 ### Decision 3: Strategy + Factory Patterns
 **Choice**: Use Strategy pattern with Factory for rotation logic
@@ -314,7 +317,9 @@ Tests:       10 passed, 10 total
 **Pros**:
 - ✅ Clean separation of concerns
 - ✅ Easy to extend with new algorithms
-- ✅ Demonstrates design pattern knowledge
+
+**Cons**:
+- ❌ Added complexity with multiple abstraction layers
 
 ### Decision 4: Exclude `isActive` from Response
 **Choice**: Return `{ id, name }` without `isActive` field
