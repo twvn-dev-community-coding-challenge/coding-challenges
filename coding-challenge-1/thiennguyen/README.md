@@ -29,7 +29,7 @@ The Team Rotator library provides a simple API for rotating through team members
 ## 📁 Project Structure
 
 ```
-coding-challenge-1/
+coding-challenge-1/thiennguyen/
 ├── packages/
 │   └── team-rotator/          # Main library package
 │       ├── src/
