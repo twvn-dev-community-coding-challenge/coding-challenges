@@ -43,6 +43,7 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 ### Step 5: Submit & Present
 
 - Submit your code + README by the deadline
+- **Create a GitHub Pull Request** with a complete description (required)
 - Present your solution on Demo Day
 - Celebrate with the team! 🎉
 
@@ -270,7 +271,17 @@ Your folder should contain:
 2. Create your folder: `coding-challenge-1/<your-team-name>/`
 3. Add your code and README to your folder
 4. Commit frequently with clear messages
-5. Open a Pull Request (PR) into main for submission + review
+5. **[REQUIRED]** Open a Pull Request (PR) into main for submission + review
+   - PR Title: `[Challenge #X] Team Name - Brief Description`
+   - PR Description must include:
+     - Team members
+     - Summary of your solution approach
+     - Key design decisions
+     - Technologies/patterns used
+     - Any known limitations or trade-offs
+     - How to run/test your code
+
+📌 **Important**: Your PR is your official submission. Make sure the PR description is complete and well-formatted!
 
 ---
 
@@ -322,6 +333,60 @@ Your submission should include:
 
 - 5-minute live demo OR recorded video
 - Slides (optional, not required)
+
+### 4. GitHub Pull Request (Required) ⚠️
+
+**This is a mandatory submission step!**
+
+After completing your code:
+
+1. **Push your branch** to the repository
+2. **Create a Pull Request** from your branch (`coding-challenge-{number}/<your-team-name>`) into `main`
+3. **Fill out the PR description** with the following information:
+
+**PR Title Format:**
+
+```
+[Challenge #X] Team Name - Brief Solution Description
+```
+
+**PR Description Template:**
+
+```markdown
+## Team Information
+- **Team Name**: [Your Team Name]
+- **Members**: 
+  - [Name 1] - [Role/Team]
+  - [Name 2] - [Role/Team]
+
+## Solution Overview
+[Brief description of your approach - 2-3 sentences]
+
+## Key Design Decisions
+- [Decision 1 and why]
+- [Decision 2 and why]
+- [Design patterns used]
+
+## Technologies & Tools
+- Language/Framework: [e.g., Python, Node.js, Rust]
+- Key Libraries: [List main dependencies]
+- AI Tools Used: [e.g., GitHub Copilot, ChatGPT - if any]
+
+## How to Run
+[Step-by-step instructions to run your code]
+
+## How to Test
+[Instructions to run tests if available]
+
+## Trade-offs & Limitations
+[What you optimized for and what was sacrificed]
+
+## With More Time, We Would...
+[Features or improvements you'd add]
+```
+
+1. **Request review** from the challenge organizers or mentors
+2. **Do not merge** - Organizers will review all PRs before Demo Day
 
 ---
 
