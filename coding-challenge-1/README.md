@@ -12,7 +12,7 @@
 ```bash
 git clone https://github.com/twvn-dev-community-coding-challenge/coding-challenges.git
 git checkout coding-challenge-1/NoSleep
-cd TeamRotator
+cd coding-challenge-1/NoSleep/TeamRotator
 
 ```
 
