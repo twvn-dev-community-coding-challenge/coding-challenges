@@ -1,0 +1,25 @@
+[project]
+name = "member_management"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "--cov -s --cov-report=term-missing"
+
+[tool.uv.build-backend.source-exclude]
+exclude = ["tests/", "**/test_*.py"] 
+
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+]
