@@ -130,25 +130,9 @@ A good challenge should:
 
 ---
 
-# 📊 Leaderboard Design
+# 📊 Scoring and Leaderboard
 
-Displayed in:
-
-- Google Chat
-- Email
-- Office screen (if available)
-
-Fields:
-
-- Team name
-- Members
-- Total score
-- Badges earned 🏅
-
-💡 **Important**
-
-> Reset leaderboard every quarter to keep it fresh.
->
+Please take a look at the [scoring structure and how to calculate your personal score](https://docs.google.com/document/d/1CSDmgyDc8fBgltTJ7bxr905Oqh-veqT240CnoqOMNAU/edit?usp=sharing) via each coding challenge.
 
 # 🏅 Knowledge Badges
 
