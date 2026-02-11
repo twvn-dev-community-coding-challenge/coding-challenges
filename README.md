@@ -1,286 +1,113 @@
-Coding Challenge 2026
+# Coding Challenge 2026
 
----
-
-## 👋 Welcome
-
-Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or just starting your journey, this event is designed for **YOU**. This is a safe, fun space to experiment with new technologies, learn from your peers, and grow your skills—all while having a great time!
-
-### 🌟 Why Join?
-
-- **🚀 Learn by doing** – Try that framework or pattern you've been curious about
-- **🤝 Connect with peers** – Work with people across teams you might not meet otherwise
-- **🏆 Build confidence** – No pressure, just growth and friendly competition
-- **🎉 Have fun** – Seriously, this is meant to be enjoyable!
+Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or just starting your journey, this event is designed for **YOU**. This is a safe, fun space to experiment with new technologies, learn from your peers, and grow your skills — all while having a great time!
 
 > **New to coding challenges?** Don't worry! We welcome all skill levels. Partial solutions, learning attempts, and "I tried something new" are all celebrated here.
 
 ---
 
-# 📋 How to Join
+## 📋 Table of Contents
 
-### Step 1: Register Your Interest
-
-- Drop a message in the `#Vietnam Dev Community` Google Chat space ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7))
-
-### Step 2: Form Your Team
-
-- **Option A**: Join solo
-- **Option B**: Form a team of 2–3 people
-- **Option C**: Ask in the channel for teammates
-
-### Step 3: Attend Kickoff
-
-- We'll announce the challenge.
-- You'll get access to the challenge repository.
-- Timeline and submission details will be shared.
-
-### Step 4: Code & Learn
-
-- Commit at least **2–3 hours per week**
-- Ask questions in the channel anytime
-
-### Step 5: Submit & Present
-
-- Submit your code + README by the deadline
-- **Create a GitHub Pull Request** with a complete description (required)
-- Present your solution on Demo Day
-- Celebrate with the team! 🎉
+1. [🌟 Why Join?](#-why-join)
+2. [🚀 Quick Start: How to Join](#-quick-start-how-to-join)
+3. [📏 Rules & Guidelines](#-rules--guidelines)
+4. [📤 How to Submit Your Code](#-how-to-submit-your-code)
+5. [🏆 Scoring, Leaderboard & Prizes](#-scoring-leaderboard--prizes)
+6. [🎤 Demo Day](#-demo-day)
+7. [💡 Tips for First-Timers](#-tips-for-first-timers)
+8. [❓ FAQ](#-faq)
+9. [💬 Communication & Contact](#-communication--contact)
 
 ---
 
-# 🎯 Objectives
+## 🌟 Why Join?
 
-1. **Learning** – Try new technologies, patterns, or techniques safely
-2. **Fun** – Light competition without pressure
-3. **Sharing** – Cross-team knowledge transfer
-4. **Growth** – Senior ↔ Junior pairing and mentorship
+- 🚀 **Learn by doing** — Try that framework or pattern you've been curious about
+- 🤝 **Connect with peers** — Work with people across teams you might not meet otherwise
+- 🏆 **Build confidence** — No pressure, just growth and friendly competition
+- 🎉 **Have fun** — Seriously, this is meant to be enjoyable!
 
-# 🗓️ Event Format (High-Level)
+### What You'll Get
 
-| Phase | Duration | Outcome |
-| --- | --- | --- |
-| Challenge Selection | 1 week | Balanced, relevant problem |
-| Coding Period | 2–3 weeks | 2–3 hrs/week per participant |
-| Demo Day | 1–2 hrs | Learning + celebration |
-| Scoring & Rewards | Same day | Motivation & recognition |
-| Retro & Improve | 30 mins | Continuous improvement |
-
-# 🧩 Challenge Design
-
-### 🎯 Difficulty Criteria
-
-A good challenge should:
-
-- Be solvable in **6–8 hours total**
-- Have **multiple valid solutions**
-- Encourage **trade-offs**, not perfection
-- Allow **incremental improvement**
-
-# 👥 Team Formation
-
-### Recommended Setup
-
-- **Teams of 1–3**
-- **Pairing** encouraged:
-  - Rotate pairs every challenge
-  - Mix senior + junior intentionally
-- Solo allowed.
-
-📌 **Pairing rule**
-
-> Juniors gain confidence, seniors gain leadership points.
->
-
-# ⏱️ Time Rules
-
-- ⏳ **2–3 hours/week**
-- 🟢 Partial solutions are welcome
-- 🧪 “Good enough” beats “perfect”
-
-# 🧪 Coding Rules
-
-✅ Allowed:
-
-- Any language / framework (unless specified)
-- AI tools (Copilot, ChatGPT, Cursor) → **bonus if documented**
-- Open-source libraries
-
-❌ Not allowed:
-
-- Client data or proprietary code
-- Over-engineering beyond scope
-
-📁 Each team submits:
-
-- Source code in folder: `coding-challenge-{number}/<your-team-name>/`
-- README in your team folder with:
-  - Design decisions.
-  - Trade-offs.
-  - What they’d do with more time.
-
-# 🎤 Demo Day Format
-
-### ⏰ 10–15 minutes per team
-
-1. **Problem recap (1 min)**
-2. **Live demo or walkthrough (5 min)**
-3. **Design decisions & trade-offs (3 min)**
-4. **Lessons learned (2 min)**
+- Knowledge Badges for your profile (e.g., 🟢 *TDD Specialist*, 🟢 *Clean Architecture*)
+- A chance to present to the dev community on Demo Day
+- Season Champion recognition and prizes every 3 months
 
 ---
 
-# 📊 Scoring and Leaderboard
+## 🚀 Quick Start: How to Join
 
-Please take a look at the [scoring structure and how to calculate your personal score](https://docs.google.com/document/d/1CSDmgyDc8fBgltTJ7bxr905Oqh-veqT240CnoqOMNAU/edit?usp=sharing) via each coding challenge.
-
-# 🏅 Knowledge Badges
-
-Each challenge awards **explicit skills**, e.g.:
-
-- 🟢 *GraphQL Fundamentals*
-- 🟢 *Clean Architecture Basics*
-- 🟢 *Performance Profiling*
-- 🟢 *Testing Legacy Code*
-- 🟢 *AI-assisted Development*
-
-These badges:
-
-- Go to internal profiles
-- Are referenced in performance reviews (lightly)
-- Encourage long-term participation
-
-# 🎁 Rewards
-
-- 🥤 Smoothies / coffee vouchers
-- 🎽 Stickers / company swag
-- 🎤 5-min spotlight in all-hands
-- 🧠 “Challenge Champion” badge
-
-🚫 **Avoid** large prizes → keeps competition **healthy**
-
-# 🔄 Continuous Improvement (Retro)
-
-Ask 3 questions:
-
-1. Was the challenge the right difficulty?
-2. Did people learn something useful?
-3. Was the time investment reasonable?
-
-Adjust:
-
-- Scope
-- Scoring
-- Pairing rules
+| Step | What to Do |
+| --- | --- |
+| **1. Register** | Drop a message in `#Vietnam Dev Community` ([join here](https://chat.google.com/room/AAAAm0xrYkU?cls=7)) |
+| **2. Form a Team** | Join solo, form a team of 2-3 people, or ask in the channel for teammates |
+| **3. Attend Kickoff** | Get the challenge brief, repo access, and timeline |
+| **4. Code & Learn** | Spend 2-3 hours/week coding. Ask questions in the channel anytime |
+| **5. Submit** | Push your code, open a Pull Request (see [How to Submit](#-how-to-submit-your-code)) |
+| **6. Present** | Demo your solution on Demo Day and celebrate! |
 
 ---
 
-# 💬 Communication & Support
+## 📏 Rules & Guidelines
 
-### 📢 Main Channel
+### 👥 Teams
 
-- **Google Chat Space**: `#Vietnam Dev Community` ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7))
-- Use this for: Questions, teammate search, general discussion
+- **Solo or teams of 1-3** — your choice
+- **Pairing encouraged:** mix senior + junior intentionally
+- Rotate pairs every challenge for variety
 
-### 🆘 Getting Help
+### ⏱️ Time Commitment
 
-- **Mentorship**: Senior devs volunteer to help—just ask!
-- **Stuck?** Post in the channel, we're all here to help
+- **2-3 hours per week** over a 2-3 week coding period
+- Partial solutions are welcome — "good enough" beats "perfect"
 
----
+### ✅ What's Allowed
 
-# 🎓 Tips for First-Timers
-
-### Before You Start
-
-1. **Read the challenge carefully** – Understand the requirements before coding
-2. **Start simple** – Get something working, then improve it
-3. **Don't aim for perfect** – "Good enough" is the goal
-4. **Ask questions early** – Don't struggle alone for days
-
-### During Development
-
-1. **Time-box your work** – Set a timer for 2–3 hour blocks
-2. **Commit frequently** – Small commits are easier to manage
-3. **Document as you go** – Write down your decisions and trade-offs
-4. **Test your solution** – Even basic tests count!
-
-### For Demo Day
-
-1. **Practice your demo** – Run through it once before presenting
-2. **Focus on learning** – Share what you learned, not just what you built
-3. **Be honest** – "I tried X but it didn't work" is valuable!
-4. **Have fun** – This isn't a job interview, it's a celebration
+| ✅ Allowed | ❌ Not Allowed |
+| --- | --- |
+| Any language/framework (unless specified) | Client data or proprietary code |
+| AI tools (Copilot, ChatGPT, Cursor) — **bonus if documented** | Over-engineering beyond scope |
+| Open-source libraries | |
 
 ---
 
-# Branching Guideline & Folder Structure (Start Coding)
+## 📤 How to Submit Your Code
 
-To keep the main branch clean and make it easy for others to review your work, please follow these guidelines:
+There are **3 things** you need to do to submit. Follow them in order.
 
-## ✅ Branch Naming Rules
+### 🔀 Step 1: Create Your Branch
 
-- Do not commit directly to main
-- Create a branch right after you clone the repo
-- Use clear branch naming so we can quickly identify teams
+Do **not** commit directly to `main`. Create a branch right after you clone the repo.
 
 **Branch naming format:**
 
-`coding-challenge-{number}/<your-team-name | your-name>`
+```
+coding-challenge-{number}/<your-team-name>
+```
 
-Example: `coding-challenge-1/rustaceans`, `coding-challenge-1/stevelam`
+**Examples:** `coding-challenge-1/rustaceans`, `coding-challenge-1/stevelam`
 
-## 📁 Folder Structure Rules
+### 📁 Step 2: Add Your Code to Your Team Folder
 
-Place all your code under your team's dedicated folder:
+Place **all** your code under your team's dedicated folder:
 
-`coding-challenge-{number}/<your-team-name>/`
+```
+coding-challenge-{number}/<your-team-name>/
+```
 
 **Examples:**
 
-- `coding-challenge-1/rustaceans/` - Team folder for the Rustaceans team
-- `coding-challenge-1/stevelam/` - Individual folder for Steve Lam
-- `coding-challenge-2/ai-enthusiasts/` - Team folder for challenge 2
+- `coding-challenge-1/rustaceans/` — Team folder for the Rustaceans team
+- `coding-challenge-1/stevelam/` — Individual folder for Steve Lam
 
-Your folder should contain:
+**Your folder should contain:**
 
 - All source code
-- README.md (see submission template below)
+- `README.md` (use the template below)
 - Tests
 - Any configuration files
 
-## 🎯 Submission Process
-
-1. Create your branch: `coding-challenge-1/<your-team-name>`
-2. Create your folder: `coding-challenge-1/<your-team-name>/`
-3. Add your code and README to your folder
-4. Commit frequently with clear messages
-5. **[REQUIRED]** Open a Pull Request (PR) into main for submission + review
-   - PR Title: `[Challenge #X] Team Name - Brief Description`
-   - PR Description must include:
-     - Team members
-     - Summary of your solution approach
-     - Key design decisions
-     - Technologies/patterns used
-     - Any known limitations or trade-offs
-     - How to run/test your code
-
-📌 **Important**: Your PR is your official submission. Make sure the PR description is complete and well-formatted!
-
----
-
-# 📝 Submission Template
-
-Your submission should include:
-
-### 1. Code Repository
-
-- Place all code in: `coding-challenge-{number}/<your-team-name>/`
-- Well-organized structure within your team folder
-- Clear file naming
-- Comments where needed
-
-### 2. README.md (Required)
+#### README Template (for your team folder)
 
 ```markdown
 # [Your Team Name] - [Challenge Name]
@@ -313,20 +140,15 @@ Your submission should include:
 [Which tools? How did they help?]
 ```
 
-### 3. Demo Preparation
+### 🔃 Step 3: Open a Pull Request (Required) ⚠️
 
-- 5-minute live demo OR recorded video
-- Slides (optional, not required)
+**Your PR is your official submission.** This is mandatory.
 
-### 4. GitHub Pull Request (Required) ⚠️
-
-**This is a mandatory submission step!**
-
-After completing your code:
-
-1. **Push your branch** to the repository
-2. **Create a Pull Request** from your branch (`coding-challenge-{number}/<your-team-name>`) into `main`
-3. **Fill out the PR description** with the following information:
+1. Push your branch to the repository
+2. Open a Pull Request from your branch into `main`
+3. Fill out the PR description using the template below
+4. Request review from the challenge organizers or mentors
+5. **Do not merge** — Organizers will review all PRs before Demo Day
 
 **PR Title Format:**
 
@@ -339,7 +161,7 @@ After completing your code:
 ```markdown
 ## Team Information
 - **Team Name**: [Your Team Name]
-- **Members**: 
+- **Members**:
   - [Name 1] - [Role/Team]
   - [Name 2] - [Role/Team]
 
@@ -369,66 +191,251 @@ After completing your code:
 [Features or improvements you'd add]
 ```
 
-1. **Request review** from the challenge organizers or mentors
-2. **Do not merge** - Organizers will review all PRs before Demo Day
+---
+
+## 🏆 Scoring, Leaderboard & Prizes
+
+> **TL;DR** — Each challenge is scored out of 100 (+ bonus). Points are tracked per individual across a 3-month season. The top scorer wins the Special Prize.
+
+### How Points Work for Teams vs Individuals
+
+| Model | How It Works |
+| --- | --- |
+| **Individual** | You code alone. Your score goes directly to your profile. |
+| **Team (max 3)** | The team is graded as one unit. Every member receives the full team score. Bonus points apply to everyone. |
+
+All points are tracked **per individual** for the leaderboard, regardless of whether you join solo or in a team.
 
 ---
 
-# ❓ FAQ
+### Per-Challenge Scoring (Max 100 + Bonus)
 
-### Q: I'm a junior developer. Is this too advanced for me?
+#### A. Core Execution & Design — 70 Points
 
-**A:** Not at all! This event is designed for **all levels**. You'll be paired with others, and learning is valued as much as the solution itself. Many juniors have won past challenges!
+This evaluates the functional correctness and architectural quality of your submission. Each challenge defines its own detailed breakdown within this block (see the specific challenge document).
 
-### Q: I don't know any "new" technologies. Can I still participate?
+#### B. Tests & Reliability — 15 Points
 
-**A:** Yes! You can use familiar tech and still score well. The "new tech" category is just one part of scoring. Focus on solid fundamentals and clear communication.
+| Criteria | Points |
+| --- | --- |
+| **Coverage** — Tests covering the core logic | 10 |
+| **Resilience** — Tests for edge cases, errors, empty states | 5 |
 
-### Q: What if I can't finish in time?
+#### C. Documentation & Communication — 15 Points
 
-**A:** Partial solutions are 100% welcome! Submit what you have and explain what you would do next. You'll still learn and might still win!
-
-### Q: What if my solution breaks during the demo?
-
-**A:** It happens! Explain what was supposed to happen. Judges value your understanding and design decisions over a perfect demo.
-
-### Q: How much time should I really spend?
-
-**A:** Aim for **4–6 hours total** over 2–3 weeks. That's roughly 2 hours per week. Don't overwork—this should be fun!
-
-### Q: Can I use code from previous projects?
-
-**A:** You can reuse your own patterns and approaches, but the solution should be built for this specific challenge. No copy-pasting entire projects.
-
-### Q: What languages/frameworks are allowed?
-
-**A:** Unless the challenge specifies, use whatever you want! Want to try Rust? Go for it. Comfortable with Python? Perfect!
-
-### Q: Do I need to use AI tools?
-
-**A:** Nope! It's optional. If you do use them (GitHub Copilot, ChatGPT, Cursor, etc.), document how they helped for bonus points.
-
-### Q: What if I have a question not listed here?
-
-**A:** Ask in `#Vietnam Dev Community` ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7)) or email the organizer. No question is too small!
+| Criteria | Points |
+| --- | --- |
+| **README** — Clear setup instructions and trade-off explanations | 5 |
+| **Presentation** — Ability to explain *why* decisions were made | 10 |
 
 ---
 
-# 📞 Contact & Organizers
+### Bonus Points (Up to +25)
 
-- **Main Organizer**: [Steve Lam] – [tai.lam@thoughtworks.com], [Tom Tang] – [tom.tang@thoughtworks.com]
-- **Technical Mentors**: [Check `#Vietnam Dev Community` channel pinned messages]
-- **Google Chat Space**: `#Vietnam Dev Community`
+These let you exceed 100 and are the fast track to winning the Special Prize.
 
-**Have ideas to improve the event?** We'd love to hear them! DM the organizer or share in the retro session.
+| Bonus | Points | How to Earn |
+| --- | --- | --- |
+| **TDD Approach** | +5 | Commit history proves tests written *before* implementation (Red-Green-Refactor) |
+| **Junior-Led Demo** | +5 | The most junior team member presents the solution |
+| **Community Assist** | +5 | Provide constructive peer reviews on other participants' PRs |
+| **Creative Bonus** | up to +10 | Subjective — decided by the facilitator or community vote |
+
+### Community Engagement Points (Demo Day)
+
+Earned during Demo Day and added to your **Season Total**.
+
+| Award | Points | Details |
+| --- | --- | --- |
+| **"Most Loved" Solution** | +10 | Voted by the audience via live poll |
+| **The Curious Mind** | +2/question | Ask a meaningful technical question during Q&A (max +6/month) |
+| **The Subject Matter Expert** | +2 | Give an exceptionally clear answer during your own Q&A |
 
 ---
 
-# 🚀 Ready to Start?
+### The Long-Run Leaderboard (3-Month Seasons)
 
-1. ✅ Join the `#Vietnam Dev Community` space ([https://chat.google.com/room/AAAAm0xrYkU?cls=7](https://chat.google.com/room/AAAAm0xrYkU?cls=7)).
+Your **Season Score** determines who wins the Special Prize.
+
+**The "Best of 3" Rule:** Your season score uses your **two highest monthly scores** plus participation points. This means missing one month won't knock you out.
+
+```
+Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuses)
+```
+
+| Achievement | Season Points |
+| --- | --- |
+| **Monthly Participation** | 10 pts per challenge joined |
+| **Top Players** | 1st: +30 / 2nd: +20 / 3rd: +10 |
+
+<details>
+<summary><strong>Example: Alice vs Bob (click to expand)</strong></summary>
+
+**Alice (The Consistent Performer)** — Submits every month, never hits 1st place.
+
+| Month | Score | Placement |
+| --- | --- | --- |
+| Jan | 80 | — |
+| Feb | **85** | — |
+| Mar | **82** | — |
+
+- Top 2 Scores: 85 + 82 = **167**
+- Participation: 3 x 10 = **30**
+- Top Players Bonus: **0**
+- **Season Total: 197**
+
+---
+
+**Bob (The High-Flyer who got Busy)** — Brilliant, but missed February entirely.
+
+| Month | Score | Placement |
+| --- | --- | --- |
+| Jan | **95** | 1st (+30) |
+| Feb | 0 | — |
+| Mar | **90** | 2nd (+20) |
+
+- Top 2 Scores: 95 + 90 = **185**
+- Participation: 2 x 10 = **20**
+- Top Players Bonus: 30 + 20 = **50**
+- **Season Total: 255**
+
+---
+
+**Comparison**
+
+| | Alice (Steady) | Bob (Spiky) |
+| --- | --- | --- |
+| **Top 2 Scores** | 167 | 185 |
+| **Participation** | 30 | 20 |
+| **Top Players** | 0 | 50 |
+| **SEASON SCORE** | **197** | **255** |
+
+> Takeaway: Consistency is great, but high performance + community engagement can pull ahead!
+
+</details>
+
+---
+
+### 🎁 Prizes & Recognition
+
+**Monthly:**
+
+- 🏅 Knowledge Badges for skills demonstrated (e.g., 🟢 *TDD Specialist*, 🟢 *Clean Architecture*)
+- 🎤 Top 3 get the Demo Slot to present to the entire dev community
+
+**End of Season (every 3 months):**
+
+- 🏆 **The Season Champion** — Highest total Season Score
+
+---
+
+### 📅 Monthly Workflow
+
+| Week | Activity |
+| --- | --- |
+| **Week 1** | Challenge Release & Registration |
+| **Week 2-3** | Hacking & Development (PRs due by end of Week 3) |
+| **Week 4** | Facilitator Review & Scoring |
+| **Week 5** | Demo Day & Winner Announcement (new challenge drops) |
+
+---
+
+## 🎤 Demo Day
+
+Each team gets **10-15 minutes** to present:
+
+| Time | Activity |
+| --- | --- |
+| 1 min | Problem recap |
+| 5 min | Live demo or code walkthrough |
+| 3 min | Design decisions & trade-offs |
+| 2 min | Lessons learned |
+
+You can also prepare:
+
+- A 5-minute live demo OR recorded video
+- Slides (optional, not required)
+
+---
+
+## 💡 Tips for First-Timers
+
+### 🎯 Before You Start
+
+1. **Read the challenge carefully** — Understand the requirements before coding
+2. **Start simple** — Get something working, then improve it
+3. **Don't aim for perfect** — "Good enough" is the goal
+4. **Ask questions early** — Don't struggle alone for days
+
+### 💻 During Development
+
+1. **Time-box your work** — Set a timer for 2-3 hour blocks
+2. **Commit frequently** — Small commits are easier to manage
+3. **Document as you go** — Write down your decisions and trade-offs
+4. **Test your solution** — Even basic tests count!
+
+### 🎬 For Demo Day
+
+1. **Practice your demo** — Run through it once before presenting
+2. **Focus on learning** — Share what you learned, not just what you built
+3. **Be honest** — "I tried X but it didn't work" is valuable!
+4. **Have fun** — This isn't a job interview, it's a celebration
+
+---
+
+## ❓ FAQ
+
+**Q: I'm a junior developer. Is this too advanced for me?**
+A: Not at all! This event is designed for **all levels**. You'll be paired with others, and learning is valued as much as the solution itself. Many juniors have won past challenges!
+
+**Q: What if I can't finish in time?**
+A: Partial solutions are 100% welcome! Submit what you have and explain what you would do next.
+
+**Q: What if my solution breaks during the demo?**
+A: It happens! Explain what was supposed to happen. Judges value your understanding and design decisions over a perfect demo.
+
+**Q: How much time should I really spend?**
+A: Aim for **4-6 hours total** over 2-3 weeks. That's roughly 2 hours per week. Don't overwork — this should be fun!
+
+**Q: Can I use code from previous projects?**
+A: You can reuse your own patterns and approaches, but the solution should be built for this specific challenge. No copy-pasting entire projects.
+
+**Q: What languages/frameworks are allowed?**
+A: Unless the challenge specifies, use whatever you want! Want to try Rust? Go for it. Comfortable with Python? Perfect!
+
+**Q: Do I need to use AI tools?**
+A: Nope! It's optional. If you do use them (GitHub Copilot, ChatGPT, Cursor, etc.), document how they helped for bonus points.
+
+**Q: What if I have a question not listed here?**
+A: Ask in `#Vietnam Dev Community` ([join here](https://chat.google.com/room/AAAAm0xrYkU?cls=7)) or message the organizers. No question is too small!
+
+---
+
+## 💬 Communication & Contact
+
+**📢 Main Channel:** `#Vietnam Dev Community` ([join here](https://chat.google.com/room/AAAAm0xrYkU?cls=7))
+Use this for questions, teammate search, and general discussion.
+
+**🆘 Need Help?**
+
+- Senior devs volunteer as mentors — just ask!
+- Stuck? Post in the channel, we're all here to help.
+
+**📞 Organizers:**
+
+- Steve Lam — <tai.lam@thoughtworks.com>
+- Tom Tang — <tom.tang@thoughtworks.com>
+- Technical Mentors — Check `#Vietnam Dev Community` pinned messages
+
+**Have ideas to improve the event?** DM the organizers or share in the retro session.
+
+---
+
+## 🚀 Ready to Start?
+
+1. ✅ Join the `#Vietnam Dev Community` space ([join here](https://chat.google.com/room/AAAAm0xrYkU?cls=7))
 2. ✅ Mark the kickoff event in your calendar
 3. ✅ Start thinking about who you'd like to team up with
-4. ✅ Get excited—this is going to be fun! 🎉
+4. ✅ Get excited — this is going to be fun! 🎉
 
 **See you at the challenge!** 🚀
