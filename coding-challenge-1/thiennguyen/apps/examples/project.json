@@ -1,0 +1,57 @@
+{
+  "name": "example",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/examples",
+  "projectType": "application",
+  "targets": {
+    "1": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example1-basic-rotation.ts"
+      }
+    },
+    "2": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example2-no-repetition.ts"
+      }
+    },
+    "3": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example3-skip-inactive.ts"
+      }
+    },
+    "4": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example4-next-n-members.ts"
+      }
+    },
+    "5": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example5-single-active.ts"
+      }
+    },
+    "6": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example6-all-inactive.ts"
+      }
+    },
+    "7": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register apps/examples/example7-add-new-member.ts"
+      }
+    },
+    "all": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run example:1 && nx run example:2 && nx run example:3 && nx run example:4 && nx run example:5 && nx run example:6 && nx run example:7"
+      }
+    }
+  },
+  "tags": []
+}
