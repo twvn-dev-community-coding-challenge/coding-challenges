@@ -8,15 +8,15 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 
 ## 📋 Table of Contents
 
-1. [🌟 Why Join?](#-why-join)
-2. [🚀 Quick Start: How to Join](#-quick-start-how-to-join)
-3. [📏 Rules & Guidelines](#-rules--guidelines)
-4. [📤 How to Submit Your Code](#-how-to-submit-your-code)
-5. [🏆 Scoring, Leaderboard & Prizes](#-scoring-leaderboard--prizes)
-6. [🎤 Demo Day](#-demo-day)
-7. [💡 Tips for First-Timers](#-tips-for-first-timers)
-8. [❓ FAQ](#-faq)
-9. [💬 Communication & Contact](#-communication--contact)
+1. [🌟 Why Join?](#why-join)
+2. [🚀 Quick Start: How to Join](#quick-start-how-to-join)
+3. [📏 Rules & Guidelines](#rules--guidelines)
+4. [📤 How to Submit Your Code](#how-to-submit-your-code)
+5. [🏆 Scoring, Leaderboard & Prizes](#scoring-leaderboard--prizes)
+6. [🎤 Demo Day](#demo-day)
+7. [💡 Tips for First-Timers](#tips-for-first-timers)
+8. [❓ FAQ](#faq)
+9. [💬 Communication & Contact](#communication--contact)
 
 ---
 
@@ -29,7 +29,7 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 
 ### What You'll Get
 
-- Knowledge Badges for your profile (e.g., 🟢 *TDD Specialist*, 🟢 *Clean Architecture*)
+- Knowledge Badges for your profile (e.g., 🟢 _TDD Specialist_, 🟢 _Clean Architecture_)
 - A chance to present to the dev community on Demo Day
 - Season Champion recognition and prizes every 3 months
 
@@ -37,14 +37,14 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 
 ## 🚀 Quick Start: How to Join
 
-| Step | What to Do |
-| --- | --- |
-| **1. Register** | Drop a message in `#Vietnam Dev Community` ([join here](https://chat.google.com/room/AAAAm0xrYkU?cls=7)) |
-| **2. Form a Team** | Join solo, form a team of 2-3 people, or ask in the channel for teammates |
-| **3. Attend Kickoff** | Get the challenge brief, repo access, and timeline |
-| **4. Code & Learn** | Spend 2-3 hours/week coding. Ask questions in the channel anytime |
-| **5. Submit** | Push your code, open a Pull Request (see [How to Submit](#-how-to-submit-your-code)) |
-| **6. Present** | Demo your solution on Demo Day and celebrate! |
+| Step                  | What to Do                                                                                                                                |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Register**       | Drop a message in `#Vietnam Dev Community` ([join here](https://chat.google.com/room/AAAAm0xrYkU?cls=7))                                  |
+| **2. Form a Team**    | Join solo, form a team of 2-3 people, or ask in the channel for teammates                                                                 |
+| **3. Attend Kickoff** | Get the challenge brief, repo access, and timeline                                                                                        |
+| **4. Code & Learn**   | Spend 2-3 hours/week coding. Ask questions in the channel anytime                                                                         |
+| **5. Submit**         | Fork the repo, implement in your fork, then open a Pull Request back to the official repo (see [How to Submit](#how-to-submit-your-code)) |
+| **6. Present**        | Demo your solution on Demo Day and celebrate!                                                                                             |
 
 ---
 
@@ -63,23 +63,39 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 
 ### ✅ What's Allowed
 
-| ✅ Allowed | ❌ Not Allowed |
-| --- | --- |
-| Any language/framework (unless specified) | Client data or proprietary code |
-| AI tools (Copilot, ChatGPT, Cursor) — **bonus if documented** | Over-engineering beyond scope |
-| Open-source libraries | |
+| ✅ Allowed                                                    | ❌ Not Allowed                  |
+| ------------------------------------------------------------- | ------------------------------- |
+| Any language/framework (unless specified)                     | Client data or proprietary code |
+| AI tools (Copilot, ChatGPT, Cursor) — **bonus if documented** | Over-engineering beyond scope   |
+| Open-source libraries                                         |                                 |
 
 ---
 
 ## 📤 How to Submit Your Code
 
-There are **3 things** you need to do to submit. Follow them in order.
+You submit using a **fork-based workflow**:
 
-### 🔀 Step 1: Create Your Branch
+1. The organizers create **one official challenge repository**.
+2. Teams **fork** it and implement the solution in their own fork.
+3. Teams submit by opening a **Pull Request back to the official repo** (or share the fork link as a fallback).
 
-Do **not** commit directly to `main`. Create a branch right after you clone the repo.
+Follow the steps below in order.
 
-**Branch naming format:**
+### 🍴 Step 1: Fork the Official Repository
+
+- Fork the official repo to your own GitHub account/org.
+- All your work happens in your fork (not in the official repo).
+
+### 💻 Step 2: Clone Your Fork
+
+- Clone your fork locally.
+- Add the upstream remote (optional but recommended) so you can pull updates.
+
+### 🔀 Step 3: Create Your Working Branch (Recommended)
+
+Avoid committing directly to your fork's `main`. Create a working branch right after you clone.
+
+**Branch naming format (keep this):**
 
 ```
 coding-challenge-{number}/<your-team-name>
@@ -87,7 +103,7 @@ coding-challenge-{number}/<your-team-name>
 
 **Examples:** `coding-challenge-1/rustaceans`, `coding-challenge-1/stevelam`
 
-### 📁 Step 2: Add Your Code to Your Team Folder
+### 📁 Step 4: Add Your Code to Your Team Folder
 
 Place **all** your code under your team's dedicated folder:
 
@@ -113,42 +129,52 @@ coding-challenge-{number}/<your-team-name>/
 # [Your Team Name] - [Challenge Name]
 
 ## Team Members
+
 - Developer 1 (role/team)
 - Developer 2 (role/team)
 
 ## How to Run
+
 [Step-by-step instructions]
 
 ## Approach
+
 [Brief explanation of your solution]
 
 ## Design Decisions
+
 - Why did you choose this tech stack?
 - What trade-offs did you make?
 - What patterns did you use?
 
 ## Challenges Faced
+
 [What was hard? How did you overcome it?]
 
 ## What We Learned
+
 [New skills, technologies, or insights]
 
 ## With More Time, We Would...
+
 [Nice-to-haves you didn't implement]
 
 ## AI Tools Used (if any)
+
 [Which tools? How did they help?]
 ```
 
-### 🔃 Step 3: Open a Pull Request (Required) ⚠️
+### 🔃 Step 5: Open a Pull Request to the Official Repo (Required) ⚠️
 
-**Your PR is your official submission.** This is mandatory.
+**Your PR is your official submission.** This is mandatory when possible.
 
-1. Push your branch to the repository
-2. Open a Pull Request from your branch into `main`
+1. Push your branch to **your fork**
+2. Open a Pull Request from `your-fork:your-branch` into `official-repo:main`
 3. Fill out the PR description using the template below
 4. Request review from the challenge organizers or mentors
 5. **Do not merge** — Organizers will review all PRs before Demo Day
+
+**Fallback (only if PR is not possible):** Share the link to your fork (and the branch) with the organizers.
 
 **PR Title Format:**
 
@@ -160,34 +186,42 @@ coding-challenge-{number}/<your-team-name>/
 
 ```markdown
 ## Team Information
+
 - **Team Name**: [Your Team Name]
 - **Members**:
   - [Name 1] - [Role/Team]
   - [Name 2] - [Role/Team]
 
 ## Solution Overview
+
 [Brief description of your approach - 2-3 sentences]
 
 ## Key Design Decisions
+
 - [Decision 1 and why]
 - [Decision 2 and why]
 - [Design patterns used]
 
 ## Technologies & Tools
+
 - Language/Framework: [e.g., Python, Node.js, Rust]
 - Key Libraries: [List main dependencies]
 - AI Tools Used: [e.g., GitHub Copilot, ChatGPT - if any]
 
 ## How to Run
+
 [Step-by-step instructions to run your code]
 
 ## How to Test
+
 [Instructions to run tests if available]
 
 ## Trade-offs & Limitations
+
 [What you optimized for and what was sacrificed]
 
 ## With More Time, We Would...
+
 [Features or improvements you'd add]
 ```
 
@@ -199,9 +233,9 @@ coding-challenge-{number}/<your-team-name>/
 
 ### How Points Work for Teams vs Individuals
 
-| Model | How It Works |
-| --- | --- |
-| **Individual** | You code alone. Your score goes directly to your profile. |
+| Model            | How It Works                                                                                               |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Individual**   | You code alone. Your score goes directly to your profile.                                                  |
 | **Team (max 3)** | The team is graded as one unit. Every member receives the full team score. Bonus points apply to everyone. |
 
 All points are tracked **per individual** for the leaderboard, regardless of whether you join solo or in a team.
@@ -216,17 +250,17 @@ This evaluates the functional correctness and architectural quality of your subm
 
 #### B. Tests & Reliability — 15 Points
 
-| Criteria | Points |
-| --- | --- |
-| **Coverage** — Tests covering the core logic | 10 |
-| **Resilience** — Tests for edge cases, errors, empty states | 5 |
+| Criteria                                                    | Points |
+| ----------------------------------------------------------- | ------ |
+| **Coverage** — Tests covering the core logic                | 10     |
+| **Resilience** — Tests for edge cases, errors, empty states | 5      |
 
 #### C. Documentation & Communication — 15 Points
 
-| Criteria | Points |
-| --- | --- |
-| **README** — Clear setup instructions and trade-off explanations | 5 |
-| **Presentation** — Ability to explain *why* decisions were made | 10 |
+| Criteria                                                         | Points |
+| ---------------------------------------------------------------- | ------ |
+| **README** — Clear setup instructions and trade-off explanations | 5      |
+| **Presentation** — Ability to explain _why_ decisions were made  | 10     |
 
 ---
 
@@ -234,22 +268,22 @@ This evaluates the functional correctness and architectural quality of your subm
 
 These let you exceed 100 and are the fast track to winning the Special Prize.
 
-| Bonus | Points | How to Earn |
-| --- | --- | --- |
-| **TDD Approach** | +5 | Commit history proves tests written *before* implementation (Red-Green-Refactor) |
-| **Junior-Led Demo** | +5 | The most junior team member presents the solution |
-| **Community Assist** | +5 | Provide constructive peer reviews on other participants' PRs |
-| **Creative Bonus** | up to +10 | Subjective — decided by the facilitator or community vote |
+| Bonus                | Points    | How to Earn                                                                      |
+| -------------------- | --------- | -------------------------------------------------------------------------------- |
+| **TDD Approach**     | +5        | Commit history proves tests written _before_ implementation (Red-Green-Refactor) |
+| **Junior-Led Demo**  | +5        | The most junior team member presents the solution                                |
+| **Community Assist** | +5        | Provide constructive peer reviews on other participants' PRs                     |
+| **Creative Bonus**   | up to +10 | Subjective — decided by the facilitator or community vote                        |
 
 ### Community Engagement Points (Demo Day)
 
 Earned during Demo Day and added to your **Season Total**.
 
-| Award | Points | Details |
-| --- | --- | --- |
-| **"Most Loved" Solution** | +10 | Voted by the audience via live poll |
-| **The Curious Mind** | +2/question | Ask a meaningful technical question during Q&A (max +6/month) |
-| **The Subject Matter Expert** | +2 | Give an exceptionally clear answer during your own Q&A |
+| Award                         | Points      | Details                                                       |
+| ----------------------------- | ----------- | ------------------------------------------------------------- |
+| **"Most Loved" Solution**     | +10         | Voted by the audience via live poll                           |
+| **The Curious Mind**          | +2/question | Ask a meaningful technical question during Q&A (max +6/month) |
+| **The Subject Matter Expert** | +2          | Give an exceptionally clear answer during your own Q&A        |
 
 ---
 
@@ -263,21 +297,21 @@ Your **Season Score** determines who wins the Special Prize.
 Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuses)
 ```
 
-| Achievement | Season Points |
-| --- | --- |
-| **Monthly Participation** | 10 pts per challenge joined |
-| **Top Players** | 1st: +30 / 2nd: +20 / 3rd: +10 |
+| Achievement               | Season Points                  |
+| ------------------------- | ------------------------------ |
+| **Monthly Participation** | 10 pts per challenge joined    |
+| **Top Players**           | 1st: +30 / 2nd: +20 / 3rd: +10 |
 
 <details>
 <summary><strong>Example: Alice vs Bob (click to expand)</strong></summary>
 
 **Alice (The Consistent Performer)** — Submits every month, never hits 1st place.
 
-| Month | Score | Placement |
-| --- | --- | --- |
-| Jan | 80 | — |
-| Feb | **85** | — |
-| Mar | **82** | — |
+| Month | Score  | Placement |
+| ----- | ------ | --------- |
+| Jan   | 80     | —         |
+| Feb   | **85** | —         |
+| Mar   | **82** | —         |
 
 - Top 2 Scores: 85 + 82 = **167**
 - Participation: 3 x 10 = **30**
@@ -288,11 +322,11 @@ Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuse
 
 **Bob (The High-Flyer who got Busy)** — Brilliant, but missed February entirely.
 
-| Month | Score | Placement |
-| --- | --- | --- |
-| Jan | **95** | 1st (+30) |
-| Feb | 0 | — |
-| Mar | **90** | 2nd (+20) |
+| Month | Score  | Placement |
+| ----- | ------ | --------- |
+| Jan   | **95** | 1st (+30) |
+| Feb   | 0      | —         |
+| Mar   | **90** | 2nd (+20) |
 
 - Top 2 Scores: 95 + 90 = **185**
 - Participation: 2 x 10 = **20**
@@ -303,12 +337,12 @@ Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuse
 
 **Comparison**
 
-| | Alice (Steady) | Bob (Spiky) |
-| --- | --- | --- |
-| **Top 2 Scores** | 167 | 185 |
-| **Participation** | 30 | 20 |
-| **Top Players** | 0 | 50 |
-| **SEASON SCORE** | **197** | **255** |
+|                   | Alice (Steady) | Bob (Spiky) |
+| ----------------- | -------------- | ----------- |
+| **Top 2 Scores**  | 167            | 185         |
+| **Participation** | 30             | 20          |
+| **Top Players**   | 0              | 50          |
+| **SEASON SCORE**  | **197**        | **255**     |
 
 > Takeaway: Consistency is great, but high performance + community engagement can pull ahead!
 
@@ -320,7 +354,7 @@ Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuse
 
 **Monthly:**
 
-- 🏅 Knowledge Badges for skills demonstrated (e.g., 🟢 *TDD Specialist*, 🟢 *Clean Architecture*)
+- 🏅 Knowledge Badges for skills demonstrated (e.g., 🟢 _TDD Specialist_, 🟢 _Clean Architecture_)
 - 🎤 Top 3 get the Demo Slot to present to the entire dev community
 
 **End of Season (every 3 months):**
@@ -331,12 +365,12 @@ Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuse
 
 ### 📅 Monthly Workflow
 
-| Week | Activity |
-| --- | --- |
-| **Week 1** | Challenge Release & Registration |
-| **Week 2-3** | Hacking & Development (PRs due by end of Week 3) |
-| **Week 4** | Facilitator Review & Scoring |
-| **Week 5** | Demo Day & Winner Announcement (new challenge drops) |
+| Week         | Activity                                             |
+| ------------ | ---------------------------------------------------- |
+| **Week 1**   | Challenge Release & Registration                     |
+| **Week 2-3** | Hacking & Development (PRs due by end of Week 3)     |
+| **Week 4**   | Facilitator Review & Scoring                         |
+| **Week 5**   | Demo Day & Winner Announcement (new challenge drops) |
 
 ---
 
@@ -344,12 +378,12 @@ Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuse
 
 Each team gets **10-15 minutes** to present:
 
-| Time | Activity |
-| --- | --- |
-| 1 min | Problem recap |
+| Time  | Activity                      |
+| ----- | ----------------------------- |
+| 1 min | Problem recap                 |
 | 5 min | Live demo or code walkthrough |
 | 3 min | Design decisions & trade-offs |
-| 2 min | Lessons learned |
+| 2 min | Lessons learned               |
 
 You can also prepare:
 
