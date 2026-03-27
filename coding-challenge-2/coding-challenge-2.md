@@ -17,11 +17,11 @@ The system consists of multiple teams, including:
 * Customer Domain  
 * Booking Domain  
 * ERP System  
-* Accounting & Operations  
+* Accounting & Operations
 * Data & Analytics  
-  ---
+  
 
-  ## **Your Responsibility**
+## **Your Responsibility**
 
 Your team owns the Customer Domain, specifically: Membership Registration
 
@@ -30,10 +30,9 @@ A key requirement of membership registration is: Customers must receive OTP SMS 
 Assumption:
 
 * OTP generation already exists (out of scope)  
-* Your responsibility is SMS sending capability  
-  ---
+* Your responsibility is SMS sending capability
 
-  ## **Expanded Usage Context**
+## **Expanded Usage Context**
 
 After introducing SMS capability, it becomes a shared platform capability used by multiple domains:
 
@@ -43,8 +42,6 @@ After introducing SMS capability, it becomes a shared platform capability used b
 * Accounting → cost tracking  
 * Operations → provider optimization  
 * Data Team → analytics & prediction 
-
----
 
 ## **SMS Business Context**
 
@@ -61,7 +58,7 @@ SMS delivery is not centralized. Instead:
   * Sinch  
   * (and potentially others in the future)
 
-  ### **Routing Complexity**
+### **Routing Complexity**
 
 SMS routing depends on multiple factors:
 
@@ -75,7 +72,7 @@ Each provider:
 * May be blocked by certain carriers  
 * Has changing pricing over time
 
-  ### Example (Illustrative Only)
+### Example (Illustrative Only)
 
 | Provider | Carrier | Price | Notes |
 | ----- | ----- | ----- | ----- |
@@ -86,9 +83,9 @@ Each provider:
 | Vonage | Viettel | 0.03 | OK |
 | Vonage | Vinaphone | 0.012 | OK |
 
-  ### These numbers are examples only.
+_These numbers are examples only_
 
-  ### **Important Characteristics**
+### **Important Characteristics**
 
 * Pricing changes over time  
 * Routing decisions must consider:  
@@ -96,9 +93,7 @@ Each provider:
   * Carrier compatibility  
   * Operational constraints
 
-  ---
-
-  ## **SMS Sending Flow**
+## **SMS Sending Flow**
 
 When an SMS is sent, it goes through the following states:
 
@@ -123,9 +118,9 @@ Queue → Carrier-rejected → Cancel
 * You do NOT need to implement real provider integrations  
   * Logging is sufficient to simulate sending/receiving
 
-  ---
+---
 
-# **🎯 Epic: SMS Sending Capability for Multi-Domain Usage**
+## **🎯 Epic: SMS Sending Capability for Multi-Domain Usage**
 
 Design and implement a **reusable SMS capability** that:
 
@@ -135,17 +130,15 @@ Design and implement a **reusable SMS capability** that:
 * Manages SMS lifecycle  
 * Tracks cost and delivery outcomes
 
----
-
-# **🧩 User Story 1 – Membership OTP SMS** 
+### **🧩 User Story 1 – Membership OTP SMS** 
 
 **As a** Customer  
 **I want** to receive an OTP via SMS during membership registration  
 **So that** I can verify my identity
 
-### **Acceptance Criteria**
+#### **Acceptance Criteria**
 
-#### **Functional Behavior**
+##### **Functional Behavior**
 
 * When a membership registration is initiated  
   → An SMS must be sent containing OTP  
@@ -155,27 +148,23 @@ Design and implement a **reusable SMS capability** that:
   * phoneNumber  
   * message
 
----
-
 The system must determine provider based on **country \+ carrier** as follows:
 
-### **Vietnam**
+##### **Vietnam**
 
 * Viettel → Twilio  
 * Mobifone → Vonage  
 * Vinaphone → Vonage
 
-### **Thailand**
+##### **Thailand**
 
 * AIS → Infobip  
 * DTAC → AWS SNS
 
-### **Singapore**
+##### **Singapore**
 
 * Singtel → Twilio  
 * StarHub → Telnyx
-
----
 
 #### **Expected Behavior**
 
@@ -187,22 +176,18 @@ The system must determine provider based on **country \+ carrier** as follows:
 New → Send-to-provider → Queue → Send-to-carrier → Send-success
 ```
 
----
-
 #### **Cost Handling**
 
 * Estimated cost must be available at **Send-to-provider**  
 * Actual cost must be available at **Send-success**
 
----
-
-# **🧩 User Story 2 – Cross-Domain SMS Usage**
+### **🧩 User Story 2 – Cross-Domain SMS Usage**
 
 **As a** Booking / ERP system  
 **I want** to send SMS notifications  
 **So that** I can communicate with customers or operations
 
-### **Acceptance Criteria**
+#### **Acceptance Criteria**
 
 * SMS capability must be usable by:  
   * Customer Domain  
@@ -213,9 +198,7 @@ New → Send-to-provider → Queue → Send-to-carrier → Send-success
   * Receive consistent behavior (routing, lifecycle, cost tracking)  
 * SMS behavior must remain consistent regardless of caller, without requiring separate implementations per domain
 
----
-
-# **🧩 User Story 3 – New Market and Updated Provider Agreements**
+### **🧩 User Story 3 – New Market and Updated Provider Agreements**
 
 **As an** Operations team  
  **I want** SMS to be delivered using appropriate providers  
@@ -223,46 +206,39 @@ New → Send-to-provider → Queue → Send-to-carrier → Send-success
 
 Following new commercial agreements with SMS providers, routing rules have been updated in both new and existing markets.
 
----
+#### **Acceptance Criteria**
 
-### **Acceptance Criteria**
-
-#### **Philippines (New Market)**
+##### **Philippines (New Market)**
 
 * When sending SMS to Philippines:  
   * Globe → MessageBird  
   * Smart → Sinch  
   * DITO → MessageBird
 
-  ---
-
-  #### **Vietnam (Updated Routing Rules)**
+##### **Vietnam (Updated Routing Rules)**
 
 The routing rules in Vietnam have been updated based on new provider agreements.
 
 * Viettel → Vonage  
 * Mobifone → Infobip  
-* Vinaphone → Twilio  
-  ---
+* Vinaphone → Twilio
 
-  #### **General Behavior**
+##### **General Behavior**
 
 * System must:  
   * Determine carrier from phone number  
   * Select exactly one provider  
 * Provider selection must reflect current business rules 
 
----
-
-# **🧩 User Story 4 – SMS Lifecycle Management**
+### **🧩 User Story 4 – SMS Lifecycle Management**
 
 **As a** system  
 **I want** to manage SMS states clearly  
 **So that** delivery status is traceable and reliable
 
-### **Acceptance Criteria**
+#### **Acceptance Criteria**
 
-#### **States**
+##### **States**
 
 The system must support:
 
@@ -276,9 +252,7 @@ Send-failed
 Carrier-rejected  
 ```
 
----
-
-#### **Transitions**
+##### **Transitions**
 
 ```
 New → Send-to-provider  
@@ -291,31 +265,27 @@ Queue → Carrier-rejected → Send-to-provider
 Send-to-carrier → Send-failed → Send-to-provider  
 ```
 
----
-
-#### **Behavior**
+##### **Behavior**
 
 * All transitions must:  
   * Be valid and controlled  
   * Be traceable  
   * Prevent invalid transitions
 
-### **State Clarification**
+#### **State Clarification**
 
 * **Carrier-rejected**  
    The SMS was accepted by the provider but rejected by the downstream carrier (MNO).  
 * **Send-failed**  
-   The SMS failed during provider processing or delivery attempt before successful completion. 
+   The SMS failed during provider processing or delivery attempt before successful completion.
 
----
-
-# **🧩 User Story 5 – Cost Tracking & Observability**
+### **🧩 User Story 5 – Cost Tracking & Observability**
 
 **As an** Accounting / Operations team  
 **I want** visibility into SMS usage and cost  
 **So that** I can monitor and optimize
 
-### **Acceptance Criteria**
+#### **Acceptance Criteria**
 
 * System must track:  
   * Estimated cost  
@@ -326,15 +296,13 @@ Send-to-carrier → Send-failed → Send-to-provider
   * SMS volume per provider  
   * Success / failure rates
 
----
-
-# **🧩 User Story 6 – Asynchronous Handling**
+### **🧩 User Story 6 – Asynchronous Handling**
 
 **As a** system  
 **I want** to handle provider callbacks asynchronously  
 **So that** SMS state is updated correctly
 
-### **Acceptance Criteria**
+#### **Acceptance Criteria**
 
 * System must support simulated callbacks:  
   * messageId  
@@ -347,15 +315,11 @@ Send-to-carrier → Send-failed → Send-to-provider
 
 ---
 
-## 
-
-## 
-
 ## **Technical Expectations**
 
 You are required to design and implement the SMS module with the following goals:
 
-## **1\. Provider Integration Capability**
+### **1\. Provider Integration Capability**
 
 The system should support interaction with multiple SMS providers.
 
@@ -369,7 +333,7 @@ The system should support interaction with multiple SMS providers.
 
 👉 The implementation should not assume a fixed or limited set of providers.
 
-## **2\. Routing Behavior Adaptability**
+### **2\. Routing Behavior Adaptability**
 
 SMS delivery depends on business rules involving:
 
@@ -391,7 +355,7 @@ The system should:
 
 👉 The routing logic is expected to evolve as the business expands.
 
-## **3\. State Management Clarity**
+### **3\. State Management Clarity**
 
 The SMS lifecycle includes multiple states and transitions.
 
@@ -408,7 +372,7 @@ As the system evolves:
 
 👉 State handling should remain clear and maintainable as complexity grows.
 
-## **4\. Asynchronous Event Handling**
+### **4\. Asynchronous Event Handling**
 
 SMS delivery involves asynchronous interactions:
 
@@ -421,7 +385,7 @@ The system should:
 * Ensure consistency between events and current state  
 * Allow simulation of external callbacks
 
-## **5\. Cross-Domain Reusability**
+### **5\. Cross-Domain Reusability**
 
 The SMS capability is used by multiple domains:
 
@@ -437,7 +401,7 @@ The system should:
 
 👉 The design should support reuse without requiring domain-specific changes.
 
-## **6\. Observability & Traceability**
+### **6\. Observability & Traceability**
 
 The system should provide sufficient visibility into SMS processing:
 
@@ -451,7 +415,7 @@ It should be possible to:
 * Understand how a message flows through the system  
 * Analyze usage across providers and countries
 
-## **7\. Implementation Simplicity**
+### **7\. Implementation Simplicity**
 
 For the purpose of this challenge:
 
@@ -466,7 +430,7 @@ For the purpose of this challenge:
   * In-memory storage  
   * CLI commands or simple triggers
 
-## **8\. Code Quality & Structure**
+### **8\. Code Quality & Structure**
 
 The implementation should demonstrate:
 
@@ -479,7 +443,7 @@ Avoid:
 * Mixing responsibilities  
 * Embedding multiple concerns in a single component
 
-# **🎯 Design Signal (Implicit)**
+## **🎯 Design Signal (Implicit)**
 
 The system is expected to operate in an environment where:
 
@@ -490,7 +454,7 @@ The system is expected to operate in an environment where:
 
 👉 A strong solution should remain stable under such changes without requiring significant restructuring.
 
-# **📦 Expected Deliverables**
+## **📦 Expected Deliverables**
 
 Candidates are expected to submit:
 
@@ -504,18 +468,14 @@ Optional (but recommended):
 
 * Brief design explanation (high-level structure, key decisions) 
 
-# 
-
-# **🚫 Out of Scope**
+## **🚫 Out of Scope**
 
 The following items are **explicitly out of scope** for this challenge and **must not be considered** in the design or implementation:
 
 * Cost optimization  
 * Carrier compatibility
 
----
-
-## **1\. External Integrations**
+### **1\. External Integrations**
 
 * Real SMS provider SDK integration  
 * Actual communication with external SMS gateways  
@@ -523,9 +483,7 @@ The following items are **explicitly out of scope** for this challenge and **mus
 
 👉 All external interactions should be **simulated only**
 
----
-
-## **2\. API Layer & UI**
+### **2\. API Layer & UI**
 
 * REST / GraphQL API design  
 * API Gateway integration  
@@ -534,9 +492,7 @@ The following items are **explicitly out of scope** for this challenge and **mus
 
 👉 Use **CLI or simple triggers** instead
 
----
-
-## **3\. Data Persistence**
+### **3\. Data Persistence**
 
 * No real database setup required  
 * No schema design for production storage  
@@ -544,9 +500,7 @@ The following items are **explicitly out of scope** for this challenge and **mus
 
 👉 Use **in-memory storage only**
 
----
-
-## **4\. Infrastructure & Runtime Concerns**
+### **4\. Infrastructure & Runtime Concerns**
 
 The following must **not influence your design**:
 
@@ -560,9 +514,7 @@ The following must **not influence your design**:
 
 👉 The focus is **domain design**, not runtime execution
 
----
-
-## **5\. Reliability Engineering**
+### **5\. Reliability Engineering**
 
 * Retry infrastructure (queue-based retry, DLQ, etc.)  
 * Circuit breaker / rate limiting  
@@ -571,9 +523,7 @@ The following must **not influence your design**:
 
 👉 Only model behavior at **domain level if needed**
 
----
-
-## **6\. Performance Optimization**
+### **6\. Performance Optimization**
 
 * High throughput design  
 * Latency optimization  
@@ -582,9 +532,7 @@ The following must **not influence your design**:
 
 👉 No performance tuning is required
 
----
-
-## **7\. Security & Compliance**
+### **7\. Security & Compliance**
 
 * Encryption  
 * PII handling  
@@ -593,9 +541,7 @@ The following must **not influence your design**:
 
 👉 Not relevant for this challenge
 
----
-
-## **8\. Monitoring & Observability Platforms**
+### **8\. Monitoring & Observability Platforms**
 
 * OpenTelemetry / tracing systems  
 * Metrics platforms (Prometheus, Datadog, etc.)  
@@ -603,9 +549,7 @@ The following must **not influence your design**:
 
 👉 Basic logging is sufficient
 
----
-
-# **⚠️ Important Clarification**
+## **⚠️ Important Clarification**
 
 This challenge focuses on:
 
@@ -615,15 +559,13 @@ NOT on:
 
 **Infrastructure, deployment, or runtime execution**
 
-# **📊 Evaluation Criteria**
+## **📊 Evaluation Criteria**
 
 Your solution will be evaluated based on the following criteria.
 
 The goal is not only to make the system work, but to ensure it remains **clear, maintainable, and adaptable as business requirements evolve**.
 
----
-
-## **1\. Core Functionality (15 pts)**
+### **1\. Core Functionality (15 pts)**
 
 Your system should:
 
@@ -637,9 +579,7 @@ Your system should:
 * The system behaves correctly for the defined scenarios  
 * State transitions are applied properly
 
----
-
-## **2\. Code Quality & Structure (10 pts)**
+### **2\. Code Quality & Structure (10 pts)**
 
 Your implementation should demonstrate:
 
@@ -652,9 +592,7 @@ Your implementation should demonstrate:
 
 * The codebase is easy to understand and maintain
 
----
-
-## **3\. Provider Integration Design (15 pts)**
+### **3\. Provider Integration Design (15 pts)**
 
 Your design should:
 
@@ -666,9 +604,7 @@ Your design should:
 * Adding a new provider should be straightforward  
 * Existing logic should not need major modification
 
----
-
-## **4\. Routing Behavior (15 pts)**
+### **4\. Routing Behavior (15 pts)**
 
 Your system should:
 
@@ -680,9 +616,7 @@ Your system should:
 * Routing logic should remain understandable and maintainable  
 * The system should handle variations in routing rules
 
----
-
-## **5\. State Management (15 pts)**
+### **5\. State Management (15 pts)**
 
 Your system should:
 
@@ -694,9 +628,7 @@ Your system should:
 
 * The state model remains clear as additional states or transitions are introduced
 
----
-
-## **6\. Adaptability to Change (20 pts)**
+### **6\. Adaptability to Change (20 pts)**
 
 The system is expected to operate in an evolving business environment.
 
@@ -712,9 +644,7 @@ Your design should be able to handle changes such as:
 * Changes can be introduced without significantly restructuring the system  
 * The system remains stable and maintainable over time
 
----
-
-## **7\. Reusability Across Domains (5 pts)**
+### **7\. Reusability Across Domains (5 pts)**
 
 The SMS capability should:
 
@@ -725,9 +655,7 @@ The SMS capability should:
 
 * The solution can be reused without domain-specific modifications
 
----
-
-## **8\. Observability & Traceability (5 pts)**
+### **8\. Observability & Traceability (5 pts)**
 
 Your system should provide visibility into:
 
@@ -739,9 +667,7 @@ Your system should provide visibility into:
 
 * SMS processing can be traced and understood
 
----
-
-## **9\. Bonus – Architectural Thinking (+5 pts)**
+### **9\. Bonus – Architectural Thinking (+5 pts)**
 
 Additional credit may be given for:
 
@@ -749,17 +675,13 @@ Additional credit may be given for:
 * Thoughtful handling of evolving requirements  
 * Design choices that support long-term maintainability
 
----
-
-# **⚠️ Important Notes**
+## **⚠️ Important Notes**
 
 * Focus on **clarity and adaptability**, not just correctness  
 * Avoid unnecessary complexity or over-engineering  
 * Infrastructure concerns (queues, scaling, deployment) are **out of scope**
 
----
-
-# **🎯 Final Guidance**
+## **🎯 Final Guidance**
 
 A strong solution will:
 
@@ -767,9 +689,7 @@ A strong solution will:
 * Remain clear and maintainable  
 * Continue to function well as requirements evolve
 
----
-
-## **💡 Tip for Candidates**
+### **💡 Tip for Candidates**
 
 When making design decisions, consider:
 
