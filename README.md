@@ -31,7 +31,8 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 
 - Knowledge Badges for your profile (e.g., 🟢 _TDD Specialist_, 🟢 _Clean Architecture_)
 - A chance to present to the dev community on Demo Day
-- Season Champion recognition and prizes every 3 months
+- **Team vouchers** for 1st, 2nd, and 3rd place at **each** coding challenge
+- **Season Champion** — highest Season Score wins a **Mac mini M4** at the end of the season
 
 ---
 
@@ -229,7 +230,7 @@ coding-challenge-{number}/<your-team-name>/
 
 ## 🏆 Scoring, Leaderboard & Prizes
 
-> **TL;DR** — Each challenge is scored out of 100 (+ bonus). Points are tracked per individual across a 3-month season. The top scorer wins the Special Prize.
+> **TL;DR** — Each challenge is scored out of 100 (+ bonus). Points are tracked per individual across each season of **four** coding challenges; your **Season Score** uses your **top three** challenge scores only. The highest Season Score wins the **Special Prize** (Mac mini M4). **Teams** placing 1st, 2nd, and 3rd at each challenge still receive **vouchers** for that round.
 
 ### How Points Work for Teams vs Individuals
 
@@ -287,64 +288,57 @@ Earned during Demo Day and added to your **Season Total**.
 
 ---
 
-### The Long-Run Leaderboard (3-Month Seasons)
+### The Long-Run Leaderboard (Seasons)
 
-Your **Season Score** determines who wins the Special Prize.
+Your **Season Score** determines who wins the **Special Prize** for the season: a **Mac mini M4**.
 
-**The "Best of 3" Rule:** Your season score uses your **two highest monthly scores** plus participation points. This means missing one month won't knock you out.
+Each **season** runs for **four** coding challenges. Your season score is the sum of your **three highest** challenge scores from that season—the fourth (lowest) score is dropped. If you complete **fewer than four** challenges, there is no extra score to drop: your season score is still the sum of your **three highest** scores among the challenges you entered (or all of your scores if you have fewer than three). There are no separate participation or placement bonuses on top of this.
+
+**The "Best of 3 (of 4)" Rule:**
 
 ```
-Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuses)
+Season Score = (Top Score 1) + (Top Score 2) + (Top Score 3)
 ```
-
-| Achievement               | Season Points                  |
-| ------------------------- | ------------------------------ |
-| **Monthly Participation** | 10 pts per challenge joined    |
-| **Top Players**           | 1st: +30 / 2nd: +20 / 3rd: +10 |
 
 <details>
 <summary><strong>Example: Alice vs Bob (click to expand)</strong></summary>
 
-**Alice (The Consistent Performer)** — Submits every month, never hits 1st place.
+**Alice (The Consistent Performer)** — Completes all four challenges; one rough round is dropped.
 
-| Month | Score  | Placement |
-| ----- | ------ | --------- |
-| Jan   | 80     | —         |
-| Feb   | **85** | —         |
-| Mar   | **82** | —         |
+| Challenge | Score  |
+| --------- | ------ |
+| C1        | 80     |
+| C2        | **85** |
+| C3        | **82** |
+| C4        | 45     |
 
-- Top 2 Scores: 85 + 82 = **167**
-- Participation: 3 x 10 = **30**
-- Top Players Bonus: **0**
-- **Season Total: 197**
+- Top 3 Scores: 85 + 82 + 80 = **247** (45 dropped)
+- **Season Total: 247**
 
 ---
 
-**Bob (The High-Flyer who got Busy)** — Brilliant, but missed February entirely.
+**Bob (Three Strong Rounds)** — Only takes part in three challenges this season—every score counts; there is no fourth score to drop.
 
-| Month | Score  | Placement |
-| ----- | ------ | --------- |
-| Jan   | **95** | 1st (+30) |
-| Feb   | 0      | —         |
-| Mar   | **90** | 2nd (+20) |
+| Challenge | Score  |
+| --------- | ------ |
+| C1        | **95** |
+| C2        | **90** |
+| C3        | **88** |
+| C4        | —      |
 
-- Top 2 Scores: 95 + 90 = **185**
-- Participation: 2 x 10 = **20**
-- Top Players Bonus: 30 + 20 = **50**
-- **Season Total: 255**
+- Top 3 Scores: 95 + 90 + 88 = **273**
+- **Season Total: 273**
 
 ---
 
 **Comparison**
 
-|                   | Alice (Steady) | Bob (Spiky) |
-| ----------------- | -------------- | ----------- |
-| **Top 2 Scores**  | 167            | 185         |
-| **Participation** | 30             | 20          |
-| **Top Players**   | 0              | 50          |
-| **SEASON SCORE**  | **197**        | **255**     |
+|                  | Alice (4 challenges) | Bob (3 challenges) |
+| ---------------- | -------------------- | ------------------ |
+| **Top 3 Scores** | 247                  | 273                |
+| **SEASON SCORE** | **247**              | **273**            |
 
-> Takeaway: Consistency is great, but high performance + community engagement can pull ahead!
+> Takeaway: Having four scores lets you drop your weakest one. With only three scores, all of them count toward the same top-three cap—so one off week can’t be discarded.
 
 </details>
 
@@ -352,14 +346,15 @@ Season Score = (Top Score 1) + (Top Score 2) + (Participation & Placement Bonuse
 
 ### 🎁 Prizes & Recognition
 
-**Monthly:**
+**Each coding challenge:**
 
+- 🎟️ **Team vouchers (1st, 2nd, 3rd)** — The top three **teams** for that challenge each receive vouchers according to placement (1st, 2nd, 3rd). This is unchanged: even with the season-long leaderboard, every challenge still has its own team podium and prizes.
 - 🏅 Knowledge Badges for skills demonstrated (e.g., 🟢 _TDD Specialist_, 🟢 _Clean Architecture_)
 - 🎤 Top 3 get the Demo Slot to present to the entire dev community
 
-**End of Season (every 3 months):**
+**End of each season:**
 
-- 🏆 **The Season Champion** — Highest total Season Score
+- 🏆 **The Season Champion (Special Prize)** — Highest **Season Score** wins a **Mac mini M4**
 
 ---
 
