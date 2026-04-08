@@ -1,0 +1,60 @@
+services:
+  charging-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: charging-service
+        PORT: "8003"
+    ports:
+      - "8003:8003"
+      - "50052:50052"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  provider-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: provider-service
+        PORT: "8002"
+    ports:
+      - "8002:8002"
+      - "50051:50051"
+    environment:
+      - CHARGING_GRPC_TARGET=charging-service:50052
+    depends_on:
+      charging-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: notification-service
+        PORT: "8001"
+    ports:
+      - "8001:8001"
+    environment:
+      - PROVIDER_GRPC_TARGET=provider-service:50051
+      - CHARGING_GRPC_TARGET=charging-service:50052
+    depends_on:
+      provider-service:
+        condition: service_healthy
+      charging-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10

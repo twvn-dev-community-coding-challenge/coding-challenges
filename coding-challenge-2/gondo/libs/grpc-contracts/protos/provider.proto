@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package gondo.provider;
+
+import "google/protobuf/timestamp.proto";
+
+message RoutingCandidate {
+  string provider_id = 1;
+  string provider_code = 2;
+  string routing_rule_id = 3;
+  int32 routing_rule_version = 4;
+}
+
+message PolicyContext {
+  string policy = 1;
+  string message_id = 2;
+}
+
+message ResolveRoutingRequest {
+  string country = 1;
+  string carrier = 2;
+  google.protobuf.Timestamp as_of = 3;
+}
+
+message ResolveRoutingResponse {
+  repeated RoutingCandidate candidates = 1;
+}
+
+message SelectProviderRequest {
+  string country = 1;
+  string carrier = 2;
+  google.protobuf.Timestamp as_of = 3;
+  PolicyContext policy_context = 4;
+}
+
+message SelectProviderResponse {
+  string selected_provider_id = 1;
+  string selected_provider_code = 2;
+  string selection_policy = 3;
+  string selection_reason = 4;
+  string routing_rule_id = 5;
+  int32 routing_rule_version = 6;
+}
+
+service ProviderService {
+  rpc ResolveRouting(ResolveRoutingRequest) returns (ResolveRoutingResponse);
+  rpc SelectProvider(SelectProviderRequest) returns (SelectProviderResponse);
+}

@@ -1,0 +1,49 @@
+{
+  "name": "charging-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/charging-service",
+  "implicitDependencies": ["grpc-contracts"],
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m uvicorn main:app --reload --port 8003",
+        "cwd": "apps/charging-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts"
+        }
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m pytest",
+        "cwd": "apps/charging-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m ruff check .",
+        "cwd": "apps/charging-service"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build", "grpc-contracts:generate"],
+      "inputs": ["default", "^default"],
+      "options": {
+        "command": "../../.venv/bin/python3 -m ruff check . && ../../.venv/bin/python3 -c \"from main import app\"",
+        "cwd": "apps/charging-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts"
+        }
+      }
+    }
+  },
+  "tags": ["python", "fastapi"]
+}

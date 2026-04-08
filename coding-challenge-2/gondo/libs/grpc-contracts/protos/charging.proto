@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package gondo.charging;
+
+import "google/protobuf/timestamp.proto";
+
+message EstimateCostRequest {
+  string message_id = 1;
+  string provider_id = 2;
+  string country_code = 3;
+  string carrier = 4;
+  google.protobuf.Timestamp as_of = 5;
+}
+
+message EstimateCostResponse {
+  string estimate_id = 1;
+  double estimated_cost = 2;
+  string currency = 3;
+  string rate_id = 4;
+  int32 rate_version = 5;
+}
+
+message RecordActualCostRequest {
+  string message_id = 1;
+  string provider_id = 2;
+  string provider_event_id = 3;
+  string idempotency_key = 4;
+  double actual_cost = 5;
+  string currency = 6;
+  string callback_state = 7;
+  google.protobuf.Timestamp recorded_at = 8;
+}
+
+message RecordActualCostResponse {
+  string actual_cost_id = 1;
+  string message_id = 2;
+  double actual_cost = 3;
+  bool idempotent_replay = 4;
+}
+
+service ChargingService {
+  rpc EstimateCost(EstimateCostRequest) returns (EstimateCostResponse);
+  rpc RecordActualCost(RecordActualCostRequest) returns (RecordActualCostResponse);
+}
