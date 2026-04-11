@@ -12,3 +12,4 @@ dist/
 .ruff_cache/
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
+logs/

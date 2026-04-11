@@ -7,7 +7,6 @@ dist/
 .git/
 .cursor/
 docs/
-apps/frontend/
 *.egg-info/
 .pytest_cache/
 .ruff_cache/

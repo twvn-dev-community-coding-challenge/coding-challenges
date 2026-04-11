@@ -1,0 +1,9 @@
+{
+  "name": "ts-core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ts-core/src",
+  "projectType": "library",
+  "tags": ["typescript", "shared"],
+  "implicitDependencies": [],
+  "targets": {}
+}

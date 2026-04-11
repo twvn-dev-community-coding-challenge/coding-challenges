@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start charging → provider → notification for local E2E / Postman testing.
+# Start charging → provider → notification, then frontend, for local E2E / Postman testing.
 set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -11,6 +11,7 @@ YELLOW='\033[0;33m'
 CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 BLUE='\033[0;34m'
+WHITE='\033[0;37m'
 BOLD='\033[1m'
 NC='\033[0m'
 
@@ -21,10 +22,11 @@ usage() {
   cat <<'EOF'
 Usage: start-all.sh [--help]
 
-  Start all Python/FastAPI backend services in dependency order:
-  charging-service (8003) → provider-service (8002) → notification-service (8001).
+  Start all Python/FastAPI backend services in dependency order, then the React frontend:
+  charging-service (8003) → provider-service (8002) → notification-service (8001)
+  → frontend dev server (4200).
 
-  Requires a virtual environment at .venv/ and curl for health checks.
+  Requires a virtual environment at .venv/, Node/Yarn for the frontend, and curl for health checks.
   Press Ctrl+C to stop all services.
 
 Options:
@@ -60,14 +62,14 @@ cleanup() {
   done
   sleep 1
   local port pids
-  for port in 8001 8002 8003; do
+  for port in 8001 8002 8003 4200; do
     pids=$(lsof -nP -iTCP:"${port}" -sTCP:LISTEN -t 2>/dev/null || true)
     if [[ -n "${pids}" ]]; then
       kill ${pids} 2>/dev/null || true
     fi
   done
   sleep 0.5
-  for port in 8001 8002 8003; do
+  for port in 8001 8002 8003 4200; do
     pids=$(lsof -nP -iTCP:"${port}" -sTCP:LISTEN -t 2>/dev/null || true)
     if [[ -n "${pids}" ]]; then
       kill -9 ${pids} 2>/dev/null || true
@@ -114,6 +116,32 @@ wait_for_health() {
   return 1
 }
 
+wait_for_frontend() {
+  local attempt=0
+  local max=120
+  echo -e "${YELLOW}Waiting for frontend (http://localhost:4200/)...${NC}"
+  while ((attempt < max)); do
+    if curl -sf http://localhost:4200/ >/dev/null 2>&1; then
+      echo -e "${GREEN}frontend is up.${NC}"
+      return 0
+    fi
+    attempt=$((attempt + 1))
+    sleep 0.5
+  done
+  echo -e "${RED}Timeout waiting for frontend on port 4200.${NC}" >&2
+  return 1
+}
+
+start_frontend() {
+  local tag=$1
+  local color=$2
+  (
+    cd "${ROOT}" || exit 1
+    exec yarn nx run frontend:serve
+  ) > >(prefix_pipe "${tag}" "${color}") 2>&1 &
+  PIDS+=($!)
+}
+
 start_uvicorn() {
   local tag=$1
   local color=$2
@@ -150,10 +178,19 @@ wait_for_health 8001 "notification-service" || {
   exit 1
 }
 
+echo -e "${WHITE}[bootstrap]${NC} Starting frontend (4200)..."
+start_frontend "frontend" "${WHITE}"
+sleep 1
+wait_for_frontend || {
+  cleanup
+  exit 1
+}
+
 echo ""
 echo -e "${BOLD}${GREEN}============================================${NC}"
 echo -e "${BOLD}${GREEN}  All services are running!${NC}"
 echo -e "${BOLD}${GREEN}============================================${NC}"
+echo -e "  Frontend:                     http://localhost:4200"
 echo -e "  Notification Service (main):  http://localhost:8001"
 echo -e "  Provider Service:             http://localhost:8002"
 echo -e "  Charging Service:             http://localhost:8003"

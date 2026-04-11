@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import uuid
 from datetime import datetime, timezone
 
@@ -22,6 +23,7 @@ from models import (
     is_valid_transition,
 )
 from py_core.app import create_app
+from py_core.logging import _should_log_payloads, configure_logging
 from store import (
     add_transition_event,
     create_notification,
@@ -155,9 +157,16 @@ def _record_transition(
     )
 
 
+_LOGS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
+configure_logging(service_name="notification-service", log_dir=_LOGS_DIR)
+
+_PAYLOAD_LOGGING = _should_log_payloads(None)
+
 app = create_app(
     title="Notification Service",
     description="SMS lifecycle orchestration",
+    service_name="notification-service",
+    enable_payload_logging=_PAYLOAD_LOGGING,
 )
 
 

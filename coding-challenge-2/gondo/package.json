@@ -9,8 +9,8 @@
   },
   "scripts": {
     "nx": "nx",
-    "start": "bash scripts/start-all.sh",
-    "stop": "bash scripts/stop-all.sh",
+    "start": "LOG_LEVEL=DEBUG LOG_PAYLOADS=true ./scripts/start-all.sh",
+    "stop": "./scripts/stop-all.sh",
     "docker:up": "docker-compose up --build -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f"
@@ -54,7 +54,13 @@
     "vitest": "~4.1.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource/roboto": "^5.2.10",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router": "^7.14.0"
   }
 }
