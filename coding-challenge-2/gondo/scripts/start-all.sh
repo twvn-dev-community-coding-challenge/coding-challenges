@@ -88,7 +88,7 @@ fi
 # shellcheck source=/dev/null
 source "${ROOT}/.venv/bin/activate"
 
-export PYTHONPATH="${ROOT}/libs/grpc-contracts${PYTHONPATH:+:${PYTHONPATH}}"
+export PYTHONPATH="${ROOT}/libs/grpc-contracts:${ROOT}/libs/py-core${PYTHONPATH:+:${PYTHONPATH}}"
 export PYTHONUNBUFFERED=1
 
 echo -e "${BOLD}${GREEN}Workspace:${NC} ${ROOT}"
@@ -160,14 +160,15 @@ echo -e "  Charging Service:             http://localhost:8003"
 echo ""
 echo -e "  Test endpoints:"
 echo -e "    GET http://localhost:8001/health"
-echo -e "    GET http://localhost:8001/test-grpc/provider"
-echo -e "    GET http://localhost:8001/test-grpc/charging"
-echo -e "    GET http://localhost:8002/test-grpc/charging"
 echo ""
-echo -e "  Swagger UI:"
+echo -e "  Swagger UI (REST):"
 echo -e "    http://localhost:8001/docs  (Notification)"
 echo -e "    http://localhost:8002/docs  (Provider)"
 echo -e "    http://localhost:8003/docs  (Charging)"
+echo ""
+echo -e "  gRPC Reflection (grpcurl / grpcui):"
+echo -e "    Provider  :50051  ${CYAN}grpcui -plaintext localhost:50051${NC}"
+echo -e "    Charging  :50052  ${CYAN}grpcui -plaintext localhost:50052${NC}"
 echo ""
 echo -e "  ${BOLD}Press Ctrl+C to stop all services.${NC}"
 echo -e "${BOLD}${GREEN}============================================${NC}"

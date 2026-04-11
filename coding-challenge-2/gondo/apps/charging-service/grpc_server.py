@@ -1,19 +1,52 @@
-"""gRPC server for charging-service (placeholder servicer)."""
+"""gRPC servicer for charging-service."""
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
+import grpc
+from grpc import aio
 
-_CONTRACTS = Path(__file__).resolve().parents[2] / "libs" / "grpc-contracts"
-if str(_CONTRACTS) not in sys.path:
-    sys.path.insert(0, str(_CONTRACTS))
+from generated import charging_pb2, charging_pb2_grpc
+from py_core.proto_utils import as_utc, datetime_to_timestamp
+from rates import (
+    ActualCostRecord,
+    EstimateRecord,
+    estimate_cost,
+    estimate_cost_batch,
+    record_actual_cost,
+)
 
-from grpc import aio  # noqa: E402
 
-from generated import charging_pb2, charging_pb2_grpc  # noqa: E402
+def _estimate_record_to_proto(rec: EstimateRecord) -> charging_pb2.EstimateCostResponse:
+    return charging_pb2.EstimateCostResponse(
+        estimate_id=rec.estimate_id,
+        estimated_cost=rec.estimated_cost,
+        currency=rec.currency,
+        rate_id=rec.rate_id,
+        rate_version=rec.rate_version,
+        created_at=datetime_to_timestamp(rec.created_at),
+    )
 
-CHARGING_GRPC_BIND = "0.0.0.0:50052"
+
+def _batch_item_from_record(rec: EstimateRecord) -> charging_pb2.EstimateCostBatchItem:
+    return charging_pb2.EstimateCostBatchItem(
+        provider_id=rec.provider_id,
+        estimate_id=rec.estimate_id,
+        estimated_cost=rec.estimated_cost,
+        currency=rec.currency,
+        rate_id=rec.rate_id,
+        rate_version=rec.rate_version,
+    )
+
+
+def _actual_record_to_proto(
+    rec: ActualCostRecord,
+) -> charging_pb2.RecordActualCostResponse:
+    return charging_pb2.RecordActualCostResponse(
+        actual_cost_id=rec.actual_cost_id,
+        message_id=rec.message_id,
+        actual_cost=rec.actual_cost,
+        idempotent_replay=rec.idempotent_replay,
+    )
 
 
 class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
@@ -22,12 +55,45 @@ class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
         request: charging_pb2.EstimateCostRequest,
         context: aio.ServicerContext,
     ) -> charging_pb2.EstimateCostResponse:
-        return charging_pb2.EstimateCostResponse(
-            estimate_id="est-mock-1",
-            estimated_cost=0.0123,
-            currency="USD",
-            rate_id="rate-mock-1",
-            rate_version=1,
+        if not request.HasField("as_of"):
+            await context.abort(
+                grpc.StatusCode.INVALID_ARGUMENT,
+                "as_of is required",
+            )
+        as_of = as_utc(request.as_of.ToDatetime())
+        rec = estimate_cost(
+            request.message_id,
+            request.provider_id,
+            request.country_code,
+            request.carrier,
+            as_of,
+        )
+        if rec is None:
+            await context.abort(
+                grpc.StatusCode.NOT_FOUND,
+                "RATE_NOT_AVAILABLE",
+            )
+        return _estimate_record_to_proto(rec)
+
+    async def EstimateCostBatch(
+        self,
+        request: charging_pb2.EstimateCostBatchRequest,
+        context: aio.ServicerContext,
+    ) -> charging_pb2.EstimateCostBatchResponse:
+        if not request.HasField("as_of"):
+            await context.abort(
+                grpc.StatusCode.INVALID_ARGUMENT,
+                "as_of is required",
+            )
+        as_of = as_utc(request.as_of.ToDatetime())
+        rows = estimate_cost_batch(
+            list(request.provider_ids),
+            request.country_code,
+            request.carrier,
+            as_of,
+        )
+        return charging_pb2.EstimateCostBatchResponse(
+            estimates=[_batch_item_from_record(r) for r in rows],
         )
 
     async def RecordActualCost(
@@ -35,17 +101,20 @@ class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
         request: charging_pb2.RecordActualCostRequest,
         context: aio.ServicerContext,
     ) -> charging_pb2.RecordActualCostResponse:
-        return charging_pb2.RecordActualCostResponse(
-            actual_cost_id="actual-mock-1",
+        if not request.HasField("recorded_at"):
+            await context.abort(
+                grpc.StatusCode.INVALID_ARGUMENT,
+                "recorded_at is required",
+            )
+        recorded_at = as_utc(request.recorded_at.ToDatetime())
+        rec = record_actual_cost(
             message_id=request.message_id,
+            provider_id=request.provider_id,
+            provider_event_id=request.provider_event_id,
+            idempotency_key=request.idempotency_key,
             actual_cost=request.actual_cost,
-            idempotent_replay=False,
+            currency=request.currency,
+            callback_state=request.callback_state,
+            recorded_at=recorded_at,
         )
-
-
-async def create_and_start_charging_grpc_server() -> aio.Server:
-    server = aio.server()
-    charging_pb2_grpc.add_ChargingServiceServicer_to_server(ChargingGrpcServicer(), server)
-    server.add_insecure_port(CHARGING_GRPC_BIND)
-    await server.start()
-    return server
+        return _actual_record_to_proto(rec)

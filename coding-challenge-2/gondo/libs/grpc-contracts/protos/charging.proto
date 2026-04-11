@@ -18,6 +18,27 @@ message EstimateCostResponse {
   string currency = 3;
   string rate_id = 4;
   int32 rate_version = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message EstimateCostBatchRequest {
+  repeated string provider_ids = 1;
+  string country_code = 2;
+  string carrier = 3;
+  google.protobuf.Timestamp as_of = 4;
+}
+
+message EstimateCostBatchItem {
+  string provider_id = 1;
+  string estimate_id = 2;
+  double estimated_cost = 3;
+  string currency = 4;
+  string rate_id = 5;
+  int32 rate_version = 6;
+}
+
+message EstimateCostBatchResponse {
+  repeated EstimateCostBatchItem estimates = 1;
 }
 
 message RecordActualCostRequest {
@@ -40,5 +61,6 @@ message RecordActualCostResponse {
 
 service ChargingService {
   rpc EstimateCost(EstimateCostRequest) returns (EstimateCostResponse);
+  rpc EstimateCostBatch(EstimateCostBatchRequest) returns (EstimateCostBatchResponse);
   rpc RecordActualCost(RecordActualCostRequest) returns (RecordActualCostResponse);
 }

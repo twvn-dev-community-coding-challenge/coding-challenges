@@ -39,6 +39,11 @@ class ChargingServiceStub(object):
                 request_serializer=charging__pb2.EstimateCostRequest.SerializeToString,
                 response_deserializer=charging__pb2.EstimateCostResponse.FromString,
                 _registered_method=True)
+        self.EstimateCostBatch = channel.unary_unary(
+                '/gondo.charging.ChargingService/EstimateCostBatch',
+                request_serializer=charging__pb2.EstimateCostBatchRequest.SerializeToString,
+                response_deserializer=charging__pb2.EstimateCostBatchResponse.FromString,
+                _registered_method=True)
         self.RecordActualCost = channel.unary_unary(
                 '/gondo.charging.ChargingService/RecordActualCost',
                 request_serializer=charging__pb2.RecordActualCostRequest.SerializeToString,
@@ -50,6 +55,12 @@ class ChargingServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def EstimateCost(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def EstimateCostBatch(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -68,6 +79,11 @@ def add_ChargingServiceServicer_to_server(servicer, server):
                     servicer.EstimateCost,
                     request_deserializer=charging__pb2.EstimateCostRequest.FromString,
                     response_serializer=charging__pb2.EstimateCostResponse.SerializeToString,
+            ),
+            'EstimateCostBatch': grpc.unary_unary_rpc_method_handler(
+                    servicer.EstimateCostBatch,
+                    request_deserializer=charging__pb2.EstimateCostBatchRequest.FromString,
+                    response_serializer=charging__pb2.EstimateCostBatchResponse.SerializeToString,
             ),
             'RecordActualCost': grpc.unary_unary_rpc_method_handler(
                     servicer.RecordActualCost,
@@ -102,6 +118,33 @@ class ChargingService(object):
             '/gondo.charging.ChargingService/EstimateCost',
             charging__pb2.EstimateCostRequest.SerializeToString,
             charging__pb2.EstimateCostResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def EstimateCostBatch(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/gondo.charging.ChargingService/EstimateCostBatch',
+            charging__pb2.EstimateCostBatchRequest.SerializeToString,
+            charging__pb2.EstimateCostBatchResponse.FromString,
             options,
             channel_credentials,
             insecure,

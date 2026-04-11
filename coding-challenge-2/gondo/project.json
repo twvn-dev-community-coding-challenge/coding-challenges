@@ -10,6 +10,16 @@
         "command": "bash scripts/start-all.sh",
         "cwd": "."
       }
+    },
+    "generate-contracts": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "yarn nx run grpc-contracts:generate",
+          "yarn nx run notification-service:generate-openapi"
+        ],
+        "parallel": false
+      }
     }
   },
   "tags": ["devtools", "python"]

@@ -15,7 +15,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "../../.venv/bin/python3 -m ruff check scripts tests __init__.py",
+        "command": "../../.venv/bin/python3 -m ruff check scripts tests __init__.py reflection.py",
         "cwd": "libs/grpc-contracts"
       }
     },

@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x63harging.proto\x12\x0egondo.charging\x1a\x1fgoogle/protobuf/timestamp.proto\"\x90\x01\n\x13\x45stimateCostRequest\x12\x12\n\nmessage_id\x18\x01 \x01(\t\x12\x13\n\x0bprovider_id\x18\x02 \x01(\t\x12\x14\n\x0c\x63ountry_code\x18\x03 \x01(\t\x12\x0f\n\x07\x63\x61rrier\x18\x04 \x01(\t\x12)\n\x05\x61s_of\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"|\n\x14\x45stimateCostResponse\x12\x13\n\x0b\x65stimate_id\x18\x01 \x01(\t\x12\x16\n\x0e\x65stimated_cost\x18\x02 \x01(\x01\x12\x10\n\x08\x63urrency\x18\x03 \x01(\t\x12\x0f\n\x07rate_id\x18\x04 \x01(\t\x12\x14\n\x0crate_version\x18\x05 \x01(\x05\"\xe6\x01\n\x17RecordActualCostRequest\x12\x12\n\nmessage_id\x18\x01 \x01(\t\x12\x13\n\x0bprovider_id\x18\x02 \x01(\t\x12\x19\n\x11provider_event_id\x18\x03 \x01(\t\x12\x17\n\x0fidempotency_key\x18\x04 \x01(\t\x12\x13\n\x0b\x61\x63tual_cost\x18\x05 \x01(\x01\x12\x10\n\x08\x63urrency\x18\x06 \x01(\t\x12\x16\n\x0e\x63\x61llback_state\x18\x07 \x01(\t\x12/\n\x0brecorded_at\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"v\n\x18RecordActualCostResponse\x12\x16\n\x0e\x61\x63tual_cost_id\x18\x01 \x01(\t\x12\x12\n\nmessage_id\x18\x02 \x01(\t\x12\x13\n\x0b\x61\x63tual_cost\x18\x03 \x01(\x01\x12\x19\n\x11idempotent_replay\x18\x04 \x01(\x08\x32\xd3\x01\n\x0f\x43hargingService\x12Y\n\x0c\x45stimateCost\x12#.gondo.charging.EstimateCostRequest\x1a$.gondo.charging.EstimateCostResponse\x12\x65\n\x10RecordActualCost\x12\'.gondo.charging.RecordActualCostRequest\x1a(.gondo.charging.RecordActualCostResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x63harging.proto\x12\x0egondo.charging\x1a\x1fgoogle/protobuf/timestamp.proto\"\x90\x01\n\x13\x45stimateCostRequest\x12\x12\n\nmessage_id\x18\x01 \x01(\t\x12\x13\n\x0bprovider_id\x18\x02 \x01(\t\x12\x14\n\x0c\x63ountry_code\x18\x03 \x01(\t\x12\x0f\n\x07\x63\x61rrier\x18\x04 \x01(\t\x12)\n\x05\x61s_of\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\xac\x01\n\x14\x45stimateCostResponse\x12\x13\n\x0b\x65stimate_id\x18\x01 \x01(\t\x12\x16\n\x0e\x65stimated_cost\x18\x02 \x01(\x01\x12\x10\n\x08\x63urrency\x18\x03 \x01(\t\x12\x0f\n\x07rate_id\x18\x04 \x01(\t\x12\x14\n\x0crate_version\x18\x05 \x01(\x05\x12.\n\ncreated_at\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x82\x01\n\x18\x45stimateCostBatchRequest\x12\x14\n\x0cprovider_ids\x18\x01 \x03(\t\x12\x14\n\x0c\x63ountry_code\x18\x02 \x01(\t\x12\x0f\n\x07\x63\x61rrier\x18\x03 \x01(\t\x12)\n\x05\x61s_of\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x92\x01\n\x15\x45stimateCostBatchItem\x12\x13\n\x0bprovider_id\x18\x01 \x01(\t\x12\x13\n\x0b\x65stimate_id\x18\x02 \x01(\t\x12\x16\n\x0e\x65stimated_cost\x18\x03 \x01(\x01\x12\x10\n\x08\x63urrency\x18\x04 \x01(\t\x12\x0f\n\x07rate_id\x18\x05 \x01(\t\x12\x14\n\x0crate_version\x18\x06 \x01(\x05\"U\n\x19\x45stimateCostBatchResponse\x12\x38\n\testimates\x18\x01 \x03(\x0b\x32%.gondo.charging.EstimateCostBatchItem\"\xe6\x01\n\x17RecordActualCostRequest\x12\x12\n\nmessage_id\x18\x01 \x01(\t\x12\x13\n\x0bprovider_id\x18\x02 \x01(\t\x12\x19\n\x11provider_event_id\x18\x03 \x01(\t\x12\x17\n\x0fidempotency_key\x18\x04 \x01(\t\x12\x13\n\x0b\x61\x63tual_cost\x18\x05 \x01(\x01\x12\x10\n\x08\x63urrency\x18\x06 \x01(\t\x12\x16\n\x0e\x63\x61llback_state\x18\x07 \x01(\t\x12/\n\x0brecorded_at\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"v\n\x18RecordActualCostResponse\x12\x16\n\x0e\x61\x63tual_cost_id\x18\x01 \x01(\t\x12\x12\n\nmessage_id\x18\x02 \x01(\t\x12\x13\n\x0b\x61\x63tual_cost\x18\x03 \x01(\x01\x12\x19\n\x11idempotent_replay\x18\x04 \x01(\x08\x32\xbd\x02\n\x0f\x43hargingService\x12Y\n\x0c\x45stimateCost\x12#.gondo.charging.EstimateCostRequest\x1a$.gondo.charging.EstimateCostResponse\x12h\n\x11\x45stimateCostBatch\x12(.gondo.charging.EstimateCostBatchRequest\x1a).gondo.charging.EstimateCostBatchResponse\x12\x65\n\x10RecordActualCost\x12\'.gondo.charging.RecordActualCostRequest\x1a(.gondo.charging.RecordActualCostResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,12 +34,18 @@ if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_ESTIMATECOSTREQUEST']._serialized_start=68
   _globals['_ESTIMATECOSTREQUEST']._serialized_end=212
-  _globals['_ESTIMATECOSTRESPONSE']._serialized_start=214
-  _globals['_ESTIMATECOSTRESPONSE']._serialized_end=338
-  _globals['_RECORDACTUALCOSTREQUEST']._serialized_start=341
-  _globals['_RECORDACTUALCOSTREQUEST']._serialized_end=571
-  _globals['_RECORDACTUALCOSTRESPONSE']._serialized_start=573
-  _globals['_RECORDACTUALCOSTRESPONSE']._serialized_end=691
-  _globals['_CHARGINGSERVICE']._serialized_start=694
-  _globals['_CHARGINGSERVICE']._serialized_end=905
+  _globals['_ESTIMATECOSTRESPONSE']._serialized_start=215
+  _globals['_ESTIMATECOSTRESPONSE']._serialized_end=387
+  _globals['_ESTIMATECOSTBATCHREQUEST']._serialized_start=390
+  _globals['_ESTIMATECOSTBATCHREQUEST']._serialized_end=520
+  _globals['_ESTIMATECOSTBATCHITEM']._serialized_start=523
+  _globals['_ESTIMATECOSTBATCHITEM']._serialized_end=669
+  _globals['_ESTIMATECOSTBATCHRESPONSE']._serialized_start=671
+  _globals['_ESTIMATECOSTBATCHRESPONSE']._serialized_end=756
+  _globals['_RECORDACTUALCOSTREQUEST']._serialized_start=759
+  _globals['_RECORDACTUALCOSTREQUEST']._serialized_end=989
+  _globals['_RECORDACTUALCOSTRESPONSE']._serialized_start=991
+  _globals['_RECORDACTUALCOSTRESPONSE']._serialized_end=1109
+  _globals['_CHARGINGSERVICE']._serialized_start=1112
+  _globals['_CHARGINGSERVICE']._serialized_end=1429
 # @@protoc_insertion_point(module_scope)

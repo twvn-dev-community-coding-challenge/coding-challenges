@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/charging-service",
-  "implicitDependencies": ["grpc-contracts"],
+  "implicitDependencies": ["grpc-contracts", "py-core"],
   "targets": {
     "serve": {
       "executor": "nx:run-commands",
@@ -11,7 +11,7 @@
         "command": "../../.venv/bin/python3 -m uvicorn main:app --reload --port 8003",
         "cwd": "apps/charging-service",
         "env": {
-          "PYTHONPATH": "../../libs/grpc-contracts"
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
         }
       }
     },
@@ -21,7 +21,7 @@
         "command": "../../.venv/bin/python3 -m pytest",
         "cwd": "apps/charging-service",
         "env": {
-          "PYTHONPATH": "../../libs/grpc-contracts"
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
         }
       }
     },
@@ -40,7 +40,7 @@
         "command": "../../.venv/bin/python3 -m ruff check . && ../../.venv/bin/python3 -c \"from main import app\"",
         "cwd": "apps/charging-service",
         "env": {
-          "PYTHONPATH": "../../libs/grpc-contracts"
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
         }
       }
     }

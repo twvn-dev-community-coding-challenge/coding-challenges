@@ -1,24 +1,17 @@
-from contextlib import asynccontextmanager
+from generated import charging_pb2, charging_pb2_grpc
+from py_core.app import create_app
+from py_core.server import grpc_lifespan
 
-from fastapi import FastAPI
+from grpc_server import ChargingGrpcServicer
 
-from grpc_server import create_and_start_charging_grpc_server
-
-
-@asynccontextmanager
-async def lifespan(_app: FastAPI):
-    grpc_server = await create_and_start_charging_grpc_server()
-    yield
-    await grpc_server.stop(5.0)
-
-
-app = FastAPI(
+app = create_app(
     title="Charging Service",
     description="Cost estimation and recording",
-    lifespan=lifespan,
+    lifespan=grpc_lifespan(
+        servicers=[
+            (charging_pb2_grpc.add_ChargingServiceServicer_to_server, ChargingGrpcServicer()),
+        ],
+        descriptors=[charging_pb2.DESCRIPTOR],
+        bind="0.0.0.0:50052",
+    ),
 )
-
-
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}

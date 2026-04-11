@@ -9,6 +9,9 @@ message RoutingCandidate {
   string provider_code = 2;
   string routing_rule_id = 3;
   int32 routing_rule_version = 4;
+  google.protobuf.Timestamp effective_from = 5;
+  google.protobuf.Timestamp effective_to = 6;
+  google.protobuf.Timestamp resolved_at = 7;
 }
 
 message PolicyContext {
@@ -17,7 +20,7 @@ message PolicyContext {
 }
 
 message ResolveRoutingRequest {
-  string country = 1;
+  string country_code = 1;
   string carrier = 2;
   google.protobuf.Timestamp as_of = 3;
 }
@@ -27,7 +30,7 @@ message ResolveRoutingResponse {
 }
 
 message SelectProviderRequest {
-  string country = 1;
+  string country_code = 1;
   string carrier = 2;
   google.protobuf.Timestamp as_of = 3;
   PolicyContext policy_context = 4;
@@ -40,6 +43,7 @@ message SelectProviderResponse {
   string selection_reason = 4;
   string routing_rule_id = 5;
   int32 routing_rule_version = 6;
+  google.protobuf.Timestamp selected_at = 7;
 }
 
 service ProviderService {
