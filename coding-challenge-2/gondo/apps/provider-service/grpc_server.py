@@ -14,7 +14,9 @@ from registry import (
 )
 
 
-def _routing_candidate_to_proto(c: DomainRoutingCandidate) -> provider_pb2.RoutingCandidate:
+def _routing_candidate_to_proto(
+    c: DomainRoutingCandidate,
+) -> provider_pb2.RoutingCandidate:
     msg = provider_pb2.RoutingCandidate(
         provider_id=c.provider_id,
         provider_code=c.provider_code,
@@ -40,7 +42,7 @@ class ProviderGrpcServicer(provider_pb2_grpc.ProviderServiceServicer):
                 "as_of is required",
             )
         as_of = as_utc(request.as_of.ToDatetime())
-        candidates = resolve_routing(request.country_code, request.carrier, as_of)
+        candidates = await resolve_routing(request.country_code, request.carrier, as_of)
         if not candidates:
             await context.abort(grpc.StatusCode.NOT_FOUND, "ROUTING_UNRESOLVABLE")
         return provider_pb2.ResolveRoutingResponse(
@@ -63,7 +65,7 @@ class ProviderGrpcServicer(provider_pb2_grpc.ProviderServiceServicer):
         if request.HasField("policy_context"):
             policy = request.policy_context.policy or "highest_precedence"
             message_id = request.policy_context.message_id
-        result = select_provider(
+        result = await select_provider(
             request.country_code,
             request.carrier,
             as_of,

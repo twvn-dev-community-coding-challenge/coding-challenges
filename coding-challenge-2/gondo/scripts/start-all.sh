@@ -93,6 +93,37 @@ source "${ROOT}/.venv/bin/activate"
 export PYTHONPATH="${ROOT}/libs/grpc-contracts:${ROOT}/libs/py-core${PYTHONPATH:+:${PYTHONPATH}}"
 export PYTHONUNBUFFERED=1
 
+# --- Postgres check & migrate ---
+export DATABASE_URL="${DATABASE_URL:-postgresql://gondo:gondo@localhost:5432/gondo}"
+
+echo -e "${YELLOW}Checking Postgres...${NC}"
+if ! docker-compose ps postgres --format '{{.State}}' 2>/dev/null | grep -qi running; then
+  echo -e "${YELLOW}Starting Postgres via docker-compose...${NC}"
+  docker-compose up -d postgres
+fi
+wait_for_health_pg() {
+  local attempt=0
+  local max=60
+  echo -e "${YELLOW}Waiting for Postgres health...${NC}"
+  while ((attempt < max)); do
+    if docker-compose exec -T postgres pg_isready -U gondo -d gondo >/dev/null 2>&1; then
+      echo -e "${GREEN}Postgres is ready.${NC}"
+      return 0
+    fi
+    attempt=$((attempt + 1))
+    sleep 0.5
+  done
+  echo -e "${RED}Timeout waiting for Postgres.${NC}" >&2
+  return 1
+}
+wait_for_health_pg || { cleanup; exit 1; }
+
+echo -e "${YELLOW}Running database migrations...${NC}"
+"${ROOT}/scripts/db-migrate.sh"
+echo -e "${GREEN}Migrations complete.${NC}"
+echo ""
+# --- End Postgres check ---
+
 echo -e "${BOLD}${GREEN}Workspace:${NC} ${ROOT}"
 echo -e "${BOLD}${GREEN}PYTHONPATH:${NC} ${PYTHONPATH}"
 echo ""
@@ -149,6 +180,7 @@ start_uvicorn() {
   local port=$4
   (
     cd "${ROOT}/${app_dir}" || exit 1
+    export DATABASE_URL="${DATABASE_URL:-postgresql://gondo:gondo@localhost:5432/gondo}"
     exec python -m uvicorn main:app --reload --port "${port}"
   ) > >(prefix_pipe "${tag}" "${color}") 2>&1 &
   PIDS+=($!)

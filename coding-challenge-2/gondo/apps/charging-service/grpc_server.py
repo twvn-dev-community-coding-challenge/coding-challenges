@@ -61,7 +61,7 @@ class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
                 "as_of is required",
             )
         as_of = as_utc(request.as_of.ToDatetime())
-        rec = estimate_cost(
+        rec = await estimate_cost(
             request.message_id,
             request.provider_id,
             request.country_code,
@@ -86,7 +86,7 @@ class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
                 "as_of is required",
             )
         as_of = as_utc(request.as_of.ToDatetime())
-        rows = estimate_cost_batch(
+        rows = await estimate_cost_batch(
             list(request.provider_ids),
             request.country_code,
             request.carrier,

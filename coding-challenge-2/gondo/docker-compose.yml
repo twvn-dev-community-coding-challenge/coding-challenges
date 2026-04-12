@@ -1,4 +1,21 @@
 services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: gondo
+      POSTGRES_PASSWORD: gondo
+      POSTGRES_DB: gondo
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gondo -d gondo"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
   charging-service:
     build:
       context: .
@@ -9,6 +26,11 @@ services:
     ports:
       - "8003:8003"
       - "50052:50052"
+    environment:
+      - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
       interval: 5s
@@ -27,6 +49,7 @@ services:
       - "50051:50051"
     environment:
       - CHARGING_GRPC_TARGET=charging-service:50052
+      - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
     depends_on:
       charging-service:
         condition: service_healthy
@@ -48,6 +71,7 @@ services:
     environment:
       - PROVIDER_GRPC_TARGET=provider-service:50051
       - CHARGING_GRPC_TARGET=charging-service:50052
+      - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
     depends_on:
       provider-service:
         condition: service_healthy
@@ -75,3 +99,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+volumes:
+  pgdata:

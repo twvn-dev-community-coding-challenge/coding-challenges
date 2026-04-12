@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from datetime import datetime, timezone
 
 from google.protobuf import timestamp_pb2
@@ -31,7 +30,8 @@ def test_charging_grpc_servicer_instantiates() -> None:
 async def _estimate_vn_viettel_prv01() -> charging_pb2.EstimateCostResponse:
     servicer = ChargingGrpcServicer()
     ts = timestamp_pb2.Timestamp()
-    ts.FromDatetime(datetime(2026, 6, 15, 12, 0, 0, tzinfo=timezone.utc))
+    # Before US3 cutover prv_01 still carries VN/VIETTEL in seeded rates.
+    ts.FromDatetime(datetime(2026, 2, 15, 12, 0, 0, tzinfo=timezone.utc))
     req = charging_pb2.EstimateCostRequest(
         message_id="msg-grpc-1",
         provider_id="prv_01",
@@ -43,11 +43,11 @@ async def _estimate_vn_viettel_prv01() -> charging_pb2.EstimateCostResponse:
     return await servicer.EstimateCost(req, ctx)
 
 
-def test_estimate_cost_returns_result() -> None:
-    resp = asyncio.run(_estimate_vn_viettel_prv01())
+async def test_estimate_cost_returns_result() -> None:
+    resp = await _estimate_vn_viettel_prv01()
     assert resp.estimate_id
     assert resp.estimated_cost == 0.015
     assert resp.currency == "USD"
-    assert resp.rate_id == "rate_101"
+    assert resp.rate_id.startswith("rate_")
     assert resp.rate_version == 1
     assert resp.HasField("created_at")

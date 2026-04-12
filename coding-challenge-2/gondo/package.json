@@ -13,7 +13,11 @@
     "stop": "./scripts/stop-all.sh",
     "docker:up": "docker-compose up --build -d",
     "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f"
+    "docker:logs": "docker-compose logs -f",
+    "db:start": "docker-compose up -d postgres && echo 'Waiting for Postgres...' && sleep 2 && docker-compose exec postgres pg_isready -U gondo -d gondo",
+    "db:stop": "docker-compose stop postgres",
+    "db:migrate": "./scripts/db-migrate.sh",
+    "db:reset": "docker-compose down -v postgres && yarn db:start && yarn db:migrate"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

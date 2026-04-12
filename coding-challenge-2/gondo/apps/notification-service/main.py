@@ -37,13 +37,6 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_ATTEMPTS = 3
 
-PHONE_PREFIX_TO_CARRIER: dict[str, str] = {
-    "+84": "VIETTEL",
-    "+1": "T-MOBILE",
-    "+44": "VODAFONE",
-    "+61": "TELSTRA",
-}
-
 RETRYABLE_STATES: frozenset[str] = frozenset({"Send-failed", "Carrier-rejected"})
 
 
@@ -95,11 +88,13 @@ def error_response(
     return JSONResponse(status_code=status_code, content=payload)
 
 
-def derive_carrier(phone_number: str) -> str:
-    for prefix, carrier in PHONE_PREFIX_TO_CARRIER.items():
-        if phone_number.startswith(prefix):
-            return carrier
-    return "UNKNOWN"
+async def derive_carrier(phone_number: str) -> str:
+    from py_core.db import get_session
+
+    from repository import resolve_carrier
+
+    async with get_session() as session:
+        return await resolve_carrier(session, phone_number)
 
 
 def _datetime_to_iso_z(dt: datetime) -> str:
@@ -274,7 +269,7 @@ async def dispatch_notification(
             status.HTTP_409_CONFLICT,
             {"current_state": n.state},
         )
-    carrier = derive_carrier(n.channel_payload.get("phone_number", ""))
+    carrier = await derive_carrier(n.channel_payload.get("phone_number", ""))
     n.channel_payload = {**n.channel_payload, "carrier": carrier}
     n.updated_at = datetime.now(timezone.utc)
     update_notification(n)
@@ -381,7 +376,7 @@ async def retry_notification(
         as_of_ts.GetCurrentTime()
     carrier = n.channel_payload.get("carrier")
     if not carrier:
-        carrier = derive_carrier(n.channel_payload.get("phone_number", ""))
+        carrier = await derive_carrier(n.channel_payload.get("phone_number", ""))
         n.channel_payload = {**n.channel_payload, "carrier": carrier}
     try:
         response = await select_provider(

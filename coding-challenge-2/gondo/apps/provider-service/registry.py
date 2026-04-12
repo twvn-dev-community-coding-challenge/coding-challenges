@@ -1,11 +1,20 @@
-"""In-memory provider registry and routing rules for provider-service."""
+"""Provider registry and routing rules backed by PostgreSQL (provider_service schema)."""
 
 from __future__ import annotations
 
 import hashlib
+from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Final
+from datetime import datetime
+from uuid import UUID
+
+from py_core.db import get_session
+
+from repository import (
+    fetch_active_routing_rules,
+    fetch_all_providers,
+    fetch_provider_by_code,
+)
 
 # ---------------------------------------------------------------------------
 # Data model (Provider TD Section 5)
@@ -55,162 +64,127 @@ class SelectionResult:
     routing_rule_version: int
 
 
-_EFFECTIVE_START: Final[datetime] = datetime(2026, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
-
-_PROVIDERS_BY_ID: Final[dict[str, Provider]] = {
-    "prv_01": Provider(
-        provider_id="prv_01",
-        provider_code="TWILIO",
-        display_name="Twilio",
+def _provider_from_mapping(m: Mapping[str, object]) -> Provider:
+    code = m.get("code")
+    name = m.get("name")
+    if not isinstance(code, str) or not isinstance(name, str):
+        msg = "provider row must include string code and name"
+        raise TypeError(msg)
+    pcode = name.upper().replace(" ", "_")
+    return Provider(
+        provider_id=code,
+        provider_code=pcode,
+        display_name=name,
         status="active",
-    ),
-    "prv_02": Provider(
-        provider_id="prv_02",
-        provider_code="VONAGE",
-        display_name="Vonage",
-        status="active",
-    ),
-    "prv_03": Provider(
-        provider_id="prv_03",
-        provider_code="SINCH",
-        display_name="Sinch",
-        status="active",
-    ),
-}
-
-_ROUTING_RULES: Final[tuple[RoutingRule, ...]] = (
-    RoutingRule(
-        routing_rule_id="rr_01",
-        routing_rule_version=1,
-        country_code="VN",
-        carrier="VIETTEL",
-        provider_id="prv_02",
-        precedence=100,
-        effective_from=_EFFECTIVE_START,
-        effective_to=None,
-        status="published",
-    ),
-    RoutingRule(
-        routing_rule_id="rr_02",
-        routing_rule_version=1,
-        country_code="VN",
-        carrier="VIETTEL",
-        provider_id="prv_01",
-        precedence=90,
-        effective_from=_EFFECTIVE_START,
-        effective_to=None,
-        status="published",
-    ),
-    RoutingRule(
-        routing_rule_id="rr_03",
-        routing_rule_version=1,
-        country_code="VN",
-        carrier="MOBIFONE",
-        provider_id="prv_01",
-        precedence=100,
-        effective_from=_EFFECTIVE_START,
-        effective_to=None,
-        status="published",
-    ),
-    RoutingRule(
-        routing_rule_id="rr_04",
-        routing_rule_version=1,
-        country_code="US",
-        carrier="T-MOBILE",
-        provider_id="prv_01",
-        precedence=100,
-        effective_from=_EFFECTIVE_START,
-        effective_to=None,
-        status="published",
-    ),
-    RoutingRule(
-        routing_rule_id="rr_05",
-        routing_rule_version=1,
-        country_code="US",
-        carrier="T-MOBILE",
-        provider_id="prv_03",
-        precedence=80,
-        effective_from=_EFFECTIVE_START,
-        effective_to=None,
-        status="published",
-    ),
-    RoutingRule(
-        routing_rule_id="rr_06",
-        routing_rule_version=1,
-        country_code="US",
-        carrier="AT&T",
-        provider_id="prv_02",
-        precedence=100,
-        effective_from=_EFFECTIVE_START,
-        effective_to=None,
-        status="published",
-    ),
-)
+    )
 
 
-def _normalize(s: str) -> str:
-    return s.strip()
+def _routing_rule_id_from_row(rid: object) -> str:
+    if isinstance(rid, UUID):
+        return str(rid)
+    if isinstance(rid, str):
+        return rid
+    msg = "routing rule row must include UUID or string id"
+    raise TypeError(msg)
 
 
-def _is_active_at(rule: RoutingRule, as_of: datetime) -> bool:
-    if rule.status != "published":
-        return False
-    if as_of < rule.effective_from:
-        return False
-    if rule.effective_to is not None and as_of >= rule.effective_to:
-        return False
-    return True
+def _routing_candidate_from_rule_row(
+    m: Mapping[str, object],
+    provider: Provider,
+    as_of: datetime,
+) -> RoutingCandidate:
+    rid = m.get("id")
+    rrv = m.get("routing_rule_version")
+    priority = m.get("priority")
+    eff_from = m.get("effective_from")
+    eff_to = m.get("effective_to")
+    routing_rule_id = _routing_rule_id_from_row(rid)
+    if not isinstance(rrv, int):
+        msg = "routing rule row must include integer routing_rule_version"
+        raise TypeError(msg)
+    if not isinstance(priority, int):
+        msg = "routing rule row must include integer priority"
+        raise TypeError(msg)
+    if not isinstance(eff_from, datetime):
+        msg = "routing rule row must include datetime effective_from"
+        raise TypeError(msg)
+    if eff_to is not None and not isinstance(eff_to, datetime):
+        msg = "routing rule effective_to must be datetime or None"
+        raise TypeError(msg)
+
+    return RoutingCandidate(
+        provider_id=provider.provider_id,
+        provider_code=provider.provider_code,
+        routing_rule_id=routing_rule_id,
+        routing_rule_version=rrv,
+        effective_from=eff_from,
+        effective_to=eff_to,
+        resolved_at=as_of,
+        precedence=priority,
+    )
 
 
-def get_provider(provider_id: str) -> Provider | None:
-    """Look up provider by ID."""
-    return _PROVIDERS_BY_ID.get(provider_id)
+def _providers_by_int_id_from_rows(rows: list[object]) -> dict[int, Provider]:
+    out: dict[int, Provider] = {}
+    for row in rows:
+        m = getattr(row, "_mapping", None)
+        if not isinstance(m, Mapping):
+            msg = "expected SQLAlchemy Row with _mapping"
+            raise TypeError(msg)
+        pid = m.get("id")
+        if not isinstance(pid, int):
+            msg = "provider row must include integer id"
+            raise TypeError(msg)
+        p = _provider_from_mapping(m)
+        out[pid] = p
+    return out
 
 
-def resolve_routing(country_code: str, carrier: str, as_of: datetime) -> list[RoutingCandidate]:
-    """Filter published rules matching (country_code, carrier) active at as_of."""
-    cc = _normalize(country_code).upper()
-    cr = _normalize(carrier)
+async def get_provider(provider_id: str) -> Provider | None:
+    """Look up provider by business code (e.g. prv_01)."""
+    async with get_session() as session:
+        row = await fetch_provider_by_code(session, provider_id)
+    if row is None:
+        return None
+    raw = getattr(row, "_mapping", None)
+    if not isinstance(raw, Mapping):
+        msg = "expected SQLAlchemy Row with _mapping"
+        raise TypeError(msg)
+    return _provider_from_mapping(raw)
 
-    matched: list[tuple[RoutingRule, Provider]] = []
-    for rule in _ROUTING_RULES:
-        if _normalize(rule.country_code).upper() != cc:
+
+async def resolve_routing(
+    country_code: str, carrier: str, as_of: datetime
+) -> list[RoutingCandidate]:
+    """Filter rules matching (country_code, carrier) active at as_of; order by version DESC, priority DESC."""
+    async with get_session() as session:
+        rule_rows = await fetch_active_routing_rules(
+            session, country_code, carrier, as_of
+        )
+        if not rule_rows:
+            return []
+        provider_rows = await fetch_all_providers(session)
+
+    by_int_id = _providers_by_int_id_from_rows(provider_rows)
+    resolved: list[RoutingCandidate] = []
+    for rrow in rule_rows:
+        raw = getattr(rrow, "_mapping", None)
+        if not isinstance(raw, Mapping):
             continue
-        if _normalize(rule.carrier) != cr:
+        m: Mapping[str, object] = raw
+        pid_obj = m.get("provider_id")
+        if not isinstance(pid_obj, int):
             continue
-        if not _is_active_at(rule, as_of):
-            continue
-        provider = _PROVIDERS_BY_ID.get(rule.provider_id)
+        provider = by_int_id.get(pid_obj)
         if provider is None:
             continue
-        matched.append((rule, provider))
-
-    matched.sort(key=lambda t: t[0].precedence, reverse=True)
-
-    resolved: list[RoutingCandidate] = []
-    for rule, provider in matched:
-        resolved.append(
-            RoutingCandidate(
-                provider_id=provider.provider_id,
-                provider_code=provider.provider_code,
-                routing_rule_id=rule.routing_rule_id,
-                routing_rule_version=rule.routing_rule_version,
-                effective_from=rule.effective_from,
-                effective_to=rule.effective_to,
-                resolved_at=as_of,
-                precedence=rule.precedence,
-            )
-        )
+        resolved.append(_routing_candidate_from_rule_row(m, provider, as_of))
     return resolved
 
 
 def _healthy_candidates(candidates: list[RoutingCandidate]) -> list[RoutingCandidate]:
-    out: list[RoutingCandidate] = []
-    for c in candidates:
-        p = _PROVIDERS_BY_ID.get(c.provider_id)
-        if p is not None and p.status == "active":
-            out.append(c)
-    return out
+    """All providers present in DB are treated as healthy (no status column on providers)."""
+    return list(candidates)
 
 
 def _normalize_policy(policy: str) -> str:
@@ -220,7 +194,9 @@ def _normalize_policy(policy: str) -> str:
     return p
 
 
-def _round_robin_pick(candidates: list[RoutingCandidate], message_id: str) -> RoutingCandidate:
+def _round_robin_pick(
+    candidates: list[RoutingCandidate], message_id: str
+) -> RoutingCandidate:
     n = len(candidates)
     if n == 1:
         return candidates[0]
@@ -230,7 +206,7 @@ def _round_robin_pick(candidates: list[RoutingCandidate], message_id: str) -> Ro
     return candidates[idx]
 
 
-def select_provider(
+async def select_provider(
     country_code: str,
     carrier: str,
     as_of: datetime,
@@ -238,8 +214,8 @@ def select_provider(
     *,
     message_id: str = "",
 ) -> SelectionResult | None:
-    """Resolve candidates, filter healthy (status=active), select by policy."""
-    candidates = resolve_routing(country_code, carrier, as_of)
+    """Resolve candidates, filter healthy, select by policy."""
+    candidates = await resolve_routing(country_code, carrier, as_of)
     healthy = _healthy_candidates(candidates)
     if not healthy:
         return None

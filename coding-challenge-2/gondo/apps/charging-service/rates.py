@@ -1,11 +1,19 @@
-"""In-memory rate table, estimates, and actual cost recording."""
+"""Rate table backed by PostgreSQL, estimates, and actual cost recording."""
 
 from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Final
+
+import sqlalchemy as sa
+from py_core.db import get_session
+from py_core.proto_utils import as_utc
+from repository import (
+    fetch_active_rate,
+    fetch_carrier_id_by_code,
+    fetch_provider_id_by_code,
+)
 
 
 @dataclass(frozen=True)
@@ -51,118 +59,55 @@ class ActualCostRecord:
     idempotent_replay: bool
 
 
-_EFFECTIVE_FROM: Final[datetime] = datetime(2026, 1, 1, tzinfo=timezone.utc)
-
-_RATES: tuple[Rate, ...] = (
-    Rate(
-        rate_id="rate_101",
-        rate_version=1,
-        provider_id="prv_01",
-        country_code="VN",
-        carrier="VIETTEL",
-        unit_price=0.015,
-        currency="USD",
-        effective_from=_EFFECTIVE_FROM,
-        effective_to=None,
-        status="published",
-    ),
-    Rate(
-        rate_id="rate_102",
-        rate_version=1,
-        provider_id="prv_02",
-        country_code="VN",
-        carrier="VIETTEL",
-        unit_price=0.018,
-        currency="USD",
-        effective_from=_EFFECTIVE_FROM,
-        effective_to=None,
-        status="published",
-    ),
-    Rate(
-        rate_id="rate_103",
-        rate_version=1,
-        provider_id="prv_01",
-        country_code="VN",
-        carrier="MOBIFONE",
-        unit_price=0.016,
-        currency="USD",
-        effective_from=_EFFECTIVE_FROM,
-        effective_to=None,
-        status="published",
-    ),
-    Rate(
-        rate_id="rate_104",
-        rate_version=1,
-        provider_id="prv_01",
-        country_code="US",
-        carrier="T-MOBILE",
-        unit_price=0.008,
-        currency="USD",
-        effective_from=_EFFECTIVE_FROM,
-        effective_to=None,
-        status="published",
-    ),
-    Rate(
-        rate_id="rate_105",
-        rate_version=1,
-        provider_id="prv_03",
-        country_code="US",
-        carrier="T-MOBILE",
-        unit_price=0.009,
-        currency="USD",
-        effective_from=_EFFECTIVE_FROM,
-        effective_to=None,
-        status="published",
-    ),
-    Rate(
-        rate_id="rate_106",
-        rate_version=1,
-        provider_id="prv_02",
-        country_code="US",
-        carrier="AT&T",
-        unit_price=0.010,
-        currency="USD",
-        effective_from=_EFFECTIVE_FROM,
-        effective_to=None,
-        status="published",
-    ),
-)
-
 _ESTIMATES: dict[str, EstimateRecord] = {}
 _ACTUAL_COSTS: dict[str, ActualCostRecord] = {}
 
 
-def _as_utc(dt: datetime) -> datetime:
-    if dt.tzinfo is None:
-        return dt.replace(tzinfo=timezone.utc)
-    return dt.astimezone(timezone.utc)
+def _rate_from_row(
+    row: sa.Row,
+    *,
+    provider_code: str,
+    carrier_code: str,
+) -> Rate:
+    return Rate(
+        rate_id=f"rate_{row.id}",
+        rate_version=1,
+        provider_id=provider_code,
+        country_code=row.country_code,
+        carrier=carrier_code,
+        unit_price=float(row.price_per_sms),
+        currency=row.currency,
+        effective_from=row.effective_from,
+        effective_to=row.effective_to,
+        status="published",
+    )
 
 
-def _rate_active_at(rate: Rate, as_of: datetime) -> bool:
-    t = _as_utc(as_of)
-    if t < _as_utc(rate.effective_from):
-        return False
-    if rate.effective_to is not None and t > _as_utc(rate.effective_to):
-        return False
-    return rate.status == "published"
-
-
-def find_rate(
+async def find_rate(
     provider_id: str, country_code: str, carrier: str, as_of: datetime
 ) -> Rate | None:
     """Find published rate matching provider/country/carrier active at as_of."""
-    for rate in _RATES:
-        if (
-            rate.provider_id == provider_id
-            and rate.country_code == country_code
-            and rate.carrier == carrier
-            and _rate_active_at(rate, as_of)
-        ):
-            return rate
-    return None
+    as_of_utc = as_utc(as_of)
+    async with get_session() as session:
+        provider_pk = await fetch_provider_id_by_code(session, provider_id)
+        if provider_pk is None:
+            return None
+        carrier_pk = await fetch_carrier_id_by_code(session, carrier)
+        if carrier_pk is None:
+            return None
+        row = await fetch_active_rate(
+            session,
+            provider_pk,
+            country_code,
+            carrier_pk,
+            as_of_utc,
+        )
+    if row is None:
+        return None
+    return _rate_from_row(row, provider_code=provider_id, carrier_code=carrier)
 
 
-def estimate_cost(
+async def estimate_cost(
     message_id: str,
     provider_id: str,
     country_code: str,
@@ -170,7 +115,7 @@ def estimate_cost(
     as_of: datetime,
 ) -> EstimateRecord | None:
     """Look up rate and create estimate. Returns None if no matching rate."""
-    rate = find_rate(provider_id, country_code, carrier, as_of)
+    rate = await find_rate(provider_id, country_code, carrier, as_of)
     if rate is None:
         return None
     created = datetime.now(timezone.utc)
@@ -185,14 +130,14 @@ def estimate_cost(
         currency=rate.currency,
         rate_id=rate.rate_id,
         rate_version=rate.rate_version,
-        as_of=_as_utc(as_of),
+        as_of=as_utc(as_of),
         created_at=created,
     )
     _ESTIMATES[estimate_id] = record
     return record
 
 
-def estimate_cost_batch(
+async def estimate_cost_batch(
     provider_ids: list[str],
     country_code: str,
     carrier: str,
@@ -201,7 +146,7 @@ def estimate_cost_batch(
     """Estimate cost for each provider_id. Skip providers with no matching rate."""
     out: list[EstimateRecord] = []
     for pid in provider_ids:
-        rec = estimate_cost("", pid, country_code, carrier, as_of)
+        rec = await estimate_cost("", pid, country_code, carrier, as_of)
         if rec is not None:
             out.append(rec)
     return out
@@ -240,7 +185,7 @@ def record_actual_cost(
         actual_cost=actual_cost,
         currency=currency,
         callback_state=callback_state,
-        recorded_at=_as_utc(recorded_at),
+        recorded_at=as_utc(recorded_at),
         provider_event_id=provider_event_id,
         idempotency_key=idempotency_key,
         idempotent_replay=False,

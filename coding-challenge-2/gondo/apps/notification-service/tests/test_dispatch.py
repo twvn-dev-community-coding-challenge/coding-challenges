@@ -52,7 +52,12 @@ def test_dispatch_happy_path() -> None:
     mock_resp.selected_provider_id = "prov-1"
     mock_resp.routing_rule_version = 2
 
-    with patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp):
+    with (
+        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch(
+            "repository.resolve_carrier", new_callable=AsyncMock, return_value="VIETTEL"
+        ),
+    ):
         response = client.post(
             f"/notifications/{nid}/dispatch",
             json={"as_of": "2026-04-03T12:00:00.000Z"},
