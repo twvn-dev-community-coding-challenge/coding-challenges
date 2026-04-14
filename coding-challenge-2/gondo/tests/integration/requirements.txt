@@ -1,0 +1,3 @@
+# Used only for integration tests (httpx + pytest).
+httpx>=0.28.0
+pytest>=8.0.0

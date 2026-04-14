@@ -44,6 +44,11 @@ class ProviderServiceStub(object):
                 request_serializer=provider__pb2.SelectProviderRequest.SerializeToString,
                 response_deserializer=provider__pb2.SelectProviderResponse.FromString,
                 _registered_method=True)
+        self.GetProviderRegistry = channel.unary_unary(
+                '/gondo.provider.ProviderService/GetProviderRegistry',
+                request_serializer=provider__pb2.GetProviderRegistryRequest.SerializeToString,
+                response_deserializer=provider__pb2.GetProviderRegistryResponse.FromString,
+                _registered_method=True)
 
 
 class ProviderServiceServicer(object):
@@ -61,6 +66,12 @@ class ProviderServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetProviderRegistry(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ProviderServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -73,6 +84,11 @@ def add_ProviderServiceServicer_to_server(servicer, server):
                     servicer.SelectProvider,
                     request_deserializer=provider__pb2.SelectProviderRequest.FromString,
                     response_serializer=provider__pb2.SelectProviderResponse.SerializeToString,
+            ),
+            'GetProviderRegistry': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetProviderRegistry,
+                    request_deserializer=provider__pb2.GetProviderRegistryRequest.FromString,
+                    response_serializer=provider__pb2.GetProviderRegistryResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -129,6 +145,33 @@ class ProviderService(object):
             '/gondo.provider.ProviderService/SelectProvider',
             provider__pb2.SelectProviderRequest.SerializeToString,
             provider__pb2.SelectProviderResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetProviderRegistry(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/gondo.provider.ProviderService/GetProviderRegistry',
+            provider__pb2.GetProviderRegistryRequest.SerializeToString,
+            provider__pb2.GetProviderRegistryResponse.FromString,
             options,
             channel_credentials,
             insecure,

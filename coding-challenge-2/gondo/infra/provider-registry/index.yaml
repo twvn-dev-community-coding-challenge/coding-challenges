@@ -1,0 +1,9 @@
+# Provider registry: partitioned by country (one catalog per market).
+# Each country owns its provider fragments under countries/<ISO>/ — scales better for many providers × countries.
+schema_version: "2"
+kind: ProviderRegistryCatalog
+country_catalogs:
+  - countries/VN/index.yaml
+  - countries/TH/index.yaml
+  - countries/SG/index.yaml
+  - countries/PH/index.yaml

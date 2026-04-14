@@ -1,0 +1,5 @@
+# Vietnam — provider fragments (filenames are optional; list is explicit for review in PRs).
+provider_files:
+  - prv_01.yaml
+  - prv_02.yaml
+  - prv_03.yaml

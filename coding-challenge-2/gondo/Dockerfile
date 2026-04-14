@@ -42,6 +42,7 @@ WORKDIR /app
 COPY libs/grpc-contracts/__init__.py /app/libs/grpc-contracts/__init__.py
 COPY libs/grpc-contracts/generated/ /app/libs/grpc-contracts/generated/
 COPY libs/py-core/ /app/libs/py-core/
+COPY infra/ /app/infra/
 COPY apps/${SERVICE_NAME}/ /app/apps/${SERVICE_NAME}/
 
 WORKDIR /app/apps/${SERVICE_NAME}

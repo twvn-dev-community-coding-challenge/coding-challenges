@@ -118,6 +118,14 @@ export const MembershipSmsFeature = ({
       return;
     }
 
+    if (!state.formValues.phoneNumber.trim()) {
+      dispatch({
+        type: 'submit_fail',
+        message: 'Phone number is required.',
+      });
+      return;
+    }
+
     dispatch({ type: 'submit_start' });
 
     const otp = generateSixDigitOtp();

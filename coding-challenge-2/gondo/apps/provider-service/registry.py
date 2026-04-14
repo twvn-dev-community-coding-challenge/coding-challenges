@@ -1,4 +1,4 @@
-"""Provider registry and routing rules backed by PostgreSQL (provider_service schema)."""
+"""Routing rules from PostgreSQL; provider SMS metadata from infra YAML registry."""
 
 from __future__ import annotations
 
@@ -15,6 +15,9 @@ from repository import (
     fetch_all_providers,
     fetch_provider_by_code,
 )
+
+from registry_types import ConnectableCarrier, ProviderRegistryConfig
+from yaml_registry import load_all_provider_configs
 
 # ---------------------------------------------------------------------------
 # Data model (Provider TD Section 5)
@@ -137,6 +140,48 @@ def _providers_by_int_id_from_rows(rows: list[object]) -> dict[int, Provider]:
             raise TypeError(msg)
         p = _provider_from_mapping(m)
         out[pid] = p
+    return out
+
+
+async def get_provider_registry(
+    country_code: str,
+    carrier: str | None,
+    provider_id: str | None,
+    policy: str | None,
+) -> list[ProviderRegistryConfig]:
+    """Return provider configs from the infra YAML registry, filtered by query params."""
+    cc = country_code.strip().upper()
+    if not cc:
+        return []
+    car = carrier.strip() if carrier else None
+    pid = provider_id.strip() if provider_id else None
+    pol = policy.strip() if policy else None
+
+    all_configs = load_all_provider_configs()
+    out: list[ProviderRegistryConfig] = []
+    for cfg in all_configs:
+        if pid and cfg.provider_id != pid:
+            continue
+        matching = [
+            x
+            for x in cfg.connectable_carriers
+            if x.country_code == cc and (car is None or x.carrier_code == car)
+        ]
+        if not matching:
+            continue
+        if pol and pol not in cfg.supported_policies:
+            continue
+        filtered = ProviderRegistryConfig(
+            provider_id=cfg.provider_id,
+            provider_code=cfg.provider_code,
+            display_name=cfg.display_name,
+            api_endpoint=cfg.api_endpoint,
+            supported_policies=list(cfg.supported_policies),
+            service_status=cfg.service_status,
+            extra_config_json=cfg.extra_config_json,
+            connectable_carriers=list(matching) if car else [x for x in cfg.connectable_carriers if x.country_code == cc],
+        )
+        out.append(filtered)
     return out
 
 

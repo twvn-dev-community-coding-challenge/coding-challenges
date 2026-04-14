@@ -70,6 +70,18 @@ describe('MembershipSmsFeature', () => {
     expect(screen.getByLabelText(/message id/i)).toBeTruthy();
   });
 
+  it('requires a phone number before calling the API', async () => {
+    renderFeature();
+    fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/phone number is required/i);
+    });
+
+    expect(mockCreateNotification).not.toHaveBeenCalled();
+    expect(mockDispatchNotification).not.toHaveBeenCalled();
+  });
+
   it('submits the form: creates notification then dispatches', async () => {
     mockCreateNotification.mockResolvedValue({
       ok: true,

@@ -7,11 +7,47 @@ from grpc import aio
 
 from generated import provider_pb2, provider_pb2_grpc
 from py_core.proto_utils import as_utc, current_timestamp, datetime_to_timestamp
+from py_core.credentials_store import backend_name, secret_configured
+
+from cqrs.publish_dispatch import publish_sms_dispatch_requested
 from registry import (
+    ConnectableCarrier as DomainConnectableCarrier,
+    ProviderRegistryConfig as DomainProviderRegistryConfig,
     RoutingCandidate as DomainRoutingCandidate,
+    get_provider_registry,
     resolve_routing,
     select_provider,
 )
+
+
+def _connectable_carrier_to_proto(
+    c: DomainConnectableCarrier,
+) -> provider_pb2.ConnectableCarrier:
+    return provider_pb2.ConnectableCarrier(
+        country_code=c.country_code,
+        carrier_code=c.carrier_code,
+    )
+
+
+def _registry_config_to_proto(
+    c: DomainProviderRegistryConfig,
+) -> provider_pb2.ProviderRegistryConfig:
+    cref = c.credentials_ref or ""
+    return provider_pb2.ProviderRegistryConfig(
+        provider_id=c.provider_id,
+        provider_code=c.provider_code,
+        display_name=c.display_name,
+        api_endpoint=c.api_endpoint or "",
+        supported_policies=c.supported_policies,
+        service_status=c.service_status,
+        extra_config_json=c.extra_config_json,
+        connectable_carriers=[
+            _connectable_carrier_to_proto(x) for x in c.connectable_carriers
+        ],
+        credentials_ref=cref,
+        credentials_configured=secret_configured(c.credentials_ref),
+        credentials_backend=backend_name(),
+    )
 
 
 def _routing_candidate_to_proto(
@@ -74,6 +110,15 @@ class ProviderGrpcServicer(provider_pb2_grpc.ProviderServiceServicer):
         )
         if result is None:
             await context.abort(grpc.StatusCode.NOT_FOUND, "ROUTING_UNRESOLVABLE")
+        dispatch_published = False
+        if message_id:
+            dispatch_published = await publish_sms_dispatch_requested(
+                message_id=message_id,
+                country_code=request.country_code,
+                carrier=request.carrier,
+                selected_provider_id=result.selected_provider_id,
+                selected_provider_code=result.selected_provider_code,
+            )
         return provider_pb2.SelectProviderResponse(
             selected_provider_id=result.selected_provider_id,
             selected_provider_code=result.selected_provider_code,
@@ -82,4 +127,24 @@ class ProviderGrpcServicer(provider_pb2_grpc.ProviderServiceServicer):
             routing_rule_id=result.routing_rule_id,
             routing_rule_version=result.routing_rule_version,
             selected_at=current_timestamp(),
+            sms_dispatch_requested_published=dispatch_published,
+        )
+
+    async def GetProviderRegistry(
+        self,
+        request: provider_pb2.GetProviderRegistryRequest,
+        context: aio.ServicerContext,
+    ) -> provider_pb2.GetProviderRegistryResponse:
+        country = request.country_code.strip().upper()
+        if not country:
+            await context.abort(
+                grpc.StatusCode.INVALID_ARGUMENT,
+                "country_code is required",
+            )
+        carrier = request.carrier.strip() if request.carrier else None
+        provider_id = request.provider_id.strip() if request.provider_id else None
+        policy = request.policy.strip() if request.policy else None
+        configs = await get_provider_registry(country, carrier, provider_id, policy)
+        return provider_pb2.GetProviderRegistryResponse(
+            configs=[_registry_config_to_proto(c) for c in configs],
         )

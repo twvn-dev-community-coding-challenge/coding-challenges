@@ -11,6 +11,7 @@ from google.protobuf import timestamp_pb2
 from generated import provider_pb2
 from grpc_server import ProviderGrpcServicer
 from registry import RoutingCandidate as DomainRoutingCandidate
+from registry import SelectionResult
 
 
 class FakeServicerContext:
@@ -84,3 +85,79 @@ def test_resolve_routing_returns_candidates() -> None:
     assert len(resp.candidates) == 2
     ids = {c.routing_rule_id for c in resp.candidates}
     assert ids == {"rr_01", "rr_02"}
+
+
+async def _get_provider_registry_ok() -> provider_pb2.GetProviderRegistryResponse:
+    from registry_types import ConnectableCarrier, ProviderRegistryConfig
+
+    cfg = ProviderRegistryConfig(
+        provider_id="prv_01",
+        provider_code="TWILIO",
+        display_name="Twilio",
+        api_endpoint="https://api.twilio.com",
+        supported_policies=["highest_precedence"],
+        service_status="active",
+        extra_config_json="{}",
+        connectable_carriers=[
+            ConnectableCarrier(country_code="VN", carrier_code="VIETTEL"),
+        ],
+    )
+    with patch("grpc_server.get_provider_registry", AsyncMock(return_value=[cfg])):
+        servicer = ProviderGrpcServicer()
+        req = provider_pb2.GetProviderRegistryRequest(
+            country_code="VN",
+            carrier="VIETTEL",
+        )
+        ctx = FakeServicerContext()
+        return await servicer.GetProviderRegistry(req, ctx)
+
+
+def test_get_provider_registry_returns_configs() -> None:
+    resp = asyncio.run(_get_provider_registry_ok())
+    assert len(resp.configs) == 1
+    assert resp.configs[0].provider_id == "prv_01"
+    assert resp.configs[0].connectable_carriers[0].carrier_code == "VIETTEL"
+
+
+async def _select_provider_with_message_id(
+    publish_ok: bool,
+) -> provider_pb2.SelectProviderResponse:
+    result = SelectionResult(
+        selected_provider_id="prv_01",
+        selected_provider_code="TWILIO",
+        selection_policy="highest_precedence",
+        selection_reason="test",
+        routing_rule_id="rr_1",
+        routing_rule_version=1,
+    )
+    with (
+        patch("grpc_server.select_provider", AsyncMock(return_value=result)),
+        patch(
+            "grpc_server.publish_sms_dispatch_requested",
+            AsyncMock(return_value=publish_ok),
+        ),
+    ):
+        servicer = ProviderGrpcServicer()
+        ts = timestamp_pb2.Timestamp()
+        ts.FromDatetime(datetime(2026, 6, 15, 12, 0, 0, tzinfo=timezone.utc))
+        req = provider_pb2.SelectProviderRequest(
+            country_code="VN",
+            carrier="VIETTEL",
+            as_of=ts,
+            policy_context=provider_pb2.PolicyContext(
+                policy="highest_precedence",
+                message_id="msg-1",
+            ),
+        )
+        ctx = FakeServicerContext()
+        return await servicer.SelectProvider(req, ctx)
+
+
+def test_select_provider_sets_sms_dispatch_requested_published_true() -> None:
+    resp = asyncio.run(_select_provider_with_message_id(True))
+    assert resp.sms_dispatch_requested_published is True
+
+
+def test_select_provider_sets_sms_dispatch_requested_published_false() -> None:
+    resp = asyncio.run(_select_provider_with_message_id(False))
+    assert resp.sms_dispatch_requested_published is False

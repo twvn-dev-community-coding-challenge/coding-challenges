@@ -1,0 +1,16 @@
+# Logical topics (broker-agnostic names). NATS mapping: subject = gondo.<topic>
+# Publisher / consumer roles for service boundaries.
+schema_version: "1"
+topics:
+  sms.dispatch.requested:
+    description: Provider orchestration requests an SMS send via carrier (HTTP to provider API).
+    published_by: [provider-service]
+    consumed_by: [carrier-service]
+  sms.dispatch.received:
+    description: Carrier acknowledged consumption of the dispatch event (before outbound HTTP); notification-service applies Queue → Send-to-carrier (async CQRS integration).
+    published_by: [carrier-service]
+    consumed_by: [notification-service]
+  sms.dispatch.outcome:
+    description: Carrier reports success or failure (back-pressure / rate-limit friendly).
+    published_by: [carrier-service]
+    consumed_by: [provider-service]

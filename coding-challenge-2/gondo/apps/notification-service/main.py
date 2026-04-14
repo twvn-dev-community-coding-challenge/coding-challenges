@@ -15,6 +15,7 @@ from google.protobuf import timestamp_pb2
 from pydantic import BaseModel, Field
 
 from grpc_client import select_provider
+from lifespan import notification_lifespan
 from models import (
     Notification,
     TransitionEvent,
@@ -159,9 +160,10 @@ _PAYLOAD_LOGGING = _should_log_payloads(None)
 
 app = create_app(
     title="Notification Service",
-    description="SMS lifecycle orchestration",
+    description="SMS lifecycle orchestration; subscribes to sms.dispatch.received (NATS) for Queue → Send-to-carrier",
     service_name="notification-service",
     enable_payload_logging=_PAYLOAD_LOGGING,
+    lifespan=notification_lifespan,
 )
 
 
@@ -295,6 +297,14 @@ async def dispatch_notification(
             {"grpc": err.details() or str(err.code())},
         )
 
+    if n.message_id and not response.sms_dispatch_requested_published:
+        return error_response(
+            "DISPATCH_REQUEST_NOT_PUBLISHED",
+            "sms.dispatch.requested was not published; message bus may be unavailable",
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            {"message_id": n.message_id},
+        )
+
     from_new = n.state
     n.state = "Send-to-provider"
     n.selected_provider_id = response.selected_provider_id
@@ -396,6 +406,14 @@ async def retry_notification(
             "Provider selection failed",
             status.HTTP_502_BAD_GATEWAY,
             {"grpc": err.details() or str(err.code())},
+        )
+
+    if n.message_id and not response.sms_dispatch_requested_published:
+        return error_response(
+            "DISPATCH_REQUEST_NOT_PUBLISHED",
+            "sms.dispatch.requested was not published; message bus may be unavailable",
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            {"message_id": n.message_id},
         )
 
     n.selected_provider_id = response.selected_provider_id
