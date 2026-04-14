@@ -1,0 +1,15 @@
+.nx/installation
+.nx/cache
+.nx/workspace-data
+.nx/
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+dist/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
+logs/
