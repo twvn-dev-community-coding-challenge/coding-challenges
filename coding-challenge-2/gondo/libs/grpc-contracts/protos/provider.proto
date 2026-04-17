@@ -44,9 +44,50 @@ message SelectProviderResponse {
   string routing_rule_id = 5;
   int32 routing_rule_version = 6;
   google.protobuf.Timestamp selected_at = 7;
+  // True when policy_context.message_id was set and sms.dispatch.requested was published to the message bus.
+  bool sms_dispatch_requested_published = 8;
+}
+
+// One carrier reachable by a provider in a given country (registry / allowlist).
+message ConnectableCarrier {
+  string country_code = 1;
+  string carrier_code = 2;
+}
+
+// Provider-level config plus which carriers it can reach (per country).
+message ProviderRegistryConfig {
+  string provider_id = 1;
+  string provider_code = 2;
+  string display_name = 3;
+  string api_endpoint = 4;
+  repeated string supported_policies = 5;
+  string service_status = 6;
+  // JSON object for arbitrary metadata (webhook path, auth hints, region, etc.).
+  string extra_config_json = 7;
+  repeated ConnectableCarrier connectable_carriers = 8;
+  // Logical secret id (e.g. provider/prv_01) — never returns secret material.
+  string credentials_ref = 9;
+  bool credentials_configured = 10;
+  string credentials_backend = 11;
+}
+
+message GetProviderRegistryRequest {
+  // Required: ISO 3166-1 alpha-2 (e.g. VN).
+  string country_code = 1;
+  // Optional: restrict to one MNO (e.g. VIETTEL).
+  string carrier = 2;
+  // Optional: business provider id (e.g. prv_01).
+  string provider_id = 3;
+  // Optional: only providers that declare this policy (e.g. highest_precedence).
+  string policy = 4;
+}
+
+message GetProviderRegistryResponse {
+  repeated ProviderRegistryConfig configs = 1;
 }
 
 service ProviderService {
   rpc ResolveRouting(ResolveRoutingRequest) returns (ResolveRoutingResponse);
   rpc SelectProvider(SelectProviderRequest) returns (SelectProviderResponse);
+  rpc GetProviderRegistry(GetProviderRegistryRequest) returns (GetProviderRegistryResponse);
 }

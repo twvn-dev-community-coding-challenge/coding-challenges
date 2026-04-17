@@ -11,13 +11,15 @@
     "nx": "nx",
     "start": "LOG_LEVEL=DEBUG LOG_PAYLOADS=true ./scripts/start-all.sh",
     "stop": "./scripts/stop-all.sh",
+    "docker:e2e": "docker-compose -f docker-compose.yml -f infra/docker-compose.dev-registries.yml up --build -d",
     "docker:up": "docker-compose up --build -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
     "db:start": "docker-compose up -d postgres && echo 'Waiting for Postgres...' && sleep 2 && docker-compose exec postgres pg_isready -U gondo -d gondo",
     "db:stop": "docker-compose stop postgres",
     "db:migrate": "./scripts/db-migrate.sh",
-    "db:reset": "docker-compose down -v postgres && yarn db:start && yarn db:migrate"
+    "db:reset": "docker-compose down -v postgres && yarn db:start && yarn db:migrate",
+    "test:integration": "RUN_INTEGRATION_TESTS=1 python3 -m pytest tests/integration -v -s --log-cli-level=INFO"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

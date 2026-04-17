@@ -1,4 +1,44 @@
 services:
+  # Local AWS emulator (Secrets Manager, etc.) — https://floci.io/ — same :4566 as AWS SDK expects.
+  # Start with: docker compose --profile mock-cloud up -d floci
+  floci:
+    image: hectorvent/floci:latest
+    ports:
+      - "4566:4566"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    profiles:
+      - mock-cloud
+
+  nats:
+    image: nats:2.10-alpine
+    ports:
+      - "4222:4222"
+    command: ["-js", "-m", "8222"]
+
+  # Mocks outbound provider HTTP used by carrier-service (GET api_endpoint from dispatch payload).
+  # Stubs live under infra/wiremock/; provider-service sets CARRIER_HTTP_PROBE_URL to point here.
+  wiremock:
+    image: wiremock/wiremock:3.3.1
+    ports:
+      - "18080:8080"
+    volumes:
+      - ./infra/wiremock:/home/wiremock
+
+  message-bus-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: message-bus-gateway
+        PORT: "8010"
+    ports:
+      - "8010:8010"
+    environment:
+      - NATS_URL=nats://nats:4222
+    depends_on:
+      - nats
+
   postgres:
     image: postgres:16
     environment:
@@ -50,14 +90,46 @@ services:
     environment:
       - CHARGING_GRPC_TARGET=charging-service:50052
       - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
+      - PROVIDER_REGISTRY_ROOT=/app/infra/provider-registry
+      - NATS_URL=nats://nats:4222
+      - CREDENTIALS_BACKEND=mock
+      - MOCK_CREDENTIALS_PATH=/app/infra/credentials/mock/secrets.json
+      # Carrier GET probe targets WireMock instead of real Vonage/Twilio URLs from YAML.
+      - CARRIER_HTTP_PROBE_URL=http://wiremock:8080/carrier/sms
+      # With profile mock-cloud + Floci: set CREDENTIALS_BACKEND=aws_secrets_manager, AWS_ENDPOINT_URL=http://floci:4566
     depends_on:
+      nats:
+        condition: service_started
       charging-service:
         condition: service_healthy
+      wiremock:
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
       interval: 5s
       timeout: 3s
       retries: 10
+
+  carrier-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: carrier-service
+        PORT: "8004"
+    ports:
+      - "8004:8004"
+    environment:
+      - NATS_URL=nats://nats:4222
+      - CARRIER_MAX_CONCURRENT_SENDS=4
+      - CARRIER_REGISTRY_ROOT=/app/infra/carrier-registry
+      - CREDENTIALS_BACKEND=mock
+      - MOCK_CREDENTIALS_PATH=/app/infra/credentials/mock/secrets.json
+    depends_on:
+      nats:
+        condition: service_started
+      wiremock:
+        condition: service_started
 
   notification-service:
     build:
@@ -72,7 +144,10 @@ services:
       - PROVIDER_GRPC_TARGET=provider-service:50051
       - CHARGING_GRPC_TARGET=charging-service:50052
       - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
+      - NATS_URL=nats://nats:4222
     depends_on:
+      nats:
+        condition: service_started
       provider-service:
         condition: service_healthy
       charging-service:

@@ -6,6 +6,12 @@ import {
 } from './build-phone-number';
 
 describe('buildSmsPhoneNumber', () => {
+  it('returns empty string when there are no national digits (caller must validate)', () => {
+    expect(buildSmsPhoneNumber('VN', '')).toBe('');
+    expect(buildSmsPhoneNumber('VN', '   ')).toBe('');
+    expect(buildSmsPhoneNumber('VN', '---')).toBe('');
+  });
+
   it('returns trimmed input when it already starts with + (E.164)', () => {
     expect(buildSmsPhoneNumber('VN', '+84901234567')).toBe('+84901234567');
     expect(buildSmsPhoneNumber('TH', '+66812345678')).toBe('+66812345678');

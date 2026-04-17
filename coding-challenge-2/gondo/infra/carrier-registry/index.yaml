@@ -1,0 +1,6 @@
+# Carrier (MNO) bounded context — consumed by carrier-service only (DDD).
+# Partitioned by country; each file is one carrier in that market.
+schema_version: "1"
+kind: CarrierRegistryCatalog
+country_catalogs:
+  - countries/VN/index.yaml

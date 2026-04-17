@@ -118,6 +118,13 @@ wait_for_health_pg() {
 }
 wait_for_health_pg || { cleanup; exit 1; }
 
+echo -e "${YELLOW}Checking NATS (notification-service message bus)...${NC}"
+if ! docker-compose ps nats --format '{{.State}}' 2>/dev/null | grep -qi running; then
+  echo -e "${YELLOW}Starting NATS via docker-compose...${NC}"
+  docker-compose up -d nats
+fi
+export NATS_URL="${NATS_URL:-nats://127.0.0.1:4222}"
+
 echo -e "${YELLOW}Running database migrations...${NC}"
 "${ROOT}/scripts/db-migrate.sh"
 echo -e "${GREEN}Migrations complete.${NC}"

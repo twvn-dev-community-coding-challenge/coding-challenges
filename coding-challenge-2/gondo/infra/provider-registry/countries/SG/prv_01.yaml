@@ -1,0 +1,15 @@
+provider_id: prv_01
+provider_code: TWILIO
+display_name: Twilio
+credentials_ref: provider/prv_01
+api_endpoint: https://api.twilio.com
+supported_policies:
+  - highest_precedence
+  - round_robin
+  - lowest_cost_healthy
+service_status: active
+extra:
+  webhook_path: /webhooks/sms/status
+  region: us1
+coverage:
+  - carriers: [SINGTEL]

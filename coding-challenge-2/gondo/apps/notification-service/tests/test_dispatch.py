@@ -51,6 +51,7 @@ def test_dispatch_happy_path() -> None:
     mock_resp = provider_pb2.SelectProviderResponse()
     mock_resp.selected_provider_id = "prov-1"
     mock_resp.routing_rule_version = 2
+    mock_resp.sms_dispatch_requested_published = True
 
     with (
         patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
@@ -70,3 +71,39 @@ def test_dispatch_happy_path() -> None:
     assert data["selected_provider_id"] == "prov-1"
     assert data["routing_rule_version"] == 2
     assert data["channel_payload"]["carrier"] == "VIETTEL"
+
+
+def test_dispatch_returns_503_when_dispatch_event_not_published() -> None:
+    client = TestClient(app)
+    created = client.post(
+        "/notifications",
+        json={
+            "message_id": "msg-no-bus",
+            "channel_type": "SMS",
+            "recipient": "u",
+            "content": "hello",
+            "channel_payload": {"country_code": "US", "phone_number": "+84901234567"},
+        },
+    ).json()
+    nid = created["data"]["notification_id"]
+
+    mock_resp = provider_pb2.SelectProviderResponse()
+    mock_resp.selected_provider_id = "prov-1"
+    mock_resp.routing_rule_version = 2
+    mock_resp.sms_dispatch_requested_published = False
+
+    with (
+        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch(
+            "main.derive_carrier",
+            new_callable=AsyncMock,
+            return_value="VIETTEL",
+        ),
+    ):
+        response = client.post(
+            f"/notifications/{nid}/dispatch",
+            json={"as_of": "2026-04-03T12:00:00.000Z"},
+        )
+
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "DISPATCH_REQUEST_NOT_PUBLISHED"
