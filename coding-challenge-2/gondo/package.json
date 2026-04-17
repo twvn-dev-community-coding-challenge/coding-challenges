@@ -11,6 +11,7 @@
     "nx": "nx",
     "start": "LOG_LEVEL=DEBUG LOG_PAYLOADS=true ./scripts/start-all.sh",
     "stop": "./scripts/stop-all.sh",
+    "docker:e2e": "docker-compose -f docker-compose.yml -f infra/docker-compose.dev-registries.yml up --build -d",
     "docker:up": "docker-compose up --build -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
