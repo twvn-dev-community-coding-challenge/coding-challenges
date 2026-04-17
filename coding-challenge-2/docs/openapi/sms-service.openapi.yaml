@@ -1,0 +1,365 @@
+openapi: 3.0.3
+info:
+  title: SMS Service API
+  version: 0.1.0
+  description: |
+    OpenAPI skeleton for outside-in TDD.
+    Scope intentionally excludes auth, idempotency, and provider strategy configuration.
+servers:
+  - url: /api/v1
+tags:
+  - name: SMSMessage
+paths:
+  /sms-message/send:
+    post:
+      tags: [SMSMessage]
+      summary: Send an SMS message
+      operationId: sendSMSMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendSMSRequest'
+      responses:
+        '202':
+          description: Message accepted and routed to provider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendSMSResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /sms-message/webhooks/provider-callback:
+    post:
+      tags: [SMSMessage]
+      summary: Provider callback to update delivery status/cost
+      operationId: handleProviderCallback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderCallbackRequest'
+      responses:
+        '200':
+          description: Callback applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderCallbackResponseEnvelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /sms-message/{id}:
+    get:
+      tags: [SMSMessage]
+      summary: Get SMS message by id
+      operationId: getSMSMessageById
+      parameters:
+        - $ref: '#/components/parameters/MessageId'
+      responses:
+        '200':
+          description: SMS message detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSMSMessageResponseEnvelope'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  parameters:
+    MessageId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+      description: SMS message identifier
+
+  responses:
+    BadRequest:
+      description: Invalid request payload or query
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Conflict:
+      description: State conflict or illegal transition
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    UnprocessableEntity:
+      description: Domain rule violation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+
+  schemas:
+    SMSStatus:
+      type: string
+      enum:
+        - NEW
+        - SEND_TO_PROVIDER
+        - QUEUE
+        - SEND_TO_CARRIER
+        - SEND_SUCCESS
+        - SEND_FAILED
+        - CARRIER_REJECTED
+
+    SendSMSRequest:
+      type: object
+      required: [sender_id, recipient_phone, content]
+      properties:
+        sender_id:
+          type: string
+        recipient_phone:
+          type: string
+          description: E.164 formatted phone number
+          example: +84901234567
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        country_code:
+          type: string
+          description: Optional hint; routing still validates by phone prefix
+        client_reference:
+          type: string
+          maxLength: 100
+
+    SendSMSResponse:
+      type: object
+      required: [message_id, status, provider_id, carrier_id, estimated_cost, currency, created_at]
+      properties:
+        message_id:
+          type: string
+        status:
+          $ref: '#/components/schemas/SMSStatus'
+        provider_id:
+          type: string
+        carrier_id:
+          type: string
+        estimated_cost:
+          type: string
+          description: Decimal string
+          example: '350.00'
+        currency:
+          type: string
+          example: VND
+        created_at:
+          type: string
+          format: date-time
+
+    ProviderCallbackRequest:
+      type: object
+      required: [provider_id, event, occurred_at]
+      properties:
+        provider_id:
+          type: string
+        provider_message_id:
+          type: string
+        message_id:
+          type: string
+        event:
+          type: string
+          enum: [QUEUED, SENT_TO_CARRIER, DELIVERED, FAILED, CARRIER_REJECTED]
+        occurred_at:
+          type: string
+          format: date-time
+        actual_cost:
+          type: string
+          example: '345.00'
+        currency:
+          type: string
+          example: VND
+        failure_reason:
+          type: string
+
+    ProviderCallbackResponse:
+      type: object
+      required: [message_id, status, updated_at]
+      properties:
+        message_id:
+          type: string
+        status:
+          $ref: '#/components/schemas/SMSStatus'
+        actual_cost:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+
+    SMSMessage:
+      type: object
+      required:
+        - id
+        - sender_id
+        - recipient_id
+        - content
+        - status
+        - estimated_cost
+        - currency
+        - provider_id
+        - carrier_id
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+        sender_id:
+          type: string
+        recipient_id:
+          type: string
+        content:
+          type: string
+        status:
+          $ref: '#/components/schemas/SMSStatus'
+        estimated_cost:
+          type: string
+        actual_cost:
+          type: string
+        currency:
+          type: string
+        provider_id:
+          type: string
+        carrier_id:
+          type: string
+        provider_message_id:
+          type: string
+        failure_reason:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ProviderSelectionDecision:
+      type: object
+      required: [sms_message_id, provider_id, estimated_cost, strategy_name, reason, created_at]
+      properties:
+        sms_message_id:
+          type: string
+        provider_id:
+          type: string
+        estimated_cost:
+          type: string
+        strategy_name:
+          type: string
+        reason:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    GetSMSMessageResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          $ref: '#/components/schemas/SMSMessage'
+        decision:
+          $ref: '#/components/schemas/ProviderSelectionDecision'
+
+    Meta:
+      type: object
+      required: [request_id, timestamp]
+      properties:
+        request_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    FieldError:
+      type: object
+      required: [field, reason]
+      properties:
+        field:
+          type: string
+        reason:
+          type: string
+
+    ErrorBody:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+
+    ErrorEnvelope:
+      type: object
+      required: [error, meta]
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    SendSMSResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/SendSMSResponse'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    ProviderCallbackResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/ProviderCallbackResponse'
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    GetSMSMessageResponseEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/GetSMSMessageResponse'
+        meta:
+          $ref: '#/components/schemas/Meta'
