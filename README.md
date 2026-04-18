@@ -78,7 +78,7 @@ You submit using a **fork-based workflow**:
 
 1. The organizers create **one official challenge repository**.
 2. Teams **fork** it and implement the solution in their own fork.
-3. Teams submit by opening a **Pull Request back to the official repo** (or share the fork link as a fallback).
+3. Teams submit by opening a **Pull Request back to the official repo**.
 
 Follow the steps below in order.
 
