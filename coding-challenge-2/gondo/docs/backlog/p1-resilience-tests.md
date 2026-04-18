@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | **Priority** | P1 |
-| **Status** | **Mostly done** — `notification-service/tests/test_dispatch.py`: **503** (bus publish failure), **409** (double dispatch), **`CHARGING_RATE_NOT_FOUND`**; **`test_notifications_api`**: **NOT_FOUND**. Further edge cases optional. |
+| **Status** | **Done** — Dispatch/retry **404**; retry **409** when not retryable; duplicate **`message_id`** **422**; OTP issue **503** / expose policy tests; otp-service verify outcome → HTTP status matrix + invalid UUID **422**. |
 | **Area** | Tests & reliability (+5 edge cases in program scoring) |
 
 ## Problem
@@ -20,7 +20,7 @@ Higher confidence in lifecycle correctness and clearer failure semantics for API
 - [x] Illegal second dispatch → **409** (`test_dispatch_rejects_when_notification_not_in_new_state`).
 - [x] Charging / gRPC failure paths (**NOT_FOUND**, rate not found) covered in dispatch tests + API tests.
 - [x] `yarn nx run-many -t test` + Postgres / `DATABASE_URL` documented (`README.md`, `SUBMISSION.md`).
-- [ ] Optional stretch: more illegal lifecycle transitions beyond double-dispatch if product scope expands.
+- [x] Extra coverage: unknown ID on dispatch/retry (`test_dispatch.py`); retry from **New** → `RETRY_NOT_ALLOWED` (`test_dispatch.py`); duplicate create (`test_notifications_api.py`); OTP path (`test_notification_otp_policy.py`); otp-service verify errors (`tests/test_api.py`).
 
 ## References
 

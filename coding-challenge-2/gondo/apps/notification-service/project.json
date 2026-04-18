@@ -58,6 +58,16 @@
         "{projectRoot}/openapi.json",
         "{workspaceRoot}/docs/openapi/notification-service.openapi.json"
       ]
+    },
+    "verify-openapi": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 verify_openapi.py",
+        "cwd": "apps/notification-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
+        }
+      }
     }
   },
   "tags": ["python", "fastapi"]

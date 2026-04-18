@@ -23,6 +23,24 @@ yarn nx run notification-service:generate-openapi
 
 This runs `apps/notification-service/generate_openapi.py`, which introspects the FastAPI `app` and writes both paths above.
 
+## Drift check
+
+```bash
+yarn verify-openapi
+```
+
+Compares committed JSON to the live app (also covered by `test_committed_openapi_json_matches_live_app` in **notification-service** tests). A **GitHub Actions** job at **`.github/workflows/openapi-verify.yml`** (repository root) runs the same check on push/PR.
+
+## TypeScript types
+
+For a generated **OpenAPI-typed** surface (paths, operations, components):
+
+```bash
+yarn nx run ts-core:generate-openapi-types
+```
+
+Output: `libs/ts-core/src/notification-api/openapi.generated.ts` (regenerate after contract changes). See [docs/openapi/README.md](openapi/README.md).
+
 ## Consumer story
 
 1. Import `docs/openapi/notification-service.openapi.json` into an API client, mock server, or API catalog.

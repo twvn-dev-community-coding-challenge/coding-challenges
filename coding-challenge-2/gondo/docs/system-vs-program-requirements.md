@@ -171,7 +171,15 @@ yarn nx run-many -t test
 | **P1** | Resilience tests (503, invalid transition) | Tests +5 *(503 existed; double-dispatch → 409 added)* |
 | **P1** | Verify routing seeds = User Story 3 | Core correctness *(see `docs/routing-vs-challenge-brief.md`)* |
 | **P2** | Server-side OTP + TTL | **Implemented** — `apps/otp-service/` (hashed codes, `expires_at`, `OTP_TTL_SECONDS`, verify endpoint). Notification integrates via `issue_server_otp`; **disable** `OTP_EXPOSE_PLAINTEXT_TO_CLIENT` in production so browsers do not receive plaintext OTP in API responses. |
-| **P2** | OpenAPI export for “platform SMS API” | **Implemented** — `yarn nx run notification-service:generate-openapi` writes `docs/openapi/notification-service.openapi.json` + `apps/notification-service/openapi.json`. Narrative: [`platform-sms-openapi.md`](platform-sms-openapi.md). |
+| **P2** | OpenAPI export for “platform SMS API” | **Implemented** — generate (`yarn nx run notification-service:generate-openapi`), verify (`yarn verify-openapi`), catalog [`docs/openapi/README.md`](openapi/README.md), TS types (`yarn nx run ts-core:generate-openapi-types`). Narrative: [`platform-sms-openapi.md`](platform-sms-openapi.md). Details: [`docs/backlog/p2-openapi-platform-follow-ups.md`](backlog/p2-openapi-platform-follow-ups.md). |
+
+### Stretch backlog *(optional — not implemented)*
+
+| Priority | Item | Card |
+|----------|------|------|
+| **Stretch** | Durable notification store | [`docs/backlog/stretch-notification-persistence.md`](backlog/stretch-notification-persistence.md) |
+| **Stretch** | Demo script (happy path + failure path) | [`docs/backlog/stretch-demo-script.md`](backlog/stretch-demo-script.md) |
+| **Stretch** | Program bonuses (TDD, peer review, …) | [`docs/backlog/stretch-program-bonuses.md`](backlog/stretch-program-bonuses.md) |
 
 ---
 

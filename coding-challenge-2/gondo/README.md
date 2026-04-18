@@ -28,6 +28,15 @@ Start Postgres (e.g. `yarn db:start` from this folder if using compose), then **
 - **Routing correctness vs brief:** See [docs/routing-vs-challenge-brief.md](docs/routing-vs-challenge-brief.md) for **User Story 3** mapping to seeds.
 - **OTP:** Membership demo uses **server-side** codes from **otp-service** (TTL, hashed at rest). For production-style behavior, set **`OTP_EXPOSE_PLAINTEXT_TO_CLIENT=false`** on notification-service so clients are not returned the plaintext OTP; the demo defaults to exposing it for the UI.
 
+| Variable (OTP-related) | Where | Notes |
+|------------------------|-------|--------|
+| `OTP_SERVICE_BASE_URL` | notification-service | Base URL for **`otp-service`** (e.g. `http://127.0.0.1:8007` locally; `http://otp-service:8007` in Compose). |
+| `OTP_EXPOSE_PLAINTEXT_TO_CLIENT` | notification-service | If **`false`**, create response omits **`otp_plaintext`** (SMS body still contains the substituted code). |
+| `OTP_HASH_PEPPER` | otp-service | **Set in production** — secret used with the stored hash (dev default exists in code; Docker Compose passes a placeholder). |
+| `OTP_TTL_SECONDS`, `OTP_MAX_ATTEMPTS` | otp-service | Optional bounds (defaults in `apps/otp-service/settings.py`). |
+| `OTP_ISSUE_REQUESTS_PER_MINUTE` | otp-service | Rolling **60s** window per client IP for **`POST /v1/challenges`**; **`0`** disables. Default **60**. |
+| `OTP_VERIFY_REQUESTS_PER_MINUTE` | otp-service | Same for **`POST /v1/verify`**; **`0`** disables. Default **120**. |
+
 ## Cost tracking (challenge brief vs current build)
 
 The brief asks for **estimated cost around Send-to-provider** and **actual cost at Send-success**. **notification-service** now calls **charging-service** over gRPC: **`EstimateCost`** after successful provider selection on **dispatch** and **retry** (failure → **502** `CHARGING_RATE_NOT_FOUND` / `CHARGING_UNAVAILABLE`), and **`RecordActualCost`** (best-effort, non-blocking for the HTTP response) on **`Send-success`** / **`Send-failed`** callbacks when **`selected_provider_id`** is set. Estimated and actual identifiers are exposed on the notification JSON (`estimated_cost`, `charging_estimate_id`, `last_actual_cost`, `charging_actual_cost_id`, …).
@@ -56,7 +65,7 @@ NX monorepo with Python/FastAPI backend microservices, a React frontend, and opt
 | Topic | Doc |
 |-------|-----|
 | **Challenge fit** (program scoring, gaps, reviewer quickstart) | [docs/system-vs-program-requirements.md](docs/system-vs-program-requirements.md) |
-| **Platform SMS OpenAPI** (User Story 2 export / regeneration) | [docs/platform-sms-openapi.md](docs/platform-sms-openapi.md) |
+| **Platform SMS OpenAPI** (User Story 2 export / regeneration) | [docs/platform-sms-openapi.md](docs/platform-sms-openapi.md) · [docs/openapi/README.md](docs/openapi/README.md) |
 | **Engineering backlog** (prioritized cards) | [docs/backlog/README.md](docs/backlog/README.md) |
 | **Routing seeds vs brief** (User Story 3) | [docs/routing-vs-challenge-brief.md](docs/routing-vs-challenge-brief.md) |
 | Program overview (process only) | [docs/coding-challenge-program-context.md](docs/coding-challenge-program-context.md) |
@@ -164,15 +173,23 @@ yarn nx run-many -t build
 yarn nx run frontend:build
 ```
 
-### 7. Generate OpenAPI contract
+### 7. OpenAPI contract (generate, verify, types)
 
 ```bash
+# Regenerate JSON (after API changes)
 yarn nx run notification-service:generate-openapi
-# Outputs: apps/notification-service/openapi.json
-#          docs/openapi/notification-service.openapi.json  (same schema — platform contract for User Story 2)
+# → apps/notification-service/openapi.json
+# → docs/openapi/notification-service.openapi.json
+
+# Fail if committed JSON is stale (CI: yarn verify-openapi)
+yarn verify-openapi
+
+# Regenerate TypeScript path/types for API consumers
+yarn nx run ts-core:generate-openapi-types
+# → libs/ts-core/src/notification-api/openapi.generated.ts
 ```
 
-See [docs/platform-sms-openapi.md](docs/platform-sms-openapi.md) for the consumer narrative.
+See [docs/platform-sms-openapi.md](docs/platform-sms-openapi.md) and [docs/openapi/README.md](docs/openapi/README.md).
 
 ### 8. Useful NX commands
 

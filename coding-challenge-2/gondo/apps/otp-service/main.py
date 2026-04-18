@@ -5,13 +5,15 @@ from __future__ import annotations
 import os
 import uuid
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Request, status
 from pydantic import BaseModel, Field
 
 from py_core.app import create_app
 from py_core.logging import _should_log_payloads, configure_logging
 
+from rate_limit import allow_issue, allow_verify
 from service import VerifyOutcome, issue_challenge, verify_challenge
+from settings import otp_issue_requests_per_minute, otp_verify_requests_per_minute
 
 _LOGS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
 configure_logging(service_name="otp-service", log_dir=_LOGS_DIR)
@@ -50,8 +52,18 @@ app = create_app(
 )
 
 
+def _client_ip(request: Request) -> str:
+    return request.client.host if request.client else "unknown"
+
+
 @app.post("/v1/challenges", response_model=IssueChallengeResponse)
-async def issue(body: IssueChallengeRequest) -> IssueChallengeResponse:
+async def issue(request: Request, body: IssueChallengeRequest) -> IssueChallengeResponse:
+    lim = otp_issue_requests_per_minute()
+    if lim > 0 and not allow_issue(_client_ip(request), lim):
+        raise HTTPException(
+            status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="issue_rate_limit_exceeded",
+        )
     cid, code, expires_at, ttl_seconds = await issue_challenge(subject=body.subject)
     return IssueChallengeResponse(
         challenge_id=str(cid),
@@ -62,12 +74,18 @@ async def issue(body: IssueChallengeRequest) -> IssueChallengeResponse:
 
 
 @app.post("/v1/verify", response_model=VerifyResponse)
-async def verify(body: VerifyRequest) -> VerifyResponse:
+async def verify(request: Request, body: VerifyRequest) -> VerifyResponse:
+    lim = otp_verify_requests_per_minute()
+    if lim > 0 and not allow_verify(_client_ip(request), lim):
+        raise HTTPException(
+            status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="verify_rate_limit_exceeded",
+        )
     try:
         cid = uuid.UUID(body.challenge_id.strip())
     except ValueError:
         raise HTTPException(
-            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="invalid_challenge_id",
         )
     outcome = await verify_challenge(challenge_id=cid, code=body.code)

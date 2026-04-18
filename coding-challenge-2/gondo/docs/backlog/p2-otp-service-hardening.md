@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | **Priority** | P2 |
-| **Status** | **Partial** — **`apps/otp-service`** + notification **`issue_server_otp`** shipped; **hardening** acceptance (prod flags, UI without plaintext) still **open** |
+| **Status** | **Done** — Per-IP rolling-minute limits on **`POST /v1/challenges`** and **`POST /v1/verify`** (`OTP_ISSUE_REQUESTS_PER_MINUTE`, `OTP_VERIFY_REQUESTS_PER_MINUTE`; **`0`** = off); tests in **`tests/test_rate_limit.py`**. |
 | **Area** | Security narrative |
 
 ## Context
@@ -21,9 +21,9 @@ Clear separation between **demo UX** and **production security** posture.
 ## Acceptance criteria
 
 - [x] Production-style guidance documented: **`OTP_EXPOSE_PLAINTEXT_TO_CLIENT=false`** (main `README.md` — Scope and limitations / OTP bullet).
-- [ ] UI / API path validated end-to-end with **plaintext disabled** (membership UX may still assume demo responses).
-- [ ] **`OTP_HASH_PEPPER`** highlighted in operator README / runbook for non-dev (today: `docker-compose.yml` + `apps/otp-service/settings.py` defaults).
-- [ ] Optional: rate limiting / abuse controls on issue & verify endpoints (stretch).
+- [x] **notification-service** create path with **`issue_server_otp`** tested with expose **off**: response has no **`otp_plaintext`**; **`content`** still substituted (`tests/test_notification_otp_policy.py`). *(Frontend membership still targets demo defaults; prod clients rely on SMS channel, not API plaintext.)*
+- [x] **`OTP_HASH_PEPPER`** and related vars in **README** operator table (`OTP_SERVICE_BASE_URL`, `OTP_TTL_SECONDS`, …).
+- [x] Rate limiting on issue / verify (**`rate_limit.py`**, **`429`** with `issue_rate_limit_exceeded` / `verify_rate_limit_exceeded`).
 
 ## References
 

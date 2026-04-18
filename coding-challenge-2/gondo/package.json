@@ -19,7 +19,8 @@
     "db:stop": "docker-compose stop postgres",
     "db:migrate": "./scripts/db-migrate.sh",
     "db:reset": "docker-compose down -v postgres && yarn db:start && yarn db:migrate",
-    "test:integration": "RUN_INTEGRATION_TESTS=1 python3 -m pytest tests/integration -v -s --log-cli-level=INFO"
+    "test:integration": "RUN_INTEGRATION_TESTS=1 python3 -m pytest tests/integration -v -s --log-cli-level=INFO",
+    "verify-openapi": "nx run notification-service:verify-openapi"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
@@ -52,6 +53,7 @@
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
     "nx": "^22.6.4",
+    "openapi-typescript": "7.4.4",
     "prettier": "~3.6.2",
     "tslib": "^2.3.0",
     "typescript": "~5.9.2",

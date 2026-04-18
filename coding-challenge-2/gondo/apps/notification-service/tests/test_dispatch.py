@@ -260,6 +260,49 @@ def test_dispatch_returns_502_when_charging_service_unavailable() -> None:
     assert response.json()["error"]["code"] == "CHARGING_UNAVAILABLE"
 
 
+def test_dispatch_returns_404_for_unknown_notification() -> None:
+    client = TestClient(app)
+    response = client.post(
+        "/notifications/00000000-0000-0000-0000-000000000099/dispatch",
+        json={"as_of": "2026-04-03T12:00:00.000Z"},
+    )
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "NOT_FOUND"
+
+
+def test_retry_returns_404_for_unknown_notification() -> None:
+    client = TestClient(app)
+    response = client.post(
+        "/notifications/00000000-0000-0000-0000-000000000088/retry",
+        json={},
+    )
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "NOT_FOUND"
+
+
+def test_retry_returns_409_when_notification_not_retryable() -> None:
+    """Retry is only allowed from Send-failed / Carrier-rejected."""
+    client = TestClient(app)
+    created = client.post(
+        "/notifications",
+        json={
+            "message_id": "msg-retry-new-only",
+            "channel_type": "SMS",
+            "recipient": "u",
+            "content": "hello",
+            "channel_payload": {"country_code": "US", "phone_number": "+84901234567"},
+        },
+    ).json()
+    nid = created["data"]["notification_id"]
+
+    response = client.post(f"/notifications/{nid}/retry", json={})
+
+    assert response.status_code == 409
+    err = response.json()["error"]
+    assert err["code"] == "RETRY_NOT_ALLOWED"
+    assert err["details"]["current_state"] == "New"
+
+
 def test_dispatch_returns_502_when_provider_grpc_unavailable() -> None:
     """Provider SelectProvider fails (simulated infra / gRPC UNAVAILABLE)."""
     client = TestClient(app)
