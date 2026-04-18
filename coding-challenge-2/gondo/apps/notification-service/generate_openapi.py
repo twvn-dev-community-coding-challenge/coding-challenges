@@ -9,9 +9,16 @@ from main import app
 
 def generate() -> None:
     schema = app.openapi()
-    output_path = Path("openapi.json")
-    output_path.write_text(json.dumps(schema, indent=2) + "\n")
-    print(f"OpenAPI contract written to {output_path} ({len(json.dumps(schema))} bytes)")
+    compact = json.dumps(schema)
+    service_path = Path("openapi.json")
+    service_path.write_text(json.dumps(schema, indent=2) + "\n")
+    print(f"OpenAPI contract written to {service_path} ({len(compact)} bytes)")
+
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    docs_path = repo_root / "docs" / "openapi" / "notification-service.openapi.json"
+    docs_path.parent.mkdir(parents=True, exist_ok=True)
+    docs_path.write_text(json.dumps(schema, indent=2) + "\n")
+    print(f"Platform SMS API export: {docs_path}")
 
 
 if __name__ == "__main__":

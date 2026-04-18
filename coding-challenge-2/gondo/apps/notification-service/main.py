@@ -14,7 +14,9 @@ from fastapi.responses import JSONResponse
 from google.protobuf import timestamp_pb2
 from pydantic import BaseModel, Field
 
+from charging_client import estimate_cost_grpc, record_actual_cost_grpc
 from grpc_client import select_provider
+from otp_http_client import OtpIssueError, issue_challenge_http, substitute_otp_in_content
 from lifespan import notification_lifespan
 from models import (
     Notification,
@@ -52,6 +54,11 @@ class CreateNotificationRequest(BaseModel):
     recipient: str
     content: str
     channel_payload: SmsChannelPayload
+    issue_server_otp: bool = Field(
+        default=False,
+        description="If true, call otp-service to generate a code (hashed at rest with TTL); "
+        "substitutes {{OTP}} in content.",
+    )
 
 
 class DispatchRequest(BaseModel):
@@ -126,9 +133,100 @@ def notification_to_dict(notification: Notification) -> dict[str, object]:
         "attempt": notification.attempt,
         "selected_provider_id": notification.selected_provider_id,
         "routing_rule_version": notification.routing_rule_version,
+        "estimated_cost": notification.estimated_cost,
+        "estimated_currency": notification.estimated_currency,
+        "charging_estimate_id": notification.charging_estimate_id,
+        "charging_rate_id": notification.charging_rate_id,
+        "last_actual_cost": notification.last_actual_cost,
+        "actual_currency": notification.actual_currency,
+        "charging_actual_cost_id": notification.charging_actual_cost_id,
+        "otp_challenge_id": notification.otp_challenge_id,
+        "otp_expires_at": notification.otp_expires_at,
         "created_at": _datetime_to_iso_z(notification.created_at),
         "updated_at": _datetime_to_iso_z(notification.updated_at),
     }
+
+
+async def attach_charging_estimate(
+    n: Notification,
+    *,
+    selected_provider_id: str,
+    as_of_ts: timestamp_pb2.Timestamp,
+) -> JSONResponse | None:
+    """Fetch ``EstimateCost`` and persist on *n*. Returns error JSONResponse on gRPC failure."""
+    try:
+        resp = await estimate_cost_grpc(
+            message_id=n.message_id,
+            provider_id=selected_provider_id,
+            country_code=n.channel_payload["country_code"],
+            carrier=n.channel_payload["carrier"],
+            as_of=as_of_ts,
+        )
+    except grpc.aio.AioRpcError as err:
+        logger.exception(
+            "charging_estimate_failed",
+            extra={"message_id": n.message_id, "details": err.details()},
+        )
+        if err.code() == grpc.StatusCode.NOT_FOUND:
+            return error_response(
+                "CHARGING_RATE_NOT_FOUND",
+                "No charging rate for this provider, carrier, and country at as_of",
+                status.HTTP_502_BAD_GATEWAY,
+                {"grpc": err.details() or err.code().name},
+            )
+        return error_response(
+            "CHARGING_UNAVAILABLE",
+            "Charging service failed during cost estimate",
+            status.HTTP_502_BAD_GATEWAY,
+            {"grpc": err.details() or err.code().name},
+        )
+    n.estimated_cost = resp.estimated_cost
+    n.estimated_currency = resp.currency
+    n.charging_estimate_id = resp.estimate_id
+    n.charging_rate_id = resp.rate_id
+    n.updated_at = datetime.now(timezone.utc)
+    update_notification(n)
+    return None
+
+
+async def record_actual_cost_after_callback(
+    n: Notification,
+    body: ProviderCallbackRequest,
+) -> None:
+    """Best-effort ``RecordActualCost`` for terminal billing (does not fail the HTTP callback)."""
+    if n.selected_provider_id is None:
+        return
+    if body.new_state not in ("Send-success", "Send-failed"):
+        return
+    if body.new_state == "Send-failed" and body.actual_cost is None:
+        return
+
+    cost = body.actual_cost
+    if cost is None:
+        cost = n.estimated_cost
+    if cost is None:
+        cost = 0.0
+    currency = n.estimated_currency or "USD"
+    idempotency_key = f"{n.message_id}:actual:{body.new_state}"
+    try:
+        rec = await record_actual_cost_grpc(
+            message_id=n.message_id,
+            provider_id=n.selected_provider_id,
+            actual_cost=float(cost),
+            currency=currency,
+            callback_state=body.new_state,
+            idempotency_key=idempotency_key,
+        )
+        n.last_actual_cost = float(cost)
+        n.actual_currency = currency
+        n.charging_actual_cost_id = rec.actual_cost_id
+        n.updated_at = datetime.now(timezone.utc)
+        update_notification(n)
+    except grpc.aio.AioRpcError:
+        logger.exception(
+            "charging_record_actual_failed",
+            extra={"message_id": n.message_id},
+        )
 
 
 def _record_transition(
@@ -208,12 +306,33 @@ async def create_notification_endpoint(
         "country_code": body.channel_payload.country_code,
         "phone_number": body.channel_payload.phone_number,
     }
+
+    content_final = body.content
+    otp_challenge_id: str | None = None
+    otp_expires_at: str | None = None
+    otp_plain_code: str | None = None
+
+    if body.issue_server_otp:
+        try:
+            otp_payload = await issue_challenge_http(body.message_id)
+        except OtpIssueError:
+            return error_response(
+                "OTP_ISSUE_FAILED",
+                "Could not issue server-side OTP (check otp-service and OTP_SERVICE_BASE_URL)",
+                status.HTTP_503_SERVICE_UNAVAILABLE,
+                {},
+            )
+        otp_plain_code = str(otp_payload["code"])
+        otp_challenge_id = str(otp_payload["challenge_id"])
+        otp_expires_at = str(otp_payload["expires_at"])
+        content_final = substitute_otp_in_content(body.content, otp_plain_code)
+
     n = Notification(
         notification_id=nid,
         message_id=body.message_id,
         channel_type=body.channel_type,
         recipient=body.recipient,
-        content=body.content,
+        content=content_final,
         channel_payload=payload,
         state="New",
         attempt=0,
@@ -221,9 +340,19 @@ async def create_notification_endpoint(
         routing_rule_version=None,
         created_at=now,
         updated_at=now,
+        otp_challenge_id=otp_challenge_id,
+        otp_expires_at=otp_expires_at,
     )
     create_notification(n)
-    return success_response(notification_to_dict(n))
+    data = notification_to_dict(n)
+    expose_plain = os.environ.get("OTP_EXPOSE_PLAINTEXT_TO_CLIENT", "true").lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if body.issue_server_otp and expose_plain and otp_plain_code is not None:
+        data["otp_plaintext"] = otp_plain_code
+    return success_response(data)
 
 
 @app.get("/notifications/{notification_id}", response_model=None)
@@ -305,6 +434,14 @@ async def dispatch_notification(
             {"message_id": n.message_id},
         )
 
+    charging_err = await attach_charging_estimate(
+        n,
+        selected_provider_id=response.selected_provider_id,
+        as_of_ts=as_of_ts,
+    )
+    if charging_err is not None:
+        return charging_err
+
     from_new = n.state
     n.state = "Send-to-provider"
     n.selected_provider_id = response.selected_provider_id
@@ -365,20 +502,6 @@ async def retry_notification(
             {"attempt": n.attempt, "max_attempts": DEFAULT_MAX_ATTEMPTS},
         )
 
-    from_state = n.state
-    n.state = "Send-to-provider"
-    n.attempt += 1
-    n.updated_at = datetime.now(timezone.utc)
-    update_notification(n)
-    _record_transition(
-        n.notification_id,
-        from_state,
-        "Send-to-provider",
-        "retry",
-        "accepted",
-        "retry_to_send_to_provider",
-    )
-
     if body.as_of is not None:
         as_of_ts = iso_string_to_timestamp(body.as_of)
     else:
@@ -388,6 +511,9 @@ async def retry_notification(
     if not carrier:
         carrier = await derive_carrier(n.channel_payload.get("phone_number", ""))
         n.channel_payload = {**n.channel_payload, "carrier": carrier}
+        n.updated_at = datetime.now(timezone.utc)
+        update_notification(n)
+
     try:
         response = await select_provider(
             country_code=n.channel_payload["country_code"],
@@ -416,10 +542,29 @@ async def retry_notification(
             {"message_id": n.message_id},
         )
 
+    charging_err = await attach_charging_estimate(
+        n,
+        selected_provider_id=response.selected_provider_id,
+        as_of_ts=as_of_ts,
+    )
+    if charging_err is not None:
+        return charging_err
+
+    from_state = n.state
+    n.state = "Send-to-provider"
+    n.attempt += 1
     n.selected_provider_id = response.selected_provider_id
     n.routing_rule_version = int(response.routing_rule_version)
     n.updated_at = datetime.now(timezone.utc)
     update_notification(n)
+    _record_transition(
+        n.notification_id,
+        from_state,
+        "Send-to-provider",
+        "retry",
+        "accepted",
+        "retry_to_send_to_provider",
+    )
 
     from_sp = n.state
     n.state = "Queue"
@@ -481,6 +626,8 @@ async def provider_callbacks(
         "accepted",
         f"callback_from_{body.provider}",
     )
+
+    await record_actual_cost_after_callback(n, body)
 
     return success_response(
         {

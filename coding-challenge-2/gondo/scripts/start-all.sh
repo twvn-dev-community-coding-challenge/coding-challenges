@@ -23,8 +23,8 @@ usage() {
 Usage: start-all.sh [--help]
 
   Start all Python/FastAPI backend services in dependency order, then the React frontend:
-  charging-service (8003) → provider-service (8002) → notification-service (8001)
-  → frontend dev server (4200).
+  charging-service (8003) → otp-service (8007) → provider-service (8002)
+  → notification-service (8001, uses OTP_SERVICE_BASE_URL) → frontend dev server (4200).
 
   Requires a virtual environment at .venv/, Node/Yarn for the frontend, and curl for health checks.
   Press Ctrl+C to stop all services.
@@ -62,14 +62,14 @@ cleanup() {
   done
   sleep 1
   local port pids
-  for port in 8001 8002 8003 4200; do
+  for port in 8001 8002 8003 8007 4200; do
     pids=$(lsof -nP -iTCP:"${port}" -sTCP:LISTEN -t 2>/dev/null || true)
     if [[ -n "${pids}" ]]; then
       kill ${pids} 2>/dev/null || true
     fi
   done
   sleep 0.5
-  for port in 8001 8002 8003 4200; do
+  for port in 8001 8002 8003 8007 4200; do
     pids=$(lsof -nP -iTCP:"${port}" -sTCP:LISTEN -t 2>/dev/null || true)
     if [[ -n "${pids}" ]]; then
       kill -9 ${pids} 2>/dev/null || true
@@ -201,6 +201,14 @@ wait_for_health 8003 "charging-service" || {
   exit 1
 }
 
+echo -e "${YELLOW}[bootstrap]${NC} Starting otp-service (8007)..."
+start_uvicorn "otp" "${YELLOW}" "apps/otp-service" 8007
+sleep 1
+wait_for_health 8007 "otp-service" || {
+  cleanup
+  exit 1
+}
+
 echo -e "${MAGENTA}[bootstrap]${NC} Starting provider-service (8002)..."
 start_uvicorn "provider" "${MAGENTA}" "apps/provider-service" 8002
 sleep 1
@@ -209,7 +217,8 @@ wait_for_health 8002 "provider-service" || {
   exit 1
 }
 
-echo -e "${BLUE}[bootstrap]${NC} Starting notification-service (8001)..."
+export OTP_SERVICE_BASE_URL="${OTP_SERVICE_BASE_URL:-http://127.0.0.1:8007}"
+echo -e "${BLUE}[bootstrap]${NC} Starting notification-service (8001, OTP_SERVICE_BASE_URL=${OTP_SERVICE_BASE_URL})..."
 start_uvicorn "notification" "${BLUE}" "apps/notification-service" 8001
 sleep 1
 wait_for_health 8001 "notification-service" || {
@@ -233,6 +242,7 @@ echo -e "  Frontend:                     http://localhost:4200"
 echo -e "  Notification Service (main):  http://localhost:8001"
 echo -e "  Provider Service:             http://localhost:8002"
 echo -e "  Charging Service:             http://localhost:8003"
+echo -e "  OTP Service:                  http://localhost:8007"
 echo ""
 echo -e "  Test endpoints:"
 echo -e "    GET http://localhost:8001/health"
@@ -241,6 +251,7 @@ echo -e "  Swagger UI (REST):"
 echo -e "    http://localhost:8001/docs  (Notification)"
 echo -e "    http://localhost:8002/docs  (Provider)"
 echo -e "    http://localhost:8003/docs  (Charging)"
+echo -e "    http://localhost:8007/docs  (OTP)"
 echo ""
 echo -e "  gRPC Reflection (grpcurl / grpcui):"
 echo -e "    Provider  :50051  ${CYAN}grpcui -plaintext localhost:50051${NC}"

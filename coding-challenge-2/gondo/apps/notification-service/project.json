@@ -54,7 +54,10 @@
           "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
         }
       },
-      "outputs": ["{projectRoot}/openapi.json"]
+      "outputs": [
+        "{projectRoot}/openapi.json",
+        "{workspaceRoot}/docs/openapi/notification-service.openapi.json"
+      ]
     }
   },
   "tags": ["python", "fastapi"]

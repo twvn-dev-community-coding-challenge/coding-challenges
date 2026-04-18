@@ -77,6 +77,28 @@ services:
       timeout: 3s
       retries: 10
 
+  otp-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: otp-service
+        PORT: "8007"
+    ports:
+      - "8007:8007"
+    environment:
+      - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
+      # Override in real deployments; dev default also exists in code if unset.
+      - OTP_HASH_PEPPER=${OTP_HASH_PEPPER:-docker-dev-otp-pepper}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8007/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   provider-service:
     build:
       context: .
@@ -145,9 +167,14 @@ services:
       - CHARGING_GRPC_TARGET=charging-service:50052
       - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
       - NATS_URL=nats://nats:4222
+      - OTP_SERVICE_BASE_URL=http://otp-service:8007
+      # Demo: set to "false" so the API does not return otp_plaintext to browsers.
+      - OTP_EXPOSE_PLAINTEXT_TO_CLIENT=${OTP_EXPOSE_PLAINTEXT_TO_CLIENT:-true}
     depends_on:
       nats:
         condition: service_started
+      otp-service:
+        condition: service_healthy
       provider-service:
         condition: service_healthy
       charging-service:
