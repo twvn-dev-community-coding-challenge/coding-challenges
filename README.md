@@ -59,7 +59,7 @@ Welcome to the TWVN Coding Challenge! Whether you're a seasoned developer or jus
 
 ### ⏱️ Time Commitment
 
-- **2-3 hours per week** over a 2-3 week coding period
+- **2-3 hours per week** over a 2 week coding period
 - Partial solutions are welcome — "good enough" beats "perfect"
 
 ### ✅ What's Allowed
@@ -424,7 +424,7 @@ A: Partial solutions are 100% welcome! Submit what you have and explain what you
 A: It happens! Explain what was supposed to happen. Judges value your understanding and design decisions over a perfect demo.
 
 **Q: How much time should I really spend?**
-A: Aim for **4-6 hours total** over 2-3 weeks. That's roughly 2 hours per week. Don't overwork — this should be fun!
+A: Aim for **4-6 hours total** over 2 weeks. That's roughly 2 hours per week. Don't overwork — this should be fun!
 
 **Q: Can I use code from previous projects?**
 A: You can reuse your own patterns and approaches, but the solution should be built for this specific challenge. No copy-pasting entire projects.
