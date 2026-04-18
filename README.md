@@ -169,13 +169,19 @@ coding-challenge-{number}/<your-team-name>/
 
 **Your PR is your official submission.** This is mandatory when possible.
 
-1. Push your branch to **your fork**
-2. Open a Pull Request from `your-fork:your-branch` into `official-repo:main`
+> ⏰ **Important — Timing of your PR:**
+>
+> - **Keep your fork private (or simply don't open the PR) until the Deadline.** While you're working, there's no need to expose your solution to other participants.
+> - **Open your PR back to the official repo _after_ the Deadline**, from your fork. Because every team opens their PR after the cutoff, you don't have to worry about anyone seeing your ideas and copying them before they submit.
+> - **Only commits made _before_ the Deadline will be counted.** Any commits pushed after the Deadline will be ignored during scoring — even if they land on your branch before the PR is opened. Make sure your final commit is in before the cutoff.
+
+1. **Before the Deadline:** Finish your work and push your final commits to **your fork**. Any commits after the Deadline will not be counted.
+2. **After the Deadline:** Make your fork public (if it wasn't already) and open a Pull Request from `your-fork:your-branch` into `official-repo:main`.
 3. Fill out the PR description using the template below
 4. Request review from the challenge organizers or mentors
 5. **Do not merge** — Organizers will review all PRs before Demo Day
 
-**Fallback (only if PR is not possible):** Share the link to your fork (and the branch) with the organizers.
+**Fallback (only if PR is not possible):** Share the link to your fork (and the branch) with the organizers after the Deadline.
 
 **PR Title Format:**
 
@@ -360,12 +366,14 @@ Season Score = (Top Score 1) + (Top Score 2) + (Top Score 3)
 
 ### 📅 Monthly Workflow
 
-| Week         | Activity                                             |
-| ------------ | ---------------------------------------------------- |
-| **Week 1**   | Challenge Release & Registration                     |
-| **Week 2-3** | Hacking & Development (PRs due by end of Week 3)     |
-| **Week 4**   | Facilitator Review & Scoring                         |
-| **Week 5**   | Demo Day & Winner Announcement (new challenge drops) |
+| Week         | Activity                                                                          |
+| ------------ | --------------------------------------------------------------------------------- |
+| **Week 1**   | Challenge Release & Registration                                                  |
+| **Week 2-3** | Hacking & Development — **coding Deadline at end of Week 3**                      |
+| **Week 4**   | Open your PR to the official repo (public) & Facilitator Review & Scoring        |
+| **Week 5**   | Demo Day & Winner Announcement (new challenge drops)                              |
+
+> ⚠️ **Only commits made before the end of Week 3 (the Deadline) are counted.** Commits pushed after the Deadline will be ignored during scoring. PRs are opened _after_ the Deadline so no one sees your solution before they submit theirs.
 
 ---
 
@@ -419,6 +427,12 @@ A: Not at all! This event is designed for **all levels**. You'll be paired with 
 
 **Q: What if I can't finish in time?**
 A: Partial solutions are 100% welcome! Submit what you have and explain what you would do next.
+
+**Q: What happens if I commit after the Deadline?**
+A: Only commits made **before** the Deadline are counted — anything pushed after will be ignored during scoring. Treat the Deadline as a hard cutoff for code changes, even if you haven't opened your PR yet.
+
+**Q: When should I open my Pull Request to the official repo?**
+A: **After** the Deadline. Keep your fork private (or just don't open the PR) while you're working, then make your fork public and open the PR to the official repo once the Deadline passes. Because everyone submits at the same time, you don't need to worry about other teams seeing your ideas and changing their submission.
 
 **Q: What if my solution breaks during the demo?**
 A: It happens! Explain what was supposed to happen. Judges value your understanding and design decisions over a perfect demo.
