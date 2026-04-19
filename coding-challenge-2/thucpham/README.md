@@ -8,6 +8,7 @@ Run the interactive demo (terminal UI with `@clack/prompts`):
 
 ```bash
 cd coding-challenge-2/thucpham
+npm install
 npx tsx main.ts
 ```
 
