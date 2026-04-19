@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  smart-rotator-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-rotator-api
+    ports:
+      - "1902:1902"
+    environment:
+      - PORT=1902
+    restart: unless-stopped
+    volumes:
+      - ./src:/app/src
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:1902/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
