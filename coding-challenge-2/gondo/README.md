@@ -434,7 +434,7 @@ Generated Python stubs are written to `libs/grpc-contracts/generated/`.
 - ...
 
 ## With More Time, We Would...
-- Review and improve all functionalities defined in [Backlog](coding-challenge-2/gondo/docs/backlog/README.md)
+- Review and improve all functionalities defined in [Backlog](./docs/backlog/README.md)
 
 ## AI Tools Used (if any)
 - Cursor
