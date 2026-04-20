@@ -9,12 +9,14 @@ import {
 import { CountdownProvider } from '../context';
 import { MembershipRegistrationPage } from '../pages/membership-registration';
 import { NotificationTrackingPage } from '../pages/notification-tracking';
+import { SmsKpisPage } from '../pages/sms-kpis';
 import { theme } from '../theme';
 import { NavBar } from '../ui/nav-bar/nav-bar';
 
 const navLinks = [
   { to: '/membership', label: 'Membership Registration' },
   { to: '/tracking', label: 'Notification Tracking' },
+  { to: '/kpis', label: 'SMS KPIs' },
 ] as const;
 
 export const AppRoutes = () => (
@@ -43,6 +45,14 @@ export const AppRoutes = () => (
           element={
             <Box sx={{ px: { xs: 2, sm: 3 } }}>
               <NotificationTrackingPage />
+            </Box>
+          }
+        />
+        <Route
+          path="/kpis"
+          element={
+            <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 2, sm: 3 } }}>
+              <SmsKpisPage />
             </Box>
           }
         />

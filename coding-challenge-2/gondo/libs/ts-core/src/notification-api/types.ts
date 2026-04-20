@@ -78,3 +78,40 @@ export interface PipelineEventsData {
   readonly message_id: string;
   readonly events: readonly PipelineEvent[];
 }
+
+/** One bucket from `GET /notifications/kpis` (in-memory aggregates). */
+export interface SmsKpisBucketRow {
+  readonly volume: number;
+  readonly total_estimated_cost: number;
+  readonly total_actual_cost: number;
+  readonly with_estimate_count: number;
+  readonly with_actual_count: number;
+  readonly send_success: number;
+  readonly send_failed: number;
+  readonly carrier_rejected: number;
+  readonly in_flight: number;
+  readonly terminal_failure: number;
+  readonly terminal_success_rate: number | null;
+  readonly terminal_failure_rate: number | null;
+}
+
+export interface SmsKpisOverall extends SmsKpisBucketRow {
+  readonly total_notifications: number;
+}
+
+export interface SmsKpisByProvider extends SmsKpisBucketRow {
+  readonly provider_id: string;
+}
+
+export interface SmsKpisByCountry extends SmsKpisBucketRow {
+  readonly country_code: string;
+}
+
+/** Response body `data` from `GET /notifications/kpis`. */
+export interface SmsKpisData {
+  readonly source: string;
+  readonly currency_note: string;
+  readonly overall: SmsKpisOverall;
+  readonly by_provider: readonly SmsKpisByProvider[];
+  readonly by_country: readonly SmsKpisByCountry[];
+}

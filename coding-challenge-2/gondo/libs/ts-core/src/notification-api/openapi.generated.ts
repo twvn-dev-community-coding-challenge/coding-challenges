@@ -39,6 +39,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/notifications/kpis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Sms Kpis Endpoint
+         * @description Aggregate SMS cost/volume/success KPIs (User Story 5); reads in-memory notification store.
+         */
+        get: operations["get_sms_kpis_endpoint_notifications_kpis_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/notifications/{notification_id}": {
         parameters: {
             query?: never;
@@ -173,7 +193,10 @@ export interface components {
             provider: string;
             /** New State */
             new_state: string;
-            /** Actual Cost */
+            /**
+             * Actual Cost
+             * @description Billed amount for charging-service RecordActualCost. Send-success: optional (falls back to estimated_cost). Send-failed: omit to skip RecordActualCost.
+             */
             actual_cost?: number | null;
         };
         /** RetryRequest */
@@ -283,6 +306,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_sms_kpis_endpoint_notifications_kpis_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };

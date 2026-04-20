@@ -13,7 +13,7 @@ VALID_TRANSITIONS: dict[str, list[str]] = {
     "New": ["Send-to-provider"],
     "Send-to-provider": ["Queue"],
     "Queue": ["Send-to-carrier", "Carrier-rejected"],
-    "Send-to-carrier": ["Send-success", "Send-failed"],
+    "Send-to-carrier": ["Send-success", "Send-failed", "Carrier-rejected"],
     "Send-failed": ["Send-to-provider"],
     "Carrier-rejected": ["Send-to-provider"],
 }

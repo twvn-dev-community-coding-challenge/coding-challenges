@@ -16,3 +16,7 @@ def test_invalid_transition_new_to_queue() -> None:
 def test_terminal_state_send_success_has_no_transitions() -> None:
     assert "Send-success" not in VALID_TRANSITIONS
     assert is_valid_transition("Send-success", "Send-failed") is False
+
+
+def test_send_to_carrier_to_carrier_rejected_allowed() -> None:
+    assert is_valid_transition("Send-to-carrier", "Carrier-rejected") is True

@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | **Priority** | P1 |
-| **Status** | **Open** |
+| **Status** | **Done** — `cqrs/carrier_auto_reject.py` + `apply_carrier_dispatch_received`; tests `test_carrier_rejected_e2e.py`, `test_carrier_auto_reject.py` |
 | **Challenge** | [User Story 4 — SMS Lifecycle](../../../coding-challenge-2.md) |
 
 ## Problem
@@ -20,11 +20,13 @@ Demonstrates **controlled transitions** and **traceability** for an edge path ca
 
 ## Acceptance criteria
 
-- [ ] Automated test (or documented integration steps) that reaches **Carrier-rejected** from **Queue** via simulated carrier/bus outcome.
-- [ ] **Retry** from **Carrier-rejected** transitions toward **Send-to-provider** / **Queue** as designed; assertions on state sequence.
-- [ ] Optional: row in [routing-vs-challenge-brief.md](../routing-vs-challenge-brief.md) or lifecycle doc referencing this path.
+- [x] Automated test: **`sms.dispatch.received`** → **Queue → Send-to-carrier**, then **Send-to-carrier → Carrier-rejected** for **VN** **`090909094`** / **`+8490909094`** (simulated MNO rejection per challenge definition).
+- [x] **Retry** from **Carrier-rejected** → **Send-to-provider** → **Queue**; second bus event can reject again (same test MSISDN).
+- [ ] Optional: lifecycle diagram cross-link (see `carrier_dispatch_received.py`).
 
 ## References
 
 - `apps/notification-service/models.py` — allowed transitions  
+- `apps/notification-service/cqrs/carrier_auto_reject.py` — test MSISDN **`8490909094`** (`090909094`)
+- `apps/notification-service/cqrs/carrier_dispatch_received.py` — **`sms.dispatch.received`** consumer
 - Challenge: `coding-challenge-2.md` § User Story 4 (transitions)

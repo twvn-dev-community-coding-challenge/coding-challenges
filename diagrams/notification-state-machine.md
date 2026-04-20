@@ -27,16 +27,18 @@ stateDiagram-v2
     Send_to_provider --> Queue: same HTTP handler
 
     Queue --> Send_to_carrier: NATS sms.dispatch.received
-    Queue --> Carrier_rejected: provider-callbacks
 
     Send_to_carrier --> Send_success: provider-callbacks
     Send_to_carrier --> Send_failed: provider-callbacks
+    Send_to_carrier --> Carrier_rejected: provider-callbacks OR sim MNO reject (090909094)
 
     Send_failed --> Send_to_provider: retry
     Carrier_rejected --> Send_to_provider: retry
 
     Send_success --> [*]
 ```
+
+Challenge brief also lists **`Queue → Carrier-rejected`** without **Send-to-carrier** (shorthand). This repo treats **Carrier-rejected** per definition as MNO rejection after provider acceptance: **`Queue → Send-to-carrier`** on **`sms.dispatch.received`**, then **`Send-to-carrier → Carrier-rejected`** when the simulated MNO refuses the MT (see **`carrier_auto_reject`**), or **`POST /provider-callbacks`** with **`new_state`** **`Carrier-rejected`** from **Send-to-carrier**.
 
 Code uses hyphenated names: **`Send-to-provider`**, **`Queue`**, **`Send-to-carrier`**, **`Send-success`**, **`Send-failed`**, **`Carrier-rejected`**.
 

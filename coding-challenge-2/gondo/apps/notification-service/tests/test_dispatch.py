@@ -100,6 +100,10 @@ def test_dispatch_happy_path() -> None:
     assert data["channel_payload"]["carrier"] == "VIETTEL"
     assert data["estimated_cost"] == 0.015
     assert data["charging_estimate_id"] == "est-test-1"
+    cs = data["cost_story"]
+    assert cs["estimated_available"] is True
+    assert cs["actual_available"] is False
+    assert cs["estimated_cost_lifecycle_stage"] == "Send-to-provider"
 
 
 def test_dispatch_returns_503_when_dispatch_event_not_published() -> None:

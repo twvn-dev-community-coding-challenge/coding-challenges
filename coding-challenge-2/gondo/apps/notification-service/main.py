@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 from charging_client import estimate_cost_grpc, record_actual_cost_grpc
 from grpc_client import publish_sms_dispatch_via_provider, select_provider
 from otp_http_client import OtpIssueError, issue_challenge_http, substitute_otp_in_content
+from kpis import build_sms_kpis
 from lifespan import notification_lifespan
 from pipeline_runtime import append_pipeline_event as _record_pipeline_event, list_pipeline_events
 from models import (
@@ -81,7 +82,14 @@ class ProviderCallbackRequest(BaseModel):
     message_id: str
     provider: str
     new_state: str
-    actual_cost: float | None = None
+    actual_cost: float | None = Field(
+        default=None,
+        description=(
+            "Billed amount for charging-service RecordActualCost. "
+            "Send-success: optional (falls back to estimated_cost). "
+            "Send-failed: omit to skip RecordActualCost."
+        ),
+    )
 
 
 def success_response(data: dict[str, object]) -> dict[str, object]:
@@ -129,6 +137,23 @@ def iso_string_to_timestamp(iso: str) -> timestamp_pb2.Timestamp:
     return ts
 
 
+def cost_story_payload(notification: Notification) -> dict[str, object]:
+    """Maps challenge brief (estimate at Send-to-provider, actual at terminal callback) to API visibility."""
+    est = notification.estimated_cost is not None
+    act = (
+        notification.last_actual_cost is not None
+        or notification.charging_actual_cost_id is not None
+    )
+    return {
+        "estimated_cost_lifecycle_stage": "Send-to-provider",
+        "estimated_available": est,
+        "actual_cost_lifecycle_stage": "Send-success or Send-failed (via provider callback)",
+        "actual_available": act,
+        "estimate_source": "charging-service EstimateCost on dispatch/retry before entering Send-to-provider",
+        "actual_source": "charging-service RecordActualCost on provider callback after terminal state update",
+    }
+
+
 def notification_to_dict(notification: Notification) -> dict[str, object]:
     return {
         "notification_id": notification.notification_id,
@@ -148,6 +173,7 @@ def notification_to_dict(notification: Notification) -> dict[str, object]:
         "last_actual_cost": notification.last_actual_cost,
         "actual_currency": notification.actual_currency,
         "charging_actual_cost_id": notification.charging_actual_cost_id,
+        "cost_story": cost_story_payload(notification),
         "otp_challenge_id": notification.otp_challenge_id,
         "otp_expires_at": notification.otp_expires_at,
         "created_at": _datetime_to_iso_z(notification.created_at),
@@ -264,6 +290,15 @@ async def record_actual_cost_after_callback(
         n.charging_actual_cost_id = rec.actual_cost_id
         n.updated_at = datetime.now(timezone.utc)
         update_notification(n)
+        _pipe(
+            n.notification_id,
+            "charging.RecordActualCost.ok",
+            message_id=n.message_id,
+            charging_actual_cost_id=n.charging_actual_cost_id,
+            last_actual_cost=n.last_actual_cost,
+            currency=n.actual_currency,
+            callback_state=body.new_state,
+        )
     except grpc.aio.AioRpcError:
         logger.exception(
             "charging_record_actual_failed",
@@ -402,6 +437,12 @@ async def create_notification_endpoint(
     if body.issue_server_otp and expose_plain and otp_plain_code is not None:
         data["otp_plaintext"] = otp_plain_code
     return success_response(data)
+
+
+@app.get("/notifications/kpis")
+async def get_sms_kpis_endpoint() -> dict[str, object]:
+    """Aggregate SMS cost/volume/success KPIs (User Story 5); reads in-memory notification store."""
+    return success_response(build_sms_kpis())
 
 
 @app.get("/notifications/{notification_id}", response_model=None)
@@ -634,7 +675,14 @@ async def dispatch_notification(
         "accepted",
         "dispatch_new_to_send_to_provider",
     )
-    _pipe(notification_id, "state.Send-to-provider", from_state=from_new)
+    _pipe(
+        notification_id,
+        "state.Send-to-provider",
+        from_state=from_new,
+        estimated_cost=n.estimated_cost,
+        charging_estimate_id=n.charging_estimate_id,
+        currency=n.estimated_currency,
+    )
 
     n.attempt = 1
     from_sp = n.state
@@ -869,7 +917,14 @@ async def retry_notification(
         "accepted",
         "retry_to_send_to_provider",
     )
-    _pipe(notification_id, "state.Send-to-provider", from_state=from_state)
+    _pipe(
+        notification_id,
+        "state.Send-to-provider",
+        from_state=from_state,
+        estimated_cost=n.estimated_cost,
+        charging_estimate_id=n.charging_estimate_id,
+        currency=n.estimated_currency,
+    )
 
     from_sp = n.state
     n.state = "Queue"

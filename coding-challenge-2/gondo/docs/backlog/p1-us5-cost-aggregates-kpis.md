@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | **Priority** | P1 |
-| **Status** | **Open** |
+| **Status** | **Done** |
 | **Challenge** | [User Story 5 — Cost Tracking & Observability](../../../coding-challenge-2.md) |
 
 ## Problem
@@ -23,11 +23,14 @@ Closes the explicit **User Story 5** acceptance criteria and supports evaluation
 
 ## Acceptance criteria
 
-- [ ] Define surface area: read model API, CLI, SQL views over existing stores, or documented “how to query” for reviewers.
-- [ ] Totals (or time-bounded aggregates) **by provider** and **by country** align with stored estimates/actuals.
-- [ ] **Volume** and **success/failure** rates are derivable from notification states (or charging callbacks) with a repeatable recipe or automation.
+- [x] **Read model API:** `GET /notifications/kpis` aggregates **in-memory** notifications (`kpis.py` + `store.list_notifications()`).
+- [x] Totals **by provider** and **by country:** `estimated_cost` / `last_actual_cost` sums; volume = row counts.
+- [x] **Volume** and terminal **success/failure** rates from `state` (Send-success vs Send-failed + Carrier-rejected).
+- [x] **UI:** `/kpis` — **SMS KPIs** page (`SmsKpisPage`).
 
 ## References
 
 - Challenge: `coding-challenge-2.md` § User Story 5  
 - [p1-cost-story.md](p1-cost-story.md) (per-message cost wiring)
+- `apps/notification-service/kpis.py`, `GET /notifications/kpis` in `main.py`
+- `apps/frontend/src/pages/sms-kpis/sms-kpis-page.tsx`, route `/kpis`

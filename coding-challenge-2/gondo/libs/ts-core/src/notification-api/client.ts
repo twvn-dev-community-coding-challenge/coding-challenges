@@ -6,6 +6,7 @@ import type {
   PipelineEventsData,
   Result,
   RetryRequest,
+  SmsKpisData,
 } from './types';
 
 const BASE_URL = 'http://localhost:8001';
@@ -114,6 +115,43 @@ export const createNotificationApi = () => {
       );
       const payload = (await readJson(response)) as {
         readonly data?: NotificationResource;
+        readonly error?: { readonly code: string; readonly message: string };
+      };
+      if (!response.ok) {
+        if (!payload.error) {
+          return {
+            ok: false,
+            error: { code: 'HTTP_ERROR', message: 'Request failed' },
+          };
+        }
+        return { ok: false, error: payload.error };
+      }
+      if (payload.data === undefined) {
+        return {
+          ok: false,
+          error: { code: 'INVALID_RESPONSE', message: 'Missing data' },
+        };
+      }
+      return { ok: true, value: payload.data };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        ok: false,
+        error: { code: 'NETWORK_ERROR', message },
+      };
+    }
+  };
+
+  const getSmsKpis = async (): Promise<Result<SmsKpisData>> => {
+    try {
+      const response = await fetch(`${BASE_URL}/notifications/kpis`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      const payload = (await readJson(response)) as {
+        readonly data?: SmsKpisData;
         readonly error?: { readonly code: string; readonly message: string };
       };
       if (!response.ok) {
@@ -273,6 +311,7 @@ export const createNotificationApi = () => {
     dispatchNotification,
     getNotification,
     getPipelineEvents,
+    getSmsKpis,
     listNotifications,
     retryNotification,
   };

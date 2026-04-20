@@ -49,7 +49,9 @@ def test_callback_valid_transition_accepted() -> None:
     assert n is not None
     n.state = "Send-to-carrier"
     n.selected_provider_id = "prv_02"
+    n.estimated_cost = 0.015
     n.estimated_currency = "USD"
+    n.charging_estimate_id = "est-prior"
     update_notification(n)
 
     rec = charging_pb2.RecordActualCostResponse()
@@ -79,6 +81,9 @@ def test_callback_valid_transition_accepted() -> None:
     assert updated is not None
     assert updated.state == "Send-success"
     assert updated.charging_actual_cost_id == "ac-1"
+    got = client.get(f"/notifications/{nid}").json()["data"]
+    assert got["cost_story"]["actual_available"] is True
+    assert got["cost_story"]["estimated_available"] is True
 
 
 def test_callback_invalid_transition_rejected() -> None:

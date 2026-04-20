@@ -82,6 +82,27 @@
         }
       }
     },
+    "/notifications/kpis": {
+      "get": {
+        "summary": "Get Sms Kpis Endpoint",
+        "description": "Aggregate SMS cost/volume/success KPIs (User Story 5); reads in-memory notification store.",
+        "operationId": "get_sms_kpis_endpoint_notifications_kpis_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Sms Kpis Endpoint Notifications Kpis Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/notifications/{notification_id}": {
       "get": {
         "summary": "Get Notification Endpoint",
@@ -382,7 +403,8 @@
                 "type": "null"
               }
             ],
-            "title": "Actual Cost"
+            "title": "Actual Cost",
+            "description": "Billed amount for charging-service RecordActualCost. Send-success: optional (falls back to estimated_cost). Send-failed: omit to skip RecordActualCost."
           }
         },
         "type": "object",

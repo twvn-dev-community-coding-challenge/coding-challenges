@@ -18,7 +18,7 @@ Demonstrates integration with **charging-service** and satisfies core narrative 
 
 - [x] Dispatch/retry estimate path aligned with README (`EstimateCost`, persisted refs on notification resource).
 - [x] Callback paths call **`RecordActualCost`** where design specifies (success/failed with provider selected).
-- [x] Notification JSON exposes charging-related fields; tests cover **`CHARGING_RATE_NOT_FOUND`** / gRPC error paths (`test_dispatch.py`).
+- [x] Notification JSON exposes charging-related fields, a read-only **`cost_story`** (brief: estimate at Send-to-provider, actual at callback), and error coverage for **`CHARGING_RATE_NOT_FOUND`** / gRPC paths (`test_cost_story.py`, `test_dispatch.py`, `test_callbacks.py`).
 - [x] Simulation boundaries called out in **Scope and limitations** + **Cost tracking** (no live CPaaS; charging is real gRPC to **charging-service**).
 
 ## References

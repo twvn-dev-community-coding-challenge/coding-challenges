@@ -17,7 +17,7 @@ This doc does three things:
 | Area | Strong fit | Main gap |
 |------|------------|----------|
 | **Program / PR hygiene** | Branch + folder layout; architecture README | Template sections + explicit trade-offs + AI disclosure in one place (`SUBMISSION.md` or README sections) |
-| **Challenge — routing & lifecycle** | Provider routing DB + YAML; NATS dispatch; notification states; diagrams | Surface **cost at Send-to-provider** and **actual at Send-success** end-to-end in API behavior + tests |
+| **Challenge — routing & lifecycle** | Provider routing DB + YAML; NATS dispatch; notification states; **`cost_story`**; **`GET /notifications/kpis`** + KPI UI | Stretch: durable store / time-series reporting |
 | **Challenge — multi-domain SMS** | Single HTTP API entry (`notification-service`) reusable in principle | Document **domain-agnostic contract**; optional shared “client SDK” or OpenAPI narrative |
 | **Challenge — PH + VN rule updates** | Seed/migration data can encode rules | Verify seeds match **User Story 3** tables; document how ops would update rules |
 | **Tests (15 pts)** | Pytest across services | Add resilience tests + `run-many -t test` prerequisites doc |
@@ -132,10 +132,14 @@ yarn nx run-many -t test
 
 ## 4. Cost story (challenge: estimate vs actual)
 
-| Moment (brief) | Expected semantics | Suggested improvement |
-|----------------|-------------------|------------------------|
-| **Send-to-provider** | Estimated cost available | Wire **charging `EstimateCost`** during dispatch (or immediately after provider selection) and persist estimate ref on notification — **or** document precisely why estimate is deferred and mock it in tests |
-| **Send-success** | Actual cost available | On provider callback / terminal success path, call **`RecordActualCost`** (charging already exposes RPC) or document simulation |
+**Implementation (notification-service):** `EstimateCost` runs on **`POST …/dispatch`** and **`POST …/retry`** after **`SelectProvider`**, before the notification enters **Send-to-provider**; estimate fields are persisted on the resource. **`RecordActualCost`** runs on **`POST /provider-callbacks`** for **Send-success** / **Send-failed** (when `actual_cost` is supplied for Send-failed). Each **`GET /notifications/{id}`** (and dispatch/retry responses) includes a read-only **`cost_story`** object mapping these semantics for reviewers.
+
+| Moment (brief) | Expected semantics | Status |
+|----------------|-------------------|--------|
+| **Send-to-provider** | Estimated cost available | **Done** — `estimated_cost`, `charging_estimate_id`, … after charging gRPC during dispatch/retry |
+| **Send-success** | Actual cost available | **Done** — `last_actual_cost`, `charging_actual_cost_id` from `RecordActualCost` after callback (estimate fallback if `actual_cost` omitted) |
+
+Pipeline rows: **`state.Send-to-provider`** includes an estimate snapshot; **`charging.RecordActualCost.ok`** records the actual billing outcome.
 
 ---
 
@@ -170,8 +174,8 @@ yarn nx run-many -t test
 | **P1** | Cost estimate/actual wired or explicitly documented gap | Challenge § cost *(**dispatch/retry** call `EstimateCost`; **Send-success** / **Send-failed** callback → `RecordActualCost` — see root README)* |
 | **P1** | Resilience tests (503, invalid transition) | Tests +5 *(503 existed; double-dispatch → 409 added)* |
 | **P1** | Verify routing seeds = User Story 3 | Core correctness *(see `docs/routing-vs-challenge-brief.md`)* |
-| **P1** | **Gap:** User Story 5 aggregate KPIs (totals per provider/country, volume, success rates) | Challenge § US5 — [`docs/backlog/p1-us5-cost-aggregates-kpis.md`](backlog/p1-us5-cost-aggregates-kpis.md) |
-| **P1** | **Gap:** User Story 4 **Carrier-rejected** transition path tested end-to-end | Challenge § US4 — [`docs/backlog/p1-us4-carrier-rejected-path.md`](backlog/p1-us4-carrier-rejected-path.md) |
+| **P1** | User Story 5 KPI aggregates | **`GET /notifications/kpis`** + `/kpis` UI — [`docs/backlog/p1-us5-cost-aggregates-kpis.md`](backlog/p1-us5-cost-aggregates-kpis.md) |
+| **P1** | User Story 4 **Carrier-rejected** path | **Done** — [`docs/backlog/p1-us4-carrier-rejected-path.md`](backlog/p1-us4-carrier-rejected-path.md) |
 | **P2** | Server-side OTP + TTL | **Implemented** — `apps/otp-service/` (hashed codes, `expires_at`, `OTP_TTL_SECONDS`, verify endpoint). Notification integrates via `issue_server_otp`; **disable** `OTP_EXPOSE_PLAINTEXT_TO_CLIENT` in production so browsers do not receive plaintext OTP in API responses. |
 | **P2** | OpenAPI export for “platform SMS API” | **Implemented** — generate (`yarn nx run notification-service:generate-openapi`), verify (`yarn verify-openapi`), catalog [`docs/openapi/README.md`](openapi/README.md), TS types (`yarn nx run ts-core:generate-openapi-types`). Narrative: [`platform-sms-openapi.md`](platform-sms-openapi.md). Details: [`docs/backlog/p2-openapi-platform-follow-ups.md`](backlog/p2-openapi-platform-follow-ups.md). |
 
