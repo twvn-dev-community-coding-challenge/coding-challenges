@@ -44,6 +44,11 @@ class ProviderServiceStub(object):
                 request_serializer=provider__pb2.SelectProviderRequest.SerializeToString,
                 response_deserializer=provider__pb2.SelectProviderResponse.FromString,
                 _registered_method=True)
+        self.PublishSmsDispatchRequested = channel.unary_unary(
+                '/gondo.provider.ProviderService/PublishSmsDispatchRequested',
+                request_serializer=provider__pb2.PublishSmsDispatchRequestedRequest.SerializeToString,
+                response_deserializer=provider__pb2.PublishSmsDispatchRequestedResponse.FromString,
+                _registered_method=True)
         self.GetProviderRegistry = channel.unary_unary(
                 '/gondo.provider.ProviderService/GetProviderRegistry',
                 request_serializer=provider__pb2.GetProviderRegistryRequest.SerializeToString,
@@ -61,6 +66,12 @@ class ProviderServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SelectProvider(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PublishSmsDispatchRequested(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -84,6 +95,11 @@ def add_ProviderServiceServicer_to_server(servicer, server):
                     servicer.SelectProvider,
                     request_deserializer=provider__pb2.SelectProviderRequest.FromString,
                     response_serializer=provider__pb2.SelectProviderResponse.SerializeToString,
+            ),
+            'PublishSmsDispatchRequested': grpc.unary_unary_rpc_method_handler(
+                    servicer.PublishSmsDispatchRequested,
+                    request_deserializer=provider__pb2.PublishSmsDispatchRequestedRequest.FromString,
+                    response_serializer=provider__pb2.PublishSmsDispatchRequestedResponse.SerializeToString,
             ),
             'GetProviderRegistry': grpc.unary_unary_rpc_method_handler(
                     servicer.GetProviderRegistry,
@@ -145,6 +161,33 @@ class ProviderService(object):
             '/gondo.provider.ProviderService/SelectProvider',
             provider__pb2.SelectProviderRequest.SerializeToString,
             provider__pb2.SelectProviderResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PublishSmsDispatchRequested(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/gondo.provider.ProviderService/PublishSmsDispatchRequested',
+            provider__pb2.PublishSmsDispatchRequestedRequest.SerializeToString,
+            provider__pb2.PublishSmsDispatchRequestedResponse.FromString,
             options,
             channel_credentials,
             insecure,

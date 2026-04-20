@@ -20,7 +20,7 @@ fi
 # shellcheck source=/dev/null
 source "${ROOT}/.venv/bin/activate"
 
-for svc in provider-service charging-service notification-service; do
+for svc in provider-service charging-service notification-service otp-service; do
   svc_dir="${ROOT}/apps/${svc}"
   if [[ -d "${svc_dir}/alembic" ]]; then
     echo -e "${YELLOW}Migrating ${svc}...${NC}"

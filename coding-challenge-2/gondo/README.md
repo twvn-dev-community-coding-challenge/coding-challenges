@@ -5,6 +5,46 @@
 - Hien Huynh (Team Lead / Kaluza Pod 4)
 - Thien Nguyen (Developer / Kaluza Pod 3)
 
+## For reviewers (judge quickstart)
+
+From **`coding-challenge-2/gondo/`**:
+
+```bash
+nvm use && yarn install
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r apps/notification-service/requirements.txt
+```
+
+Start Postgres (e.g. `yarn db:start` from this folder if using compose), then **`yarn db:migrate`**, then **`yarn start`** (or `bash scripts/start-all.sh`). Health: `curl -s http://localhost:8001/health`. UI: `yarn nx run frontend:serve` → http://localhost:4200 .
+
+**Tests:** `yarn nx run-many -t test` — services using PostgreSQL need **`DATABASE_URL`** (default `postgresql://gondo:gondo@localhost:5432/gondo`) after migrations.
+
+**Submission checklist & narrative:** [SUBMISSION.md](SUBMISSION.md) · **Program fit / backlog:** [docs/system-vs-program-requirements.md](docs/system-vs-program-requirements.md)
+
+## Scope and limitations (simulation)
+
+- **SMS:** No live Twilio/Vonage/etc.; carrier-service performs a **skeleton HTTP** probe (or WireMock in Docker). Async behavior uses **NATS** where enabled.
+- **Notifications:** Stored **in memory** in notification-service (challenge simulation), not durable across restarts.
+- **Routing correctness vs brief:** See [docs/routing-vs-challenge-brief.md](docs/routing-vs-challenge-brief.md) for **User Story 3** mapping to seeds.
+- **OTP:** Membership demo uses **server-side** codes from **otp-service** (TTL, hashed at rest). For production-style behavior, set **`OTP_EXPOSE_PLAINTEXT_TO_CLIENT=false`** on notification-service so clients are not returned the plaintext OTP; the demo defaults to exposing it for the UI.
+
+| Variable (OTP-related) | Where | Notes |
+|------------------------|-------|--------|
+| `OTP_SERVICE_BASE_URL` | notification-service | Base URL for **`otp-service`** (e.g. `http://127.0.0.1:8007` locally; `http://otp-service:8007` in Compose). |
+| `OTP_EXPOSE_PLAINTEXT_TO_CLIENT` | notification-service | If **`false`**, create response omits **`otp_plaintext`** (SMS body still contains the substituted code). |
+| `OTP_HASH_PEPPER` | otp-service | **Set in production** — secret used with the stored hash (dev default exists in code; Docker Compose passes a placeholder). |
+| `OTP_TTL_SECONDS`, `OTP_MAX_ATTEMPTS` | otp-service | Optional bounds (defaults in `apps/otp-service/settings.py`). |
+| `OTP_ISSUE_REQUESTS_PER_MINUTE` | otp-service | Rolling **60s** window per client IP for **`POST /v1/challenges`**; **`0`** disables. Default **60**. |
+| `OTP_VERIFY_REQUESTS_PER_MINUTE` | otp-service | Same for **`POST /v1/verify`**; **`0`** disables. Default **120**. |
+
+## Cost tracking (challenge brief vs current build)
+
+The brief asks for **estimated cost around Send-to-provider** and **actual cost at Send-success**. **notification-service** now calls **charging-service** over gRPC: **`EstimateCost`** after successful provider selection on **dispatch** and **retry** (failure → **502** `CHARGING_RATE_NOT_FOUND` / `CHARGING_UNAVAILABLE`), and **`RecordActualCost`** (best-effort, non-blocking for the HTTP response) on **`Send-success`** / **`Send-failed`** callbacks when **`selected_provider_id`** is set. Estimated and actual identifiers are exposed on the notification JSON (`estimated_cost`, `charging_estimate_id`, `last_actual_cost`, `charging_actual_cost_id`, …).
+
+## Minimal deployment (anti–over-engineering)
+
+For a smaller footprint, **notification + provider + Postgres** could ship as one process with in-process “bus” and the same schemas; **carrier** and **NATS** stay separate when async dispatch matters. This repo keeps services split to match the platform-SMS narrative and team boundaries.
+
 ## Architecture
 
 NX monorepo with Python/FastAPI backend microservices, a React frontend, and optional **NATS** messaging for asynchronous SMS dispatch.
@@ -14,6 +54,7 @@ NX monorepo with Python/FastAPI backend microservices, a React frontend, and opt
 | `notification-service` | Python / FastAPI | 8001 | — | SMS lifecycle orchestration |
 | `provider-service` | Python / FastAPI | 8002 | 50051 | Provider registry, routing rules, YAML-backed registry metadata, CQRS publish/consume via message bus |
 | `charging-service` | Python / FastAPI | 8003 | 50052 | Cost estimation and recording |
+| `otp-service` | Python / FastAPI | 8007 | — | Server-side OTP issue + verify (TTL, peppered hash); notification composes SMS via `OTP_SERVICE_BASE_URL` |
 | `carrier-service` | Python / FastAPI | 8004 | — | Carrier bounded context: dispatch from the bus, outbound HTTP probe, and **HTTP carrier-registry** (`GET /registry/carriers`) backed by `infra/carrier-registry/` |
 | `message-bus-gateway` | Python / FastAPI | 8010 | — | Optional HTTP → NATS publish proxy (sidecar-style tooling) |
 | `nats` | broker | 4222 | — | Default message broker behind `py_core.bus` |
@@ -21,8 +62,14 @@ NX monorepo with Python/FastAPI backend microservices, a React frontend, and opt
 
 ### Documentation map (per-service READMEs)
 
-| Service | Doc |
-|---------|-----|
+| Topic | Doc |
+|-------|-----|
+| **Challenge fit** (program scoring, gaps, reviewer quickstart) | [docs/system-vs-program-requirements.md](docs/system-vs-program-requirements.md) |
+| **Platform SMS OpenAPI** (User Story 2 export / regeneration) | [docs/platform-sms-openapi.md](docs/platform-sms-openapi.md) · [docs/openapi/README.md](docs/openapi/README.md) |
+| **Engineering backlog** (prioritized cards) | [docs/backlog/README.md](docs/backlog/README.md) |
+| **Routing seeds vs brief** (User Story 3) | [docs/routing-vs-challenge-brief.md](docs/routing-vs-challenge-brief.md) |
+| Program overview (process only) | [docs/coding-challenge-program-context.md](docs/coding-challenge-program-context.md) |
+| PR / Demo template | [SUBMISSION.md](SUBMISSION.md) |
 | Provider (gRPC + registry + CQRS) | [apps/provider-service/README.md](apps/provider-service/README.md) |
 | Carrier (dispatch execution) | [apps/carrier-service/README.md](apps/carrier-service/README.md) |
 | Message bus gateway | [apps/message-bus-gateway/README.md](apps/message-bus-gateway/README.md) |
@@ -71,15 +118,19 @@ yarn start
 bash scripts/start-all.sh
 ```
 
-This starts charging → provider → notification in the correct order with health checks. Press Ctrl+C to stop all.
+This starts charging → **otp-service** → provider → **carrier-service** (port **8004**, required so NATS `sms.dispatch.requested` is consumed and `sms.dispatch.received` is published for **Queue → Send-to-carrier**) → notification (`OTP_SERVICE_BASE_URL` defaults to `http://127.0.0.1:8007`) with health checks. Press Ctrl+C to stop all.
 
 ### Start services individually
 
 ```bash
 yarn nx run charging-service:serve      # port 8003 + gRPC 50052
+yarn nx run otp-service:serve           # port 8007 (set OTP_SERVICE_BASE_URL before notification if not default)
 yarn nx run provider-service:serve      # port 8002 + gRPC 50051
+yarn nx run carrier-service:serve       # port 8004 (NATS: dispatch requested → received/outcome)
 yarn nx run notification-service:serve  # port 8001 (main entry)
 ```
+
+Use the **same** **`NATS_URL`** for **provider**, **carrier**, and **notification** when running separate terminals (default `nats://127.0.0.1:4222`). If **`NATS_URL`** points at another host, export it **before** starting those three so publishes and subscriptions hit one broker.
 
 To stop all services:
 
@@ -125,12 +176,23 @@ yarn nx run-many -t build
 yarn nx run frontend:build
 ```
 
-### 7. Generate OpenAPI contract
+### 7. OpenAPI contract (generate, verify, types)
 
 ```bash
+# Regenerate JSON (after API changes)
 yarn nx run notification-service:generate-openapi
-# Outputs: apps/notification-service/openapi.json
+# → apps/notification-service/openapi.json
+# → docs/openapi/notification-service.openapi.json
+
+# Fail if committed JSON is stale (CI: yarn verify-openapi)
+yarn verify-openapi
+
+# Regenerate TypeScript path/types for API consumers
+yarn nx run ts-core:generate-openapi-types
+# → libs/ts-core/src/notification-api/openapi.generated.ts
 ```
+
+See [docs/platform-sms-openapi.md](docs/platform-sms-openapi.md) and [docs/openapi/README.md](docs/openapi/README.md).
 
 ### 8. Useful NX commands
 
@@ -186,6 +248,7 @@ Once running, core HTTP endpoints:
 - Notification: http://localhost:8001/docs
 - Provider: http://localhost:8002/docs
 - Charging: http://localhost:8003/docs
+- OTP: http://localhost:8007/docs
 - Carrier: http://localhost:8004/docs
 - Message bus gateway: http://localhost:8010/docs
 

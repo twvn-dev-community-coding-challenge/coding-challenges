@@ -19,7 +19,6 @@ vi.mock('@gondo/ts-core', () => ({
     listNotifications: mockListNotifications,
     retryNotification: mockRetryNotification,
   }),
-  generateSixDigitOtp: () => '123456',
 }));
 
 const successNotification = {
@@ -28,11 +27,14 @@ const successNotification = {
   message_id: 'msg-1',
   channel_type: 'SMS',
   recipient: 'test',
-  content: 'test',
+  content:
+    'Your membership registration is successful. Your OTP code is: 123456. Valid for 2 minutes.',
   channel_payload: {},
   attempt: 0,
   selected_provider_id: null,
   routing_rule_version: null,
+  otp_plaintext: '123456',
+  otp_challenge_id: 'challenge-mock',
   created_at: '2026-04-11T12:00:00Z',
   updated_at: '2026-04-11T12:00:00Z',
 } as const;
@@ -75,7 +77,7 @@ describe('MembershipSmsFeature', () => {
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/phone number is required/i);
+      expect(screen.getByRole('alert').textContent).toMatch(/phone number is required/i);
     });
 
     expect(mockCreateNotification).not.toHaveBeenCalled();
@@ -108,11 +110,12 @@ describe('MembershipSmsFeature', () => {
     expect(mockCreateNotification).toHaveBeenCalledWith({
       message_id: expect.any(String),
       recipient: '',
-      content: expect.stringContaining('123456'),
+      content: expect.stringContaining('{{OTP}}'),
       channel_payload: {
         country_code: 'VN',
         phone_number: '+84901234567',
       },
+      issue_server_otp: true,
     });
     expect(mockCreateNotification.mock.calls[0]?.[0]).not.toHaveProperty('channel_type');
     expect(mockDispatchNotification).toHaveBeenCalledTimes(1);
@@ -175,6 +178,9 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
+    fireEvent.change(screen.getByLabelText(/phone number/i), {
+      target: { value: '+84901234567' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {
@@ -198,6 +204,9 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
+    fireEvent.change(screen.getByLabelText(/phone number/i), {
+      target: { value: '+84901234567' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {
@@ -218,6 +227,9 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
+    fireEvent.change(screen.getByLabelText(/phone number/i), {
+      target: { value: '+84901234567' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {

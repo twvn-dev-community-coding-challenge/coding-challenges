@@ -11,8 +11,7 @@
         "command": "../../.venv/bin/python3 -m uvicorn main:app --reload --port 8001",
         "cwd": "apps/notification-service",
         "env": {
-          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core",
-          "NATS_URL": "nats://127.0.0.1:4222"
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
         }
       }
     },
@@ -54,7 +53,20 @@
           "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
         }
       },
-      "outputs": ["{projectRoot}/openapi.json"]
+      "outputs": [
+        "{projectRoot}/openapi.json",
+        "{workspaceRoot}/docs/openapi/notification-service.openapi.json"
+      ]
+    },
+    "verify-openapi": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 verify_openapi.py",
+        "cwd": "apps/notification-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
+        }
+      }
     }
   },
   "tags": ["python", "fastapi"]

@@ -11,6 +11,21 @@ def _client() -> TestClient:
     return TestClient(app)
 
 
+def test_create_notification_rejects_duplicate_message_id() -> None:
+    client = _client()
+    body = {
+        "message_id": "msg-dup-1",
+        "channel_type": "SMS",
+        "recipient": "a",
+        "content": "hi",
+        "channel_payload": {"country_code": "US", "phone_number": "+15551234567"},
+    }
+    assert client.post("/notifications", json=body).status_code == 201
+    dup = client.post("/notifications", json=body)
+    assert dup.status_code == 422
+    assert dup.json()["error"]["code"] == "VALIDATION_ERROR"
+
+
 def test_create_notification_success() -> None:
     client = _client()
     body = {

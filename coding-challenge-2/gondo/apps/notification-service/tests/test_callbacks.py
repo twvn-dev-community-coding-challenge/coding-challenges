@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+from unittest.mock import AsyncMock, patch
+
 from fastapi.testclient import TestClient
 
+from generated import charging_pb2
 from main import app
 from store import get_notification, update_notification
 
@@ -45,23 +48,42 @@ def test_callback_valid_transition_accepted() -> None:
     n = get_notification(nid)
     assert n is not None
     n.state = "Send-to-carrier"
+    n.selected_provider_id = "prv_02"
+    n.estimated_cost = 0.015
+    n.estimated_currency = "USD"
+    n.charging_estimate_id = "est-prior"
     update_notification(n)
 
-    response = client.post(
-        "/provider-callbacks",
-        json={
-            "message_id": "msg-cb-ok",
-            "provider": "VONAGE",
-            "new_state": "Send-success",
-            "actual_cost": 0.02,
-        },
-    )
+    rec = charging_pb2.RecordActualCostResponse()
+    rec.actual_cost_id = "ac-1"
+    rec.message_id = "msg-cb-ok"
+    rec.actual_cost = 0.02
+    rec.idempotent_replay = False
+
+    with patch(
+        "main.record_actual_cost_grpc",
+        new_callable=AsyncMock,
+        return_value=rec,
+    ):
+        response = client.post(
+            "/provider-callbacks",
+            json={
+                "message_id": "msg-cb-ok",
+                "provider": "VONAGE",
+                "new_state": "Send-success",
+                "actual_cost": 0.02,
+            },
+        )
     assert response.status_code == 200
     data = response.json()["data"]
     assert data["state"] == "accepted"
     updated = get_notification(nid)
     assert updated is not None
     assert updated.state == "Send-success"
+    assert updated.charging_actual_cost_id == "ac-1"
+    got = client.get(f"/notifications/{nid}").json()["data"]
+    assert got["cost_story"]["actual_available"] is True
+    assert got["cost_story"]["estimated_available"] is True
 
 
 def test_callback_invalid_transition_rejected() -> None:

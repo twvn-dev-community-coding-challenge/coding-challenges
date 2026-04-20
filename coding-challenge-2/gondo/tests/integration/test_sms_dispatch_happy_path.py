@@ -104,8 +104,8 @@ def test_sms_dispatch_travels_to_carrier_and_back_to_notification_queue_then_sen
 
         _log(
             "Step 2: POST /notifications/{id}/dispatch "
-            "(notification → provider SelectProvider → NATS sms.dispatch.requested; "
-            "expect sms_dispatch_requested_published + state Queue)",
+            "(SelectProvider → EstimateCost → PublishSmsDispatchRequested → NATS sms.dispatch.requested; "
+            "expect state Queue)",
         )
         dispatch = client.post(
             f"{base}/notifications/{nid}/dispatch",

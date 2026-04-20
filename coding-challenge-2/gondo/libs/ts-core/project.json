@@ -5,5 +5,15 @@
   "projectType": "library",
   "tags": ["typescript", "shared"],
   "implicitDependencies": [],
-  "targets": {}
+  "targets": {
+    "generate-openapi-types": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "openapi-typescript ../../docs/openapi/notification-service.openapi.json -o src/notification-api/openapi.generated.ts",
+        "cwd": "libs/ts-core"
+      },
+      "inputs": ["{workspaceRoot}/docs/openapi/notification-service.openapi.json"],
+      "outputs": ["{projectRoot}/src/notification-api/openapi.generated.ts"]
+    }
+  }
 }

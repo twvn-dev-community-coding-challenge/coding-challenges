@@ -16,7 +16,8 @@
       "options": {
         "commands": [
           "yarn nx run grpc-contracts:generate",
-          "yarn nx run notification-service:generate-openapi"
+          "yarn nx run notification-service:generate-openapi",
+          "yarn nx run ts-core:generate-openapi-types"
         ],
         "parallel": false
       }

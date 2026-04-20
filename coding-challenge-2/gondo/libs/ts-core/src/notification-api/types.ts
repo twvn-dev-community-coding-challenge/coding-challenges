@@ -12,6 +12,8 @@ export interface CreateNotificationRequest {
   readonly recipient: string;
   readonly content: string;
   readonly channel_payload: SmsChannelPayload;
+  /** When true, otp-service generates the code (use {{OTP}} placeholder in content). */
+  readonly issue_server_otp?: boolean;
 }
 
 export interface DispatchRequest {
@@ -33,6 +35,17 @@ export interface NotificationResource {
   readonly attempt: number;
   readonly selected_provider_id: string | null;
   readonly routing_rule_version: number | null;
+  readonly estimated_cost?: number | null;
+  readonly estimated_currency?: string | null;
+  readonly charging_estimate_id?: string | null;
+  readonly charging_rate_id?: string | null;
+  readonly last_actual_cost?: number | null;
+  readonly actual_currency?: string | null;
+  readonly charging_actual_cost_id?: string | null;
+  readonly otp_challenge_id?: string | null;
+  readonly otp_expires_at?: string | null;
+  /** Dev-only when server OTP is enabled and OTP_EXPOSE_PLAINTEXT_TO_CLIENT=true */
+  readonly otp_plaintext?: string | null;
   readonly created_at: string;
   readonly updated_at: string;
 }
@@ -50,4 +63,55 @@ export type Result<T, E = ApiErrorBody> =
 /** Envelope for `GET /notifications`. */
 export interface ListNotificationsData {
   readonly notifications: readonly NotificationResource[];
+}
+
+/** One row from runtime pipeline aggregation (`GET .../pipeline-events`). */
+export interface PipelineEvent {
+  readonly timestamp: string;
+  readonly phase: string;
+  readonly detail: Readonly<Record<string, unknown>>;
+}
+
+/** Envelope for `GET /notifications/{id}/pipeline-events`. */
+export interface PipelineEventsData {
+  readonly notification_id: string;
+  readonly message_id: string;
+  readonly events: readonly PipelineEvent[];
+}
+
+/** One bucket from `GET /notifications/kpis` (in-memory aggregates). */
+export interface SmsKpisBucketRow {
+  readonly volume: number;
+  readonly total_estimated_cost: number;
+  readonly total_actual_cost: number;
+  readonly with_estimate_count: number;
+  readonly with_actual_count: number;
+  readonly send_success: number;
+  readonly send_failed: number;
+  readonly carrier_rejected: number;
+  readonly in_flight: number;
+  readonly terminal_failure: number;
+  readonly terminal_success_rate: number | null;
+  readonly terminal_failure_rate: number | null;
+}
+
+export interface SmsKpisOverall extends SmsKpisBucketRow {
+  readonly total_notifications: number;
+}
+
+export interface SmsKpisByProvider extends SmsKpisBucketRow {
+  readonly provider_id: string;
+}
+
+export interface SmsKpisByCountry extends SmsKpisBucketRow {
+  readonly country_code: string;
+}
+
+/** Response body `data` from `GET /notifications/kpis`. */
+export interface SmsKpisData {
+  readonly source: string;
+  readonly currency_note: string;
+  readonly overall: SmsKpisOverall;
+  readonly by_provider: readonly SmsKpisByProvider[];
+  readonly by_country: readonly SmsKpisByCountry[];
 }

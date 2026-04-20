@@ -9,6 +9,7 @@ import { NotificationTrackingPage } from './notification-tracking-page';
 
 const mockListNotifications = vi.fn();
 const mockRetryNotification = vi.fn();
+const mockGetPipelineEvents = vi.fn();
 
 vi.mock('@gondo/ts-core', () => ({
   createNotificationApi: () => ({
@@ -16,6 +17,7 @@ vi.mock('@gondo/ts-core', () => ({
     createNotification: vi.fn(),
     dispatchNotification: vi.fn(),
     getNotification: vi.fn(),
+    getPipelineEvents: mockGetPipelineEvents,
     retryNotification: mockRetryNotification,
   }),
   generateSixDigitOtp: vi.fn(() => '654321'),
@@ -270,5 +272,48 @@ describe('NotificationTrackingPage', () => {
     await waitFor(() => {
       expect(mockListNotifications.mock.calls.length).toBeGreaterThanOrEqual(2);
     });
+  });
+
+  it('opens pipeline logs dialog and shows runtime events JSON', async () => {
+    mockListNotifications.mockResolvedValue({
+      ok: true,
+      value: [notificationA],
+    });
+    mockGetPipelineEvents.mockResolvedValue({
+      ok: true,
+      value: {
+        notification_id: notificationA.notification_id,
+        message_id: notificationA.message_id,
+        events: [
+          {
+            timestamp: '2026-04-11T12:30:05.000000+00:00',
+            phase: 'dispatch.begin',
+            detail: { carrier: 'VN' },
+          },
+        ],
+      },
+    });
+
+    renderWithTheme(<NotificationTrackingPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('msg-new')).toBeTruthy();
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /^pipeline logs$/i }),
+    );
+
+    await waitFor(() => {
+      expect(mockGetPipelineEvents).toHaveBeenCalledWith(notificationA.notification_id);
+    });
+
+    expect(
+      await screen.findByRole('heading', {
+        name: /sms pipeline \(runtime\)/i,
+      }),
+    ).toBeTruthy();
+
+    expect(screen.getByText(/dispatch\.begin/)).toBeTruthy();
   });
 });

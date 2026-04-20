@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router';
-import { createNotificationApi, generateSixDigitOtp } from '@gondo/ts-core';
+import { createNotificationApi } from '@gondo/ts-core';
 
 import { DEFAULT_COUNTDOWN_DURATION, useCountdown } from '../../context';
 import { OtpDisplay } from '../../ui/otp-display/otp-display';
@@ -61,11 +61,6 @@ const buildInitialState = (): FeatureState => ({
   notificationId: null,
   error: null,
 });
-
-const applyOtpToContent = (content: string, otp: string): string =>
-  content.includes('{{OTP}}')
-    ? content.replace(/\{\{OTP\}\}/g, otp)
-    : `${content} OTP: ${otp}`;
 
 const reducer = (state: FeatureState, action: Action): FeatureState => {
   switch (action.type) {
@@ -126,22 +121,30 @@ export const MembershipSmsFeature = ({
       return;
     }
 
-    dispatch({ type: 'submit_start' });
+    const phoneE164 = buildSmsPhoneNumber(
+      state.formValues.countryCode,
+      state.formValues.phoneNumber,
+    );
+    if (!phoneE164.trim()) {
+      dispatch({
+        type: 'submit_fail',
+        message:
+          'Enter a full phone number (digits). Masked values like +84*****9999 cannot be routed — use e.g. 0999999999 or +84999999999 for Vietnam.',
+      });
+      return;
+    }
 
-    const otp = generateSixDigitOtp();
-    const contentWithOtp = applyOtpToContent(state.formValues.content, otp);
+    dispatch({ type: 'submit_start' });
 
     const createResult = await api.createNotification({
       message_id: state.formValues.messageId,
       recipient: state.formValues.recipient,
-      content: contentWithOtp,
+      content: state.formValues.content,
       channel_payload: {
         country_code: state.formValues.countryCode,
-        phone_number: buildSmsPhoneNumber(
-          state.formValues.countryCode,
-          state.formValues.phoneNumber,
-        ),
+        phone_number: phoneE164,
       },
+      issue_server_otp: true,
     });
 
     if (!createResult.ok) {
@@ -150,6 +153,11 @@ export const MembershipSmsFeature = ({
     }
 
     const notificationId = createResult.value.notification_id;
+    const otp =
+      createResult.value.otp_plaintext ??
+      (createResult.value.content.includes('OTP:')
+        ? createResult.value.content.split('OTP:').pop()?.trim() ?? ''
+        : '');
 
     const dispatchResult = await api.dispatchNotification(notificationId, {
       as_of: new Date().toISOString(),

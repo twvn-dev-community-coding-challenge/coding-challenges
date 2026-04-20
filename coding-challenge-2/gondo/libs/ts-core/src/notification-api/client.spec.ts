@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createNotificationApi } from './client';
-import type { CreateNotificationRequest, NotificationResource } from './types';
+import type {
+  CreateNotificationRequest,
+  NotificationResource,
+  PipelineEventsData,
+  SmsKpisData,
+} from './types';
 
 const sampleNotification: NotificationResource = {
   notification_id: 'abc',
@@ -239,6 +244,82 @@ describe('notification API client', () => {
           method: 'POST',
           body: JSON.stringify({ as_of: null }),
         }),
+      );
+    });
+  });
+
+  describe('getSmsKpis', () => {
+    const kpisPayload: SmsKpisData = {
+      source: 'in_memory_notifications',
+      currency_note: 'note',
+      overall: {
+        volume: 1,
+        total_notifications: 1,
+        total_estimated_cost: 0,
+        total_actual_cost: 0,
+        with_estimate_count: 0,
+        with_actual_count: 0,
+        send_success: 0,
+        send_failed: 0,
+        carrier_rejected: 0,
+        in_flight: 1,
+        terminal_failure: 0,
+        terminal_success_rate: null,
+        terminal_failure_rate: null,
+      },
+      by_provider: [],
+      by_country: [],
+    };
+
+    it('successful 200', async () => {
+      const mockFetch = vi.mocked(globalThis.fetch);
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        json: () => ({ data: kpisPayload }),
+      } as Response);
+
+      const api = createNotificationApi();
+      const result = await api.getSmsKpis();
+
+      expect(result).toEqual({ ok: true, value: kpisPayload });
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://localhost:8001/notifications/kpis',
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+  });
+
+  describe('getPipelineEvents', () => {
+    const pipelinePayload: PipelineEventsData = {
+      notification_id: 'notif-id',
+      message_id: 'msg-1',
+      events: [
+        {
+          timestamp: '2026-04-11T12:00:00+00:00',
+          phase: 'dispatch.begin',
+          detail: { carrier: 'VINAPHONE' },
+        },
+      ],
+    };
+
+    it('successful 200', async () => {
+      const mockFetch = vi.mocked(globalThis.fetch);
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        json: () => ({ data: pipelinePayload }),
+      } as Response);
+
+      const api = createNotificationApi();
+      const result = await api.getPipelineEvents('notif-id');
+
+      expect(result).toEqual({ ok: true, value: pipelinePayload });
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://localhost:8001/notifications/notif-id/pipeline-events',
+        expect.objectContaining({ method: 'GET' }),
       );
     });
   });

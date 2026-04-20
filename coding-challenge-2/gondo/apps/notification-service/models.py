@@ -13,7 +13,7 @@ VALID_TRANSITIONS: dict[str, list[str]] = {
     "New": ["Send-to-provider"],
     "Send-to-provider": ["Queue"],
     "Queue": ["Send-to-carrier", "Carrier-rejected"],
-    "Send-to-carrier": ["Send-success", "Send-failed"],
+    "Send-to-carrier": ["Send-success", "Send-failed", "Carrier-rejected"],
     "Send-failed": ["Send-to-provider"],
     "Carrier-rejected": ["Send-to-provider"],
 }
@@ -35,6 +35,16 @@ class Notification:
     routing_rule_version: int | None
     created_at: datetime
     updated_at: datetime
+    # Charging (charging-service gRPC); optional until dispatch succeeds
+    estimated_cost: float | None = None
+    estimated_currency: str | None = None
+    charging_estimate_id: str | None = None
+    charging_rate_id: str | None = None
+    last_actual_cost: float | None = None
+    actual_currency: str | None = None
+    charging_actual_cost_id: str | None = None
+    otp_challenge_id: str | None = None
+    otp_expires_at: str | None = None
 
 
 @dataclass
