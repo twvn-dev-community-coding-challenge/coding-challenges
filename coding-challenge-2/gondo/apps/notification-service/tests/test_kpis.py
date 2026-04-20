@@ -25,6 +25,7 @@ def _n(
     state: str,
     provider: str | None,
     country: str,
+    provider_code: str | None = None,
     est: float | None = None,
     actual: float | None = None,
     created_at: datetime | None = None,
@@ -47,6 +48,7 @@ def _n(
         state=state,
         attempt=1,
         selected_provider_id=provider,
+        selected_provider_code=provider_code,
         routing_rule_version=1,
         created_at=ca,
         updated_at=ua,
@@ -73,6 +75,7 @@ def test_kpis_groups_provider_and_country() -> None:
             mid="m1",
             state="Send-success",
             provider="prv_01",
+            provider_code="TWILIO",
             country="VN",
             est=0.02,
             actual=0.019,
@@ -84,6 +87,7 @@ def test_kpis_groups_provider_and_country() -> None:
             mid="m2",
             state="Send-failed",
             provider="prv_01",
+            provider_code="TWILIO",
             country="TH",
             est=0.03,
             actual=None,
@@ -110,7 +114,9 @@ def test_kpis_groups_provider_and_country() -> None:
     by_p = {r["provider_id"]: r for r in data["by_provider"]}
     assert by_p["prv_01"]["volume"] == 2
     assert by_p["prv_01"]["total_estimated_cost"] == pytest.approx(0.05)
+    assert by_p["prv_01"]["provider_code"] == "TWILIO"
     assert by_p["unassigned"]["volume"] == 1
+    assert by_p["unassigned"]["provider_code"] is None
 
     by_c = {r["country_code"]: r for r in data["by_country"]}
     assert by_c["VN"]["volume"] == 2

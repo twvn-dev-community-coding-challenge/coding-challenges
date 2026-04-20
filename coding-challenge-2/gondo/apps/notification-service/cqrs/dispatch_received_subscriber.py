@@ -10,7 +10,10 @@ from py_core.bus.contract import MessageBus
 from py_core.bus.topics import SMS_DISPATCH_RECEIVED, topic_to_subject
 
 from cqrs.carrier_dispatch_received import apply_carrier_dispatch_received
-from cqrs.dev_mock_send_success import apply_mock_send_success_if_eligible
+from cqrs.dev_mock_send_success import (
+    apply_mock_send_failed_if_eligible,
+    apply_mock_send_success_if_eligible,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +51,7 @@ async def subscribe_to_dispatch_received(bus: MessageBus) -> None:
         result = apply_carrier_dispatch_received(message_id)
         if result == "applied":
             await apply_mock_send_success_if_eligible(message_id)
+            await apply_mock_send_failed_if_eligible(message_id)
 
     await bus.subscribe(SMS_DISPATCH_RECEIVED, _on_raw)
     logger.info(

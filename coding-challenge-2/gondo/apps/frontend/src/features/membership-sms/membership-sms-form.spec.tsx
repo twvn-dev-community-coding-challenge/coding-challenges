@@ -38,11 +38,11 @@ describe('MembershipSmsForm', () => {
       />,
     );
 
-    expect(screen.getByLabelText(/^Message ID$/i)).toBeTruthy();
-    expect(screen.getByLabelText(/^Recipient$/i)).toBeTruthy();
-    expect(screen.getByLabelText(/^Country Code$/i)).toBeTruthy();
-    expect(screen.getByLabelText(/^Phone Number$/i)).toBeTruthy();
-    expect(screen.getByLabelText(/^Message Content$/i)).toBeTruthy();
+    expect(screen.getByLabelText(/message id/i)).toBeTruthy();
+    expect(screen.getByLabelText(/recipient/i)).toBeTruthy();
+    expect(screen.getByLabelText(/country code/i)).toBeTruthy();
+    expect(screen.getByLabelText(/phone number/i)).toBeTruthy();
+    expect(screen.getByLabelText(/message content/i)).toBeTruthy();
   });
 
   it('calls onChange when Message ID is edited', () => {
@@ -110,6 +110,47 @@ describe('MembershipSmsForm', () => {
     });
 
     expect(onChange).toHaveBeenCalledWith({ phoneNumber: '+84901' });
+  });
+
+  it('calls onPhoneBlur when the phone field loses focus', () => {
+    const onPhoneBlur = vi.fn();
+    renderWithTheme(
+      <MembershipSmsForm
+        values={baseValues}
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        onPhoneBlur={onPhoneBlur}
+      />,
+    );
+
+    fireEvent.blur(screen.getByLabelText(/phone number/i));
+    expect(onPhoneBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows field validation errors when fieldErrors are set', () => {
+    renderWithTheme(
+      <MembershipSmsForm
+        values={{ ...baseValues, messageId: '', recipient: '', phoneNumber: '', content: '' }}
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        fieldErrors={{
+          messageId: 'Message ID is required.',
+          recipient: 'Recipient is required.',
+          phoneNumber: 'Phone number is required',
+          content: 'Message content is required.',
+        }}
+      />,
+    );
+
+    expect(screen.getByText('Message ID is required.')).toBeTruthy();
+    expect(screen.getByText('Recipient is required.')).toBeTruthy();
+    expect(screen.getByText('Phone number is required')).toBeTruthy();
+    expect(screen.getByText('Message content is required.')).toBeTruthy();
+
+    expect((screen.getByLabelText(/message id/i) as HTMLInputElement).getAttribute('aria-invalid')).toBe('true');
+    expect((screen.getByLabelText(/recipient/i) as HTMLInputElement).getAttribute('aria-invalid')).toBe('true');
+    expect((screen.getByLabelText(/phone number/i) as HTMLInputElement).getAttribute('aria-invalid')).toBe('true');
+    expect((screen.getByLabelText(/message content/i) as HTMLTextAreaElement).getAttribute('aria-invalid')).toBe('true');
   });
 
   it('calls onChange when Message Content is edited', () => {

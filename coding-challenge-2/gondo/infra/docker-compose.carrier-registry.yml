@@ -1,5 +1,5 @@
 # Optional overlay: bind-mount carrier (MNO) YAML registry for local edits without rebuild.
-# Usage (cwd = gondo/): docker compose -f docker-compose.yml -f infra/docker-compose.carrier-registry.yml up -d carrier-service
+# Usage (cwd = gondo/): docker-compose -f docker-compose.yml -f infra/docker-compose.carrier-registry.yml up -d carrier-service
 services:
   carrier-service:
     volumes:

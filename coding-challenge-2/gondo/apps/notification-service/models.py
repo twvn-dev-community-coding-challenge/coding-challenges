@@ -32,6 +32,7 @@ class Notification:
     state: str
     attempt: int
     selected_provider_id: str | None
+    selected_provider_code: str | None
     routing_rule_version: int | None
     created_at: datetime
     updated_at: datetime

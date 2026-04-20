@@ -1,4 +1,10 @@
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { useEffect, type ReactNode } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
@@ -54,6 +60,31 @@ const notificationB = {
   created_at: '2026-04-11T10:30:00Z',
   updated_at: '2026-04-11T10:30:00Z',
 } as const;
+
+const notificationSendSuccess = {
+  ...notificationA,
+  notification_id: 'succ-789',
+  message_id: 'msg-send-success',
+  state: 'Send-success',
+} as const;
+
+const notificationSendFailed = {
+  ...notificationA,
+  notification_id: 'fail-321',
+  message_id: 'msg-send-failed',
+  state: 'Send-failed',
+} as const;
+
+const notificationNewExpired = {
+  ...notificationA,
+  notification_id: 'new-exp-1',
+  message_id: 'msg-new-expired',
+  state: 'New',
+  attempt: 0,
+} as const;
+
+const retryButtonNameForState = (state: string): RegExp =>
+  new RegExp(`retry notification \\(state: ${state}\\)`, 'i');
 
 const SeedCountdownEntry = ({
   entry,
@@ -187,7 +218,9 @@ describe('NotificationTrackingPage', () => {
     renderWithTheme(<NotificationTrackingPage />);
 
     expect(
-      await screen.findByRole('button', { name: /^retry$/i }),
+      await screen.findByRole('button', {
+        name: retryButtonNameForState('Queue'),
+      }),
     ).toBeTruthy();
   });
 
@@ -257,7 +290,9 @@ describe('NotificationTrackingPage', () => {
 
     renderWithTheme(<NotificationTrackingPage />);
 
-    const retryButton = await screen.findByRole('button', { name: /^retry$/i });
+    const retryButton = await screen.findByRole('button', {
+      name: retryButtonNameForState('Queue'),
+    });
 
     await act(async () => {
       fireEvent.click(retryButton);
@@ -314,6 +349,146 @@ describe('NotificationTrackingPage', () => {
       }),
     ).toBeTruthy();
 
-    expect(screen.getByText(/dispatch\.begin/)).toBeTruthy();
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByText(/^begin$/)).toBeTruthy();
+    expect(within(dialog).getByText('VN')).toBeTruthy();
+  });
+
+  it('shows Retry after expiry for Send-success (terminal state)', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(CREATED_AT_MS + 200_000);
+    mockListNotifications.mockResolvedValue({
+      ok: true,
+      value: [notificationSendSuccess],
+    });
+
+    renderWithTheme(<NotificationTrackingPage />);
+
+    expect(
+      await screen.findByRole('button', {
+        name: retryButtonNameForState('Send-success'),
+      }),
+    ).toBeTruthy();
+  });
+
+  it('shows inline error when retry is rejected for Send-success (409)', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(CREATED_AT_MS + 200_000);
+    mockListNotifications.mockResolvedValue({
+      ok: true,
+      value: [notificationSendSuccess],
+    });
+    const conflictMessage = 'Notification is not in a retryable state';
+    mockRetryNotification.mockResolvedValue({
+      ok: false,
+      error: { code: 'CONFLICT', message: conflictMessage },
+    });
+
+    renderWithTheme(<NotificationTrackingPage />);
+
+    const retryButton = await screen.findByRole('button', {
+      name: retryButtonNameForState('Send-success'),
+    });
+
+    await act(async () => {
+      fireEvent.click(retryButton);
+    });
+
+    const alert = await screen.findByRole('alert');
+    expect(alert.textContent?.includes(conflictMessage)).toBe(true);
+  });
+
+  it('calls retry and re-fetches when Send-failed is retryable', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(CREATED_AT_MS + 200_000);
+    mockListNotifications.mockResolvedValue({
+      ok: true,
+      value: [notificationSendFailed],
+    });
+    mockRetryNotification.mockResolvedValue({
+      ok: true,
+      value: { ...notificationSendFailed, state: 'Send-to-provider', attempt: 2 },
+    });
+
+    renderWithTheme(<NotificationTrackingPage />);
+
+    const retryButton = await screen.findByRole('button', {
+      name: retryButtonNameForState('Send-failed'),
+    });
+
+    await act(async () => {
+      fireEvent.click(retryButton);
+    });
+
+    await waitFor(() => {
+      expect(mockRetryNotification).toHaveBeenCalledWith(
+        notificationSendFailed.notification_id,
+        { as_of: expect.any(String) },
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockListNotifications.mock.calls.length).toBeGreaterThanOrEqual(2);
+    });
+  });
+
+  it('shows inline error when retry is rejected for New state', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(CREATED_AT_MS + 200_000);
+    mockListNotifications.mockResolvedValue({
+      ok: true,
+      value: [notificationNewExpired],
+    });
+    const conflictMessage = 'Notification is not in a retryable state';
+    mockRetryNotification.mockResolvedValue({
+      ok: false,
+      error: { code: 'CONFLICT', message: conflictMessage },
+    });
+
+    renderWithTheme(<NotificationTrackingPage />);
+
+    const retryButton = await screen.findByRole('button', {
+      name: retryButtonNameForState('New'),
+    });
+
+    await act(async () => {
+      fireEvent.click(retryButton);
+    });
+
+    const alert = await screen.findByRole('alert');
+    expect(alert.textContent?.includes(conflictMessage)).toBe(true);
+  });
+
+  it('keeps Retry clickable after a 409 so the user can try again', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(CREATED_AT_MS + 200_000);
+    mockListNotifications.mockResolvedValue({
+      ok: true,
+      value: [notificationSendSuccess],
+    });
+    mockRetryNotification.mockResolvedValue({
+      ok: false,
+      error: {
+        code: 'CONFLICT',
+        message: 'Notification is not in a retryable state',
+      },
+    });
+
+    renderWithTheme(<NotificationTrackingPage />);
+
+    const retryButton = await screen.findByRole('button', {
+      name: retryButtonNameForState('Send-success'),
+    });
+
+    await act(async () => {
+      fireEvent.click(retryButton);
+    });
+
+    await screen.findByRole('alert');
+
+    expect(retryButton.hasAttribute('disabled')).toBe(false);
+
+    await act(async () => {
+      fireEvent.click(retryButton);
+    });
+
+    await waitFor(() => {
+      expect(mockRetryNotification).toHaveBeenCalledTimes(2);
+    });
   });
 });

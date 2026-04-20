@@ -34,6 +34,7 @@ export interface NotificationResource {
   readonly state: string;
   readonly attempt: number;
   readonly selected_provider_id: string | null;
+  readonly selected_provider_code?: string | null;
   readonly routing_rule_version: number | null;
   readonly estimated_cost?: number | null;
   readonly estimated_currency?: string | null;
@@ -101,6 +102,7 @@ export interface SmsKpisOverall extends SmsKpisBucketRow {
 
 export interface SmsKpisByProvider extends SmsKpisBucketRow {
   readonly provider_id: string;
+  readonly provider_code: string | null;
 }
 
 export interface SmsKpisByCountry extends SmsKpisBucketRow {

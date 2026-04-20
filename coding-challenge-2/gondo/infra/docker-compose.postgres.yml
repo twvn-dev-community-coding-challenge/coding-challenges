@@ -1,5 +1,5 @@
 # Standalone Postgres for local dev (run apps via Nx on the host, DB in Docker).
-# Usage (cwd = gondo/): docker compose -f infra/docker-compose.postgres.yml up -d
+# Usage (cwd = gondo/): docker-compose -f infra/docker-compose.postgres.yml up -d
 # Connection: postgresql://gondo:gondo@localhost:5432/gondo
 name: gondo-postgres
 

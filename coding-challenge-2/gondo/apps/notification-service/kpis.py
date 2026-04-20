@@ -113,6 +113,7 @@ def build_sms_kpis(
     ]
 
     by_provider: dict[str, dict[str, Any]] = defaultdict(_empty_bucket)
+    provider_code_map: dict[str, str | None] = {}
     by_country: dict[str, dict[str, Any]] = defaultdict(_empty_bucket)
     by_calling_domain: dict[str, dict[str, Any]] = defaultdict(_empty_bucket)
     overall = _empty_bucket()
@@ -125,6 +126,8 @@ def build_sms_kpis(
 
         _accumulate(overall, n)
         _accumulate(by_provider[pid], n)
+        if pid not in provider_code_map and n.selected_provider_code:
+            provider_code_map[pid] = n.selected_provider_code
         _accumulate(by_country[cc], n)
         _accumulate(by_calling_domain[cd], n)
 
@@ -142,7 +145,11 @@ def build_sms_kpis(
 
     providers_sorted = sorted(
         (
-            {"provider_id": k, **finalize_row(dict(v))}
+            {
+                "provider_id": k,
+                "provider_code": provider_code_map.get(k),
+                **finalize_row(dict(v)),
+            }
             for k, v in by_provider.items()
         ),
         key=lambda x: (-x["volume"], x["provider_id"]),

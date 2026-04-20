@@ -164,7 +164,9 @@ export const SmsKpisPage = () => {
           <TableBody>
             {data.by_provider.map((row) => (
               <TableRow key={row.provider_id}>
-                <TableCell>{row.provider_id}</TableCell>
+                <TableCell>
+                  {row.provider_code}
+                </TableCell>
                 <TableCell align="right">{row.volume}</TableCell>
                 <TableCell align="right">
                   {formatCost(row.total_estimated_cost)}

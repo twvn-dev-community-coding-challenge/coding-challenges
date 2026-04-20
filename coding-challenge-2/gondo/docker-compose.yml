@@ -1,6 +1,6 @@
 services:
   # Local AWS emulator (Secrets Manager, etc.) — https://floci.io/ — same :4566 as AWS SDK expects.
-  # Start with: docker compose --profile mock-cloud up -d floci
+  # Start with: docker-compose --profile mock-cloud up -d floci
   floci:
     image: hectorvent/floci:latest
     ports:

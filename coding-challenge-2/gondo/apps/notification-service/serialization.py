@@ -41,6 +41,7 @@ def notification_to_dict(notification: Notification) -> dict[str, object]:
         "state": notification.state,
         "attempt": notification.attempt,
         "selected_provider_id": notification.selected_provider_id,
+        "selected_provider_code": notification.selected_provider_code,
         "routing_rule_version": notification.routing_rule_version,
         "estimated_cost": notification.estimated_cost,
         "estimated_currency": notification.estimated_currency,

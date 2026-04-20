@@ -1,5 +1,5 @@
 # NATS + message-bus-gateway only (no Postgres / app images). Handy for bus tooling + gateway tests.
-# Usage (cwd = gondo/): docker compose -f infra/docker-compose.messaging.yml up -d --build
+# Usage (cwd = gondo/): docker-compose -f infra/docker-compose.messaging.yml up -d --build
 name: gondo-messaging
 
 services:
