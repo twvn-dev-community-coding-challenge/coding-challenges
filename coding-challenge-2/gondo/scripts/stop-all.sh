@@ -10,7 +10,7 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 any=0
-for port in 8001 8002 8003 4200; do
+for port in 8001 8002 8003 8004 8007 4200; do
   pids=$(lsof -nP -iTCP:"${port}" -sTCP:LISTEN -t 2>/dev/null || true)
   if [[ -n "${pids}" ]]; then
     any=1
@@ -22,7 +22,7 @@ done
 
 sleep 1
 
-for port in 8001 8002 8003 4200; do
+for port in 8001 8002 8003 8004 8007 4200; do
   pids=$(lsof -nP -iTCP:"${port}" -sTCP:LISTEN -t 2>/dev/null || true)
   if [[ -n "${pids}" ]]; then
     echo -e "${YELLOW}Force killing remaining on port ${port}: ${pids}${NC}"
@@ -32,7 +32,7 @@ for port in 8001 8002 8003 4200; do
 done
 
 if [[ "${any}" -eq 0 ]]; then
-  echo "No listeners found on ports 8001, 8002, 8003, 4200."
+  echo "No listeners found on ports 8001, 8002, 8003, 8004, 8007, 4200."
 else
   echo -e "${GREEN}Done.${NC}"
 fi

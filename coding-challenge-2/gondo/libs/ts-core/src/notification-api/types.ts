@@ -64,3 +64,17 @@ export type Result<T, E = ApiErrorBody> =
 export interface ListNotificationsData {
   readonly notifications: readonly NotificationResource[];
 }
+
+/** One row from runtime pipeline aggregation (`GET .../pipeline-events`). */
+export interface PipelineEvent {
+  readonly timestamp: string;
+  readonly phase: string;
+  readonly detail: Readonly<Record<string, unknown>>;
+}
+
+/** Envelope for `GET /notifications/{id}/pipeline-events`. */
+export interface PipelineEventsData {
+  readonly notification_id: string;
+  readonly message_id: string;
+  readonly events: readonly PipelineEvent[];
+}

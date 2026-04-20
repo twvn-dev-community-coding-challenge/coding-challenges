@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import AsyncGenerator, Callable
 from contextlib import asynccontextmanager
 from typing import Any
@@ -42,7 +43,12 @@ def build_provider_lifespan(
         await bus.connect()
         set_message_bus(bus)
         await subscribe_to_dispatch_outcomes(bus)
-        logger.info("provider_message_bus_ready")
+        logger.info(
+            "provider_message_bus_ready",
+            extra={
+                "nats_url": os.environ.get("NATS_URL", "nats://127.0.0.1:4222"),
+            },
+        )
         async with grpc_cm(app):
             yield
         set_message_bus(None)

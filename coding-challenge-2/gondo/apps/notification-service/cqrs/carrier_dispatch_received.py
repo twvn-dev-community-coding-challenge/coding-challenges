@@ -6,6 +6,7 @@ import logging
 from datetime import datetime, timezone
 
 from models import TransitionEvent, TransitionOutcome, TransitionSource, is_valid_transition
+from pipeline_runtime import append_pipeline_event
 from store import add_transition_event, find_by_message_id, update_notification
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,11 @@ def apply_carrier_dispatch_received(message_id: str) -> str:
         return "not_found"
 
     if n.state == "Send-to-carrier":
+        append_pipeline_event(
+            n.notification_id,
+            "bus.sms_dispatch.received.idempotent",
+            {"message_id": mid, "state": "Send-to-carrier"},
+        )
         return "idempotent"
 
     if n.state != "Queue":
@@ -56,4 +62,9 @@ def apply_carrier_dispatch_received(message_id: str) -> str:
         )
     )
     logger.info("carrier_dispatch_received_applied", extra={"message_id": mid})
+    append_pipeline_event(
+        n.notification_id,
+        "state.Send-to-carrier",
+        {"from_state": from_st, "message_id": mid, "reason": "carrier_dispatch_received"},
+    )
     return "applied"

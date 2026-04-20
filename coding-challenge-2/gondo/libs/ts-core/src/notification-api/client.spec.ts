@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createNotificationApi } from './client';
-import type { CreateNotificationRequest, NotificationResource } from './types';
+import type {
+  CreateNotificationRequest,
+  NotificationResource,
+  PipelineEventsData,
+} from './types';
 
 const sampleNotification: NotificationResource = {
   notification_id: 'abc',
@@ -239,6 +243,39 @@ describe('notification API client', () => {
           method: 'POST',
           body: JSON.stringify({ as_of: null }),
         }),
+      );
+    });
+  });
+
+  describe('getPipelineEvents', () => {
+    const pipelinePayload: PipelineEventsData = {
+      notification_id: 'notif-id',
+      message_id: 'msg-1',
+      events: [
+        {
+          timestamp: '2026-04-11T12:00:00+00:00',
+          phase: 'dispatch.begin',
+          detail: { carrier: 'VINAPHONE' },
+        },
+      ],
+    };
+
+    it('successful 200', async () => {
+      const mockFetch = vi.mocked(globalThis.fetch);
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        json: () => ({ data: pipelinePayload }),
+      } as Response);
+
+      const api = createNotificationApi();
+      const result = await api.getPipelineEvents('notif-id');
+
+      expect(result).toEqual({ ok: true, value: pipelinePayload });
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://localhost:8001/notifications/notif-id/pipeline-events',
+        expect.objectContaining({ method: 'GET' }),
       );
     });
   });

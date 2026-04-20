@@ -9,6 +9,8 @@ export type {
   DispatchRequest,
   ListNotificationsData,
   NotificationResource,
+  PipelineEvent,
+  PipelineEventsData,
   Result,
   RetryRequest,
   SmsChannelPayload,

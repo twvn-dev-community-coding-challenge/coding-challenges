@@ -119,9 +119,10 @@ def test_get_provider_registry_returns_configs() -> None:
     assert resp.configs[0].connectable_carriers[0].carrier_code == "VIETTEL"
 
 
-async def _select_provider_with_message_id(
-    publish_ok: bool,
-) -> provider_pb2.SelectProviderResponse:
+async def _select_provider_with_message_id() -> tuple[
+    provider_pb2.SelectProviderResponse,
+    object,
+]:
     result = SelectionResult(
         selected_provider_id="prv_01",
         selected_provider_code="TWILIO",
@@ -132,10 +133,7 @@ async def _select_provider_with_message_id(
     )
     with (
         patch("grpc_server.select_provider", AsyncMock(return_value=result)),
-        patch(
-            "grpc_server.publish_sms_dispatch_requested",
-            AsyncMock(return_value=publish_ok),
-        ),
+        patch("grpc_server.publish_sms_dispatch_requested", AsyncMock()) as pub,
     ):
         servicer = ProviderGrpcServicer()
         ts = timestamp_pb2.Timestamp()
@@ -150,14 +148,36 @@ async def _select_provider_with_message_id(
             ),
         )
         ctx = FakeServicerContext()
-        return await servicer.SelectProvider(req, ctx)
+        resp = await servicer.SelectProvider(req, ctx)
+    return resp, pub
 
 
-def test_select_provider_sets_sms_dispatch_requested_published_true() -> None:
-    resp = asyncio.run(_select_provider_with_message_id(True))
-    assert resp.sms_dispatch_requested_published is True
-
-
-def test_select_provider_sets_sms_dispatch_requested_published_false() -> None:
-    resp = asyncio.run(_select_provider_with_message_id(False))
+def test_select_provider_does_not_publish_dispatch_event() -> None:
+    resp, pub = asyncio.run(_select_provider_with_message_id())
     assert resp.sms_dispatch_requested_published is False
+    pub.assert_not_called()
+
+
+def test_publish_sms_dispatch_requested_rpc_publishes() -> None:
+    async def _run() -> provider_pb2.PublishSmsDispatchRequestedResponse:
+        with patch(
+            "grpc_server.publish_sms_dispatch_requested",
+            AsyncMock(return_value=True),
+        ):
+            servicer = ProviderGrpcServicer()
+            req = provider_pb2.PublishSmsDispatchRequestedRequest(
+                message_id="m1",
+                country_code="VN",
+                carrier="VIETTEL",
+                selected_provider_id="prv_01",
+                selected_provider_code="TWILIO",
+                routing_rule_version=1,
+                estimated_cost=0.01,
+                currency="USD",
+                charging_estimate_id="est-1",
+            )
+            ctx = FakeServicerContext()
+            return await servicer.PublishSmsDispatchRequested(req, ctx)
+
+    out = asyncio.run(_run())
+    assert out.published is True

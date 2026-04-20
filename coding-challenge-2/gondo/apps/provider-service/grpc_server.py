@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 import grpc
 from grpc import aio
 
@@ -18,6 +20,8 @@ from registry import (
     resolve_routing,
     select_provider,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _connectable_carrier_to_proto(
@@ -101,6 +105,16 @@ class ProviderGrpcServicer(provider_pb2_grpc.ProviderServiceServicer):
         if request.HasField("policy_context"):
             policy = request.policy_context.policy or "highest_precedence"
             message_id = request.policy_context.message_id
+        logger.info(
+            "provider_grpc_request",
+            extra={
+                "grpc_method": "SelectProvider",
+                "country_code": request.country_code,
+                "carrier": request.carrier,
+                "policy": policy,
+                "message_id": message_id,
+            },
+        )
         result = await select_provider(
             request.country_code,
             request.carrier,
@@ -110,15 +124,15 @@ class ProviderGrpcServicer(provider_pb2_grpc.ProviderServiceServicer):
         )
         if result is None:
             await context.abort(grpc.StatusCode.NOT_FOUND, "ROUTING_UNRESOLVABLE")
-        dispatch_published = False
-        if message_id:
-            dispatch_published = await publish_sms_dispatch_requested(
-                message_id=message_id,
-                country_code=request.country_code,
-                carrier=request.carrier,
-                selected_provider_id=result.selected_provider_id,
-                selected_provider_code=result.selected_provider_code,
-            )
+        logger.info(
+            "provider_grpc_response",
+            extra={
+                "grpc_method": "SelectProvider",
+                "message_id": message_id,
+                "selected_provider_id": result.selected_provider_id,
+                "routing_rule_version": result.routing_rule_version,
+            },
+        )
         return provider_pb2.SelectProviderResponse(
             selected_provider_id=result.selected_provider_id,
             selected_provider_code=result.selected_provider_code,
@@ -127,8 +141,58 @@ class ProviderGrpcServicer(provider_pb2_grpc.ProviderServiceServicer):
             routing_rule_id=result.routing_rule_id,
             routing_rule_version=result.routing_rule_version,
             selected_at=current_timestamp(),
-            sms_dispatch_requested_published=dispatch_published,
+            sms_dispatch_requested_published=False,
         )
+
+    async def PublishSmsDispatchRequested(
+        self,
+        request: provider_pb2.PublishSmsDispatchRequestedRequest,
+        context: aio.ServicerContext,
+    ) -> provider_pb2.PublishSmsDispatchRequestedResponse:
+        mid = (request.message_id or "").strip()
+        logger.info(
+            "provider_grpc_request",
+            extra={
+                "grpc_method": "PublishSmsDispatchRequested",
+                "message_id": mid or request.message_id,
+                "country_code": request.country_code,
+                "carrier": request.carrier,
+                "selected_provider_id": request.selected_provider_id,
+                "routing_rule_version": request.routing_rule_version,
+                "charging_estimate_id": request.charging_estimate_id,
+            },
+        )
+        if not mid:
+            await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "message_id is required")
+        if not (request.selected_provider_id or "").strip():
+            await context.abort(
+                grpc.StatusCode.INVALID_ARGUMENT,
+                "selected_provider_id is required",
+            )
+        est = request.estimated_cost
+        cur = (request.currency or "").strip() or None
+        eid = (request.charging_estimate_id or "").strip() or None
+        rrv = int(request.routing_rule_version)
+        published = await publish_sms_dispatch_requested(
+            message_id=mid,
+            country_code=request.country_code,
+            carrier=request.carrier,
+            selected_provider_id=request.selected_provider_id,
+            selected_provider_code=request.selected_provider_code,
+            estimated_cost=est,
+            currency=cur,
+            charging_estimate_id=eid,
+            routing_rule_version=rrv,
+        )
+        logger.info(
+            "provider_grpc_response",
+            extra={
+                "grpc_method": "PublishSmsDispatchRequested",
+                "message_id": mid,
+                "published": published,
+            },
+        )
+        return provider_pb2.PublishSmsDispatchRequestedResponse(published=published)
 
     async def GetProviderRegistry(
         self,

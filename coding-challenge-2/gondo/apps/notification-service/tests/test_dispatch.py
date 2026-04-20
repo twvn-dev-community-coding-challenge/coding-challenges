@@ -64,11 +64,19 @@ def test_dispatch_happy_path() -> None:
 
     mock_resp = provider_pb2.SelectProviderResponse()
     mock_resp.selected_provider_id = "prv_01"
+    mock_resp.selected_provider_code = "TWILIO"
     mock_resp.routing_rule_version = 2
-    mock_resp.sms_dispatch_requested_published = True
+
+    mock_pub = provider_pb2.PublishSmsDispatchRequestedResponse()
+    mock_pub.published = True
 
     with (
         patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch(
+            "main.publish_sms_dispatch_via_provider",
+            new_callable=AsyncMock,
+            return_value=mock_pub,
+        ),
         patch(
             "repository.resolve_carrier", new_callable=AsyncMock, return_value="VIETTEL"
         ),
@@ -110,15 +118,28 @@ def test_dispatch_returns_503_when_dispatch_event_not_published() -> None:
 
     mock_resp = provider_pb2.SelectProviderResponse()
     mock_resp.selected_provider_id = "prov-1"
+    mock_resp.selected_provider_code = "ACME"
     mock_resp.routing_rule_version = 2
-    mock_resp.sms_dispatch_requested_published = False
+
+    mock_pub = provider_pb2.PublishSmsDispatchRequestedResponse()
+    mock_pub.published = False
 
     with (
         patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
         patch(
+            "main.publish_sms_dispatch_via_provider",
+            new_callable=AsyncMock,
+            return_value=mock_pub,
+        ),
+        patch(
             "main.derive_carrier",
             new_callable=AsyncMock,
             return_value="VIETTEL",
+        ),
+        patch(
+            "main.estimate_cost_grpc",
+            new_callable=AsyncMock,
+            return_value=_sample_estimate_response(),
         ),
     ):
         response = client.post(
@@ -147,11 +168,19 @@ def test_dispatch_rejects_when_notification_not_in_new_state() -> None:
 
     mock_resp = provider_pb2.SelectProviderResponse()
     mock_resp.selected_provider_id = "prov-1"
+    mock_resp.selected_provider_code = "ACME"
     mock_resp.routing_rule_version = 2
-    mock_resp.sms_dispatch_requested_published = True
+
+    mock_pub = provider_pb2.PublishSmsDispatchRequestedResponse()
+    mock_pub.published = True
 
     with (
         patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch(
+            "main.publish_sms_dispatch_via_provider",
+            new_callable=AsyncMock,
+            return_value=mock_pub,
+        ),
         patch(
             "main.derive_carrier",
             new_callable=AsyncMock,
@@ -202,8 +231,8 @@ def test_dispatch_returns_502_when_charging_rate_not_found() -> None:
 
     mock_resp = provider_pb2.SelectProviderResponse()
     mock_resp.selected_provider_id = "prv_01"
+    mock_resp.selected_provider_code = "TWILIO"
     mock_resp.routing_rule_version = 2
-    mock_resp.sms_dispatch_requested_published = True
 
     with (
         patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
@@ -239,8 +268,8 @@ def test_dispatch_returns_502_when_charging_service_unavailable() -> None:
 
     mock_resp = provider_pb2.SelectProviderResponse()
     mock_resp.selected_provider_id = "prv_01"
+    mock_resp.selected_provider_code = "TWILIO"
     mock_resp.routing_rule_version = 2
-    mock_resp.sms_dispatch_requested_published = True
 
     with (
         patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 import grpc
 from grpc import aio
 
@@ -14,6 +16,8 @@ from rates import (
     estimate_cost_batch,
     record_actual_cost,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _estimate_record_to_proto(rec: EstimateRecord) -> charging_pb2.EstimateCostResponse:
@@ -61,6 +65,16 @@ class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
                 "as_of is required",
             )
         as_of = as_utc(request.as_of.ToDatetime())
+        logger.info(
+            "charging_grpc_request",
+            extra={
+                "grpc_method": "EstimateCost",
+                "message_id": request.message_id,
+                "provider_id": request.provider_id,
+                "country_code": request.country_code,
+                "carrier": request.carrier,
+            },
+        )
         rec = await estimate_cost(
             request.message_id,
             request.provider_id,
@@ -73,6 +87,16 @@ class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
                 grpc.StatusCode.NOT_FOUND,
                 "RATE_NOT_AVAILABLE",
             )
+        logger.info(
+            "charging_grpc_response",
+            extra={
+                "grpc_method": "EstimateCost",
+                "message_id": request.message_id,
+                "estimate_id": rec.estimate_id,
+                "estimated_cost": rec.estimated_cost,
+                "currency": rec.currency,
+            },
+        )
         return _estimate_record_to_proto(rec)
 
     async def EstimateCostBatch(
@@ -107,6 +131,16 @@ class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
                 "recorded_at is required",
             )
         recorded_at = as_utc(request.recorded_at.ToDatetime())
+        logger.info(
+            "charging_grpc_request",
+            extra={
+                "grpc_method": "RecordActualCost",
+                "message_id": request.message_id,
+                "provider_id": request.provider_id,
+                "callback_state": request.callback_state,
+                "idempotency_key": request.idempotency_key,
+            },
+        )
         rec = record_actual_cost(
             message_id=request.message_id,
             provider_id=request.provider_id,
@@ -116,5 +150,14 @@ class ChargingGrpcServicer(charging_pb2_grpc.ChargingServiceServicer):
             currency=request.currency,
             callback_state=request.callback_state,
             recorded_at=recorded_at,
+        )
+        logger.info(
+            "charging_grpc_response",
+            extra={
+                "grpc_method": "RecordActualCost",
+                "message_id": request.message_id,
+                "actual_cost_id": rec.actual_cost_id,
+                "idempotent_replay": rec.idempotent_replay,
+            },
         )
         return _actual_record_to_proto(rec)

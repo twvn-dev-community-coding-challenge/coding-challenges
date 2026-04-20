@@ -121,6 +121,19 @@ export const MembershipSmsFeature = ({
       return;
     }
 
+    const phoneE164 = buildSmsPhoneNumber(
+      state.formValues.countryCode,
+      state.formValues.phoneNumber,
+    );
+    if (!phoneE164.trim()) {
+      dispatch({
+        type: 'submit_fail',
+        message:
+          'Enter a full phone number (digits). Masked values like +84*****9999 cannot be routed — use e.g. 0999999999 or +84999999999 for Vietnam.',
+      });
+      return;
+    }
+
     dispatch({ type: 'submit_start' });
 
     const createResult = await api.createNotification({
@@ -129,10 +142,7 @@ export const MembershipSmsFeature = ({
       content: state.formValues.content,
       channel_payload: {
         country_code: state.formValues.countryCode,
-        phone_number: buildSmsPhoneNumber(
-          state.formValues.countryCode,
-          state.formValues.phoneNumber,
-        ),
+        phone_number: phoneE164,
       },
       issue_server_otp: true,
     });

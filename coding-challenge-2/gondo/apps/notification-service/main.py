@@ -15,9 +15,10 @@ from google.protobuf import timestamp_pb2
 from pydantic import BaseModel, Field
 
 from charging_client import estimate_cost_grpc, record_actual_cost_grpc
-from grpc_client import select_provider
+from grpc_client import publish_sms_dispatch_via_provider, select_provider
 from otp_http_client import OtpIssueError, issue_challenge_http, substitute_otp_in_content
 from lifespan import notification_lifespan
+from pipeline_runtime import append_pipeline_event as _record_pipeline_event, list_pipeline_events
 from models import (
     Notification,
     TransitionEvent,
@@ -37,6 +38,13 @@ from store import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _pipe(notification_id: str, phase: str, **detail: object) -> None:
+    """Append one runtime pipeline row for the tracking UI."""
+    payload = {k: v for k, v in detail.items() if v is not None}
+    _record_pipeline_event(notification_id, phase, payload)
+
 
 DEFAULT_MAX_ATTEMPTS = 3
 
@@ -154,6 +162,15 @@ async def attach_charging_estimate(
     as_of_ts: timestamp_pb2.Timestamp,
 ) -> JSONResponse | None:
     """Fetch ``EstimateCost`` and persist on *n*. Returns error JSONResponse on gRPC failure."""
+    logger.info(
+        "notification_charging_estimate_step",
+        extra={
+            "step": "before_estimate_cost",
+            "notification_id": n.notification_id,
+            "message_id": n.message_id,
+            "provider_id": selected_provider_id,
+        },
+    )
     try:
         resp = await estimate_cost_grpc(
             message_id=n.message_id,
@@ -166,6 +183,12 @@ async def attach_charging_estimate(
         logger.exception(
             "charging_estimate_failed",
             extra={"message_id": n.message_id, "details": err.details()},
+        )
+        _pipe(
+            n.notification_id,
+            "grpc.EstimateCost.failed",
+            grpc_code=str(err.code()),
+            details=err.details(),
         )
         if err.code() == grpc.StatusCode.NOT_FOUND:
             return error_response(
@@ -186,6 +209,25 @@ async def attach_charging_estimate(
     n.charging_rate_id = resp.rate_id
     n.updated_at = datetime.now(timezone.utc)
     update_notification(n)
+    logger.info(
+        "notification_charging_estimate_step",
+        extra={
+            "step": "after_estimate_cost_persisted",
+            "notification_id": n.notification_id,
+            "message_id": n.message_id,
+            "charging_estimate_id": n.charging_estimate_id,
+            "estimated_cost": n.estimated_cost,
+            "currency": n.estimated_currency,
+        },
+    )
+    _pipe(
+        n.notification_id,
+        "grpc.EstimateCost.ok",
+        charging_estimate_id=n.charging_estimate_id,
+        estimated_cost=n.estimated_cost,
+        currency=n.estimated_currency,
+        rate_id=n.charging_rate_id,
+    )
     return None
 
 
@@ -344,6 +386,13 @@ async def create_notification_endpoint(
         otp_expires_at=otp_expires_at,
     )
     create_notification(n)
+    _pipe(
+        nid,
+        "http.create_notification",
+        message_id=n.message_id,
+        state=n.state,
+        issue_server_otp=body.issue_server_otp,
+    )
     data = notification_to_dict(n)
     expose_plain = os.environ.get("OTP_EXPOSE_PLAINTEXT_TO_CLIENT", "true").lower() in (
         "1",
@@ -368,6 +417,28 @@ async def get_notification_endpoint(
             {"notification_id": notification_id},
         )
     return success_response(notification_to_dict(n))
+
+
+@app.get("/notifications/{notification_id}/pipeline-events", response_model=None)
+async def get_pipeline_events_endpoint(
+    notification_id: str,
+) -> dict[str, object] | JSONResponse:
+    """Runtime-aggregated SMS pipeline steps for the notification tracking UI."""
+    n = get_notification(notification_id)
+    if n is None:
+        return error_response(
+            "NOT_FOUND",
+            "Notification not found",
+            status.HTTP_404_NOT_FOUND,
+            {"notification_id": notification_id},
+        )
+    return success_response(
+        {
+            "notification_id": notification_id,
+            "message_id": n.message_id,
+            "events": list_pipeline_events(notification_id),
+        },
+    )
 
 
 @app.get("/notifications")
@@ -406,6 +477,23 @@ async def dispatch_notification(
     update_notification(n)
 
     as_of_ts = iso_string_to_timestamp(body.as_of)
+    logger.info(
+        "notification_dispatch_flow",
+        extra={
+            "step": "begin",
+            "notification_id": notification_id,
+            "message_id": n.message_id,
+            "carrier": carrier,
+            "as_of": body.as_of,
+        },
+    )
+    _pipe(
+        notification_id,
+        "dispatch.begin",
+        message_id=n.message_id,
+        carrier=carrier,
+        as_of=body.as_of,
+    )
     try:
         response = await select_provider(
             country_code=n.channel_payload["country_code"],
@@ -419,6 +507,12 @@ async def dispatch_notification(
             "provider_selection_failed",
             extra={"notification_id": notification_id, "details": err.details()},
         )
+        _pipe(
+            notification_id,
+            "grpc.SelectProvider.failed",
+            grpc_code=str(err.code()),
+            details=err.details(),
+        )
         return error_response(
             "PROVIDER_SELECTION_FAILED",
             "Provider selection failed",
@@ -426,13 +520,23 @@ async def dispatch_notification(
             {"grpc": err.details() or str(err.code())},
         )
 
-    if n.message_id and not response.sms_dispatch_requested_published:
-        return error_response(
-            "DISPATCH_REQUEST_NOT_PUBLISHED",
-            "sms.dispatch.requested was not published; message bus may be unavailable",
-            status.HTTP_503_SERVICE_UNAVAILABLE,
-            {"message_id": n.message_id},
-        )
+    logger.info(
+        "notification_dispatch_flow",
+        extra={
+            "step": "after_select_provider",
+            "notification_id": notification_id,
+            "message_id": n.message_id,
+            "selected_provider_id": response.selected_provider_id,
+            "routing_rule_version": response.routing_rule_version,
+        },
+    )
+    _pipe(
+        notification_id,
+        "grpc.SelectProvider.ok",
+        selected_provider_id=response.selected_provider_id,
+        selected_provider_code=response.selected_provider_code,
+        routing_rule_version=int(response.routing_rule_version),
+    )
 
     charging_err = await attach_charging_estimate(
         n,
@@ -441,6 +545,80 @@ async def dispatch_notification(
     )
     if charging_err is not None:
         return charging_err
+
+    if n.message_id:
+        logger.info(
+            "notification_dispatch_flow",
+            extra={
+                "step": "before_publish_dispatch_requested",
+                "notification_id": notification_id,
+                "message_id": n.message_id,
+            },
+        )
+        _pipe(notification_id, "dispatch.before_publish_dispatch_requested")
+        try:
+            pub_resp = await publish_sms_dispatch_via_provider(
+                message_id=n.message_id,
+                country_code=n.channel_payload["country_code"],
+                carrier=carrier,
+                selected_provider_id=response.selected_provider_id,
+                selected_provider_code=response.selected_provider_code,
+                routing_rule_version=int(response.routing_rule_version),
+                estimated_cost=float(n.estimated_cost)
+                if n.estimated_cost is not None
+                else 0.0,
+                currency=n.estimated_currency or "",
+                charging_estimate_id=n.charging_estimate_id or "",
+            )
+        except grpc.aio.AioRpcError as err:
+            logger.exception(
+                "publish_dispatch_requested_failed",
+                extra={"notification_id": notification_id, "details": err.details()},
+            )
+            _pipe(
+                notification_id,
+                "grpc.PublishSmsDispatchRequested.failed",
+                grpc_code=str(err.code()),
+                details=err.details(),
+            )
+            return error_response(
+                "DISPATCH_PUBLISH_FAILED",
+                "Could not publish sms.dispatch.requested via provider-service",
+                status.HTTP_502_BAD_GATEWAY,
+                {"grpc": err.details() or str(err.code())},
+            )
+        if not pub_resp.published:
+            _pipe(notification_id, "bus.sms_dispatch.requested.skipped", published=False)
+            return error_response(
+                "DISPATCH_REQUEST_NOT_PUBLISHED",
+                "sms.dispatch.requested was not published; message bus may be unavailable",
+                status.HTTP_503_SERVICE_UNAVAILABLE,
+                {"message_id": n.message_id},
+            )
+        logger.info(
+            "notification_dispatch_flow",
+            extra={
+                "step": "after_publish_dispatch_requested",
+                "notification_id": notification_id,
+                "message_id": n.message_id,
+                "published": pub_resp.published,
+            },
+        )
+        _pipe(
+            notification_id,
+            "grpc.PublishSmsDispatchRequested.ok",
+            published=True,
+            charging_estimate_id=n.charging_estimate_id,
+        )
+    else:
+        logger.warning(
+            "notification_dispatch_skip_bus_publish",
+            extra={
+                "notification_id": notification_id,
+                "reason": "empty_message_id",
+            },
+        )
+        _pipe(notification_id, "dispatch.skip_bus_publish", reason="empty_message_id")
 
     from_new = n.state
     n.state = "Send-to-provider"
@@ -456,6 +634,7 @@ async def dispatch_notification(
         "accepted",
         "dispatch_new_to_send_to_provider",
     )
+    _pipe(notification_id, "state.Send-to-provider", from_state=from_new)
 
     n.attempt = 1
     from_sp = n.state
@@ -469,6 +648,23 @@ async def dispatch_notification(
         "system",
         "accepted",
         "dispatch_send_to_provider_to_queue",
+    )
+
+    logger.info(
+        "notification_dispatch_flow",
+        extra={
+            "step": "complete_state_queue",
+            "notification_id": notification_id,
+            "message_id": n.message_id,
+            "state": n.state,
+            "attempt": n.attempt,
+        },
+    )
+    _pipe(
+        notification_id,
+        "state.Queue",
+        attempt=n.attempt,
+        message_id=n.message_id,
     )
 
     return success_response(notification_to_dict(n))
@@ -514,6 +710,25 @@ async def retry_notification(
         n.updated_at = datetime.now(timezone.utc)
         update_notification(n)
 
+    logger.info(
+        "notification_retry_flow",
+        extra={
+            "step": "begin",
+            "notification_id": notification_id,
+            "message_id": n.message_id,
+            "carrier": carrier,
+            "current_state": n.state,
+            "attempt_before": n.attempt,
+        },
+    )
+    _pipe(
+        notification_id,
+        "retry.begin",
+        carrier=carrier,
+        current_state=n.state,
+        attempt_before=n.attempt,
+    )
+
     try:
         response = await select_provider(
             country_code=n.channel_payload["country_code"],
@@ -527,6 +742,12 @@ async def retry_notification(
             "provider_selection_failed_retry",
             extra={"notification_id": notification_id, "details": err.details()},
         )
+        _pipe(
+            notification_id,
+            "grpc.SelectProvider.failed",
+            grpc_code=str(err.code()),
+            details=err.details(),
+        )
         return error_response(
             "PROVIDER_SELECTION_FAILED",
             "Provider selection failed",
@@ -534,13 +755,22 @@ async def retry_notification(
             {"grpc": err.details() or str(err.code())},
         )
 
-    if n.message_id and not response.sms_dispatch_requested_published:
-        return error_response(
-            "DISPATCH_REQUEST_NOT_PUBLISHED",
-            "sms.dispatch.requested was not published; message bus may be unavailable",
-            status.HTTP_503_SERVICE_UNAVAILABLE,
-            {"message_id": n.message_id},
-        )
+    logger.info(
+        "notification_retry_flow",
+        extra={
+            "step": "after_select_provider",
+            "notification_id": notification_id,
+            "message_id": n.message_id,
+            "selected_provider_id": response.selected_provider_id,
+            "routing_rule_version": response.routing_rule_version,
+        },
+    )
+    _pipe(
+        notification_id,
+        "grpc.SelectProvider.ok",
+        selected_provider_id=response.selected_provider_id,
+        routing_rule_version=int(response.routing_rule_version),
+    )
 
     charging_err = await attach_charging_estimate(
         n,
@@ -549,6 +779,80 @@ async def retry_notification(
     )
     if charging_err is not None:
         return charging_err
+
+    if n.message_id:
+        logger.info(
+            "notification_retry_flow",
+            extra={
+                "step": "before_publish_dispatch_requested",
+                "notification_id": notification_id,
+                "message_id": n.message_id,
+            },
+        )
+        _pipe(notification_id, "retry.before_publish_dispatch_requested")
+        try:
+            pub_resp = await publish_sms_dispatch_via_provider(
+                message_id=n.message_id,
+                country_code=n.channel_payload["country_code"],
+                carrier=carrier,
+                selected_provider_id=response.selected_provider_id,
+                selected_provider_code=response.selected_provider_code,
+                routing_rule_version=int(response.routing_rule_version),
+                estimated_cost=float(n.estimated_cost)
+                if n.estimated_cost is not None
+                else 0.0,
+                currency=n.estimated_currency or "",
+                charging_estimate_id=n.charging_estimate_id or "",
+            )
+        except grpc.aio.AioRpcError as err:
+            logger.exception(
+                "publish_dispatch_requested_failed_retry",
+                extra={"notification_id": notification_id, "details": err.details()},
+            )
+            _pipe(
+                notification_id,
+                "grpc.PublishSmsDispatchRequested.failed",
+                grpc_code=str(err.code()),
+                details=err.details(),
+            )
+            return error_response(
+                "DISPATCH_PUBLISH_FAILED",
+                "Could not publish sms.dispatch.requested via provider-service",
+                status.HTTP_502_BAD_GATEWAY,
+                {"grpc": err.details() or str(err.code())},
+            )
+        if not pub_resp.published:
+            _pipe(notification_id, "bus.sms_dispatch.requested.skipped", published=False)
+            return error_response(
+                "DISPATCH_REQUEST_NOT_PUBLISHED",
+                "sms.dispatch.requested was not published; message bus may be unavailable",
+                status.HTTP_503_SERVICE_UNAVAILABLE,
+                {"message_id": n.message_id},
+            )
+        logger.info(
+            "notification_retry_flow",
+            extra={
+                "step": "after_publish_dispatch_requested",
+                "notification_id": notification_id,
+                "message_id": n.message_id,
+                "published": pub_resp.published,
+            },
+        )
+        _pipe(
+            notification_id,
+            "grpc.PublishSmsDispatchRequested.ok",
+            published=True,
+            charging_estimate_id=n.charging_estimate_id,
+        )
+    else:
+        logger.warning(
+            "notification_retry_skip_bus_publish",
+            extra={
+                "notification_id": notification_id,
+                "reason": "empty_message_id",
+            },
+        )
+        _pipe(notification_id, "retry.skip_bus_publish", reason="empty_message_id")
 
     from_state = n.state
     n.state = "Send-to-provider"
@@ -565,6 +869,7 @@ async def retry_notification(
         "accepted",
         "retry_to_send_to_provider",
     )
+    _pipe(notification_id, "state.Send-to-provider", from_state=from_state)
 
     from_sp = n.state
     n.state = "Queue"
@@ -577,6 +882,12 @@ async def retry_notification(
         "system",
         "accepted",
         "retry_send_to_provider_to_queue",
+    )
+    _pipe(
+        notification_id,
+        "state.Queue",
+        attempt=n.attempt,
+        message_id=n.message_id,
     )
 
     return success_response(notification_to_dict(n))

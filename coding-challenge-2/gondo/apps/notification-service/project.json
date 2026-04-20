@@ -11,8 +11,7 @@
         "command": "../../.venv/bin/python3 -m uvicorn main:app --reload --port 8001",
         "cwd": "apps/notification-service",
         "env": {
-          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core",
-          "NATS_URL": "nats://127.0.0.1:4222"
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
         }
       }
     },

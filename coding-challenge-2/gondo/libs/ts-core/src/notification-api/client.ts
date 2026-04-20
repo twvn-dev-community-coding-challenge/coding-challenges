@@ -3,6 +3,7 @@ import type {
   DispatchRequest,
   ListNotificationsData,
   NotificationResource,
+  PipelineEventsData,
   Result,
   RetryRequest,
 } from './types';
@@ -180,6 +181,48 @@ export const createNotificationApi = () => {
     }
   };
 
+  const getPipelineEvents = async (
+    notificationId: string,
+  ): Promise<Result<PipelineEventsData>> => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/notifications/${notificationId}/pipeline-events`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+        },
+      );
+      const payload = (await readJson(response)) as {
+        readonly data?: PipelineEventsData;
+        readonly error?: { readonly code: string; readonly message: string };
+      };
+      if (!response.ok) {
+        if (!payload.error) {
+          return {
+            ok: false,
+            error: { code: 'HTTP_ERROR', message: 'Request failed' },
+          };
+        }
+        return { ok: false, error: payload.error };
+      }
+      if (payload.data === undefined) {
+        return {
+          ok: false,
+          error: { code: 'INVALID_RESPONSE', message: 'Missing data' },
+        };
+      }
+      return { ok: true, value: payload.data };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        ok: false,
+        error: { code: 'NETWORK_ERROR', message },
+      };
+    }
+  };
+
   const retryNotification = async (
     notificationId: string,
     body: RetryRequest,
@@ -229,6 +272,7 @@ export const createNotificationApi = () => {
     createNotification,
     dispatchNotification,
     getNotification,
+    getPipelineEvents,
     listNotifications,
     retryNotification,
   };

@@ -4,6 +4,11 @@ import {
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Link,
   Paper,
   Table,
   TableBody,
@@ -16,7 +21,10 @@ import {
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { createNotificationApi, generateSixDigitOtp } from '@gondo/ts-core';
-import type { NotificationResource } from '@gondo/ts-core';
+import type {
+  NotificationResource,
+  PipelineEventsData,
+} from '@gondo/ts-core';
 
 import { DEFAULT_COUNTDOWN_DURATION, useCountdown } from '../../context';
 import { CountdownTimer } from '../../ui/countdown-timer/countdown-timer';
@@ -205,6 +213,125 @@ const NotificationRowActions = ({
   );
 };
 
+interface PipelineLogsLinkProps {
+  readonly notificationId: string;
+  readonly api: ReturnType<typeof createNotificationApi>;
+}
+
+const PipelineLogsLink = ({ notificationId, api }: PipelineLogsLinkProps) => {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [payload, setPayload] = useState<PipelineEventsData | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setErrorMessage(null);
+    const result = await api.getPipelineEvents(notificationId);
+    setLoading(false);
+    if (!result.ok) {
+      setErrorMessage(result.error.message);
+      setPayload(null);
+      return;
+    }
+    setPayload(result.value);
+  }, [api, notificationId]);
+
+  useEffect(() => {
+    if (open) {
+      void load();
+    }
+  }, [open, load]);
+
+  const handleClose = () => {
+    setOpen(false);
+    setPayload(null);
+    setErrorMessage(null);
+  };
+
+  return (
+    <>
+      <Link
+        component="button"
+        type="button"
+        variant="body2"
+        onClick={() => setOpen(true)}
+        sx={{ cursor: 'pointer', whiteSpace: 'nowrap' }}
+      >
+        Pipeline logs
+      </Link>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="md"
+        fullWidth
+        aria-labelledby="pipeline-logs-dialog-title"
+      >
+        <DialogTitle id="pipeline-logs-dialog-title">
+          SMS pipeline (runtime)
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            Notification <code>{notificationId}</code>
+            {payload?.message_id ? (
+              <>
+                {' '}
+                · message_id <code>{payload.message_id}</code>
+              </>
+            ) : null}
+          </Typography>
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+              <CircularProgress size={28} aria-busy="true" />
+            </Box>
+          ) : null}
+          {errorMessage !== null ? (
+            <Alert severity="error" sx={{ mb: 1 }}>
+              {errorMessage}
+            </Alert>
+          ) : null}
+          {!loading && payload !== null && errorMessage === null ? (
+            payload.events.length === 0 ? (
+              <Typography variant="body2" color="text.secondary">
+                No pipeline events recorded yet for this notification in this
+                process.
+              </Typography>
+            ) : (
+              <Box
+                component="pre"
+                sx={{
+                  m: 0,
+                  p: 1.5,
+                  overflow: 'auto',
+                  maxHeight: 360,
+                  fontSize: '0.8rem',
+                  bgcolor: 'action.hover',
+                  borderRadius: 1,
+                }}
+              >
+                {JSON.stringify(payload.events, null, 2)}
+              </Box>
+            )
+          ) : null}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={() => void load()}
+            disabled={loading}
+            startIcon={<RefreshIcon />}
+          >
+            Refresh
+          </Button>
+          <Button type="button" onClick={handleClose}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+
 export const NotificationTrackingPage = () => {
   const api = useMemo(() => createNotificationApi(), []);
   const [rows, setRows] = useState<readonly NotificationResource[]>([]);
@@ -283,7 +410,7 @@ export const NotificationTrackingPage = () => {
           <Table
             size="small"
             aria-label="Notification tracking"
-            sx={{ minWidth: 900 }}
+            sx={{ minWidth: 980 }}
           >
             <TableHead>
               <TableRow>
@@ -297,6 +424,9 @@ export const NotificationTrackingPage = () => {
                 </TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>Created At</TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>Updated At</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }} align="center">
+                  Logs
+                </TableCell>
                 <TableCell
                   sx={{ whiteSpace: 'nowrap', minWidth: 180 }}
                   align="center"
@@ -345,6 +475,12 @@ export const NotificationTrackingPage = () => {
                   </TableCell>
                   <TableCell sx={{ whiteSpace: 'nowrap' }}>
                     {formatDateTime(n.updated_at)}
+                  </TableCell>
+                  <TableCell align="center" sx={{ verticalAlign: 'middle' }}>
+                    <PipelineLogsLink
+                      notificationId={n.notification_id}
+                      api={api}
+                    />
                   </TableCell>
                   <TableCell
                     sx={{ minWidth: 180, verticalAlign: 'middle' }}

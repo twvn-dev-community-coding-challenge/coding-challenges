@@ -118,7 +118,7 @@ yarn start
 bash scripts/start-all.sh
 ```
 
-This starts charging → **otp-service** → provider → notification (`OTP_SERVICE_BASE_URL` defaults to `http://127.0.0.1:8007`) with health checks. Press Ctrl+C to stop all.
+This starts charging → **otp-service** → provider → **carrier-service** (port **8004**, required so NATS `sms.dispatch.requested` is consumed and `sms.dispatch.received` is published for **Queue → Send-to-carrier**) → notification (`OTP_SERVICE_BASE_URL` defaults to `http://127.0.0.1:8007`) with health checks. Press Ctrl+C to stop all.
 
 ### Start services individually
 
@@ -126,8 +126,11 @@ This starts charging → **otp-service** → provider → notification (`OTP_SER
 yarn nx run charging-service:serve      # port 8003 + gRPC 50052
 yarn nx run otp-service:serve           # port 8007 (set OTP_SERVICE_BASE_URL before notification if not default)
 yarn nx run provider-service:serve      # port 8002 + gRPC 50051
+yarn nx run carrier-service:serve       # port 8004 (NATS: dispatch requested → received/outcome)
 yarn nx run notification-service:serve  # port 8001 (main entry)
 ```
+
+Use the **same** **`NATS_URL`** for **provider**, **carrier**, and **notification** when running separate terminals (default `nats://127.0.0.1:4222`). If **`NATS_URL`** points at another host, export it **before** starting those three so publishes and subscriptions hit one broker.
 
 To stop all services:
 

@@ -15,6 +15,13 @@ async def subscribe_to_dispatch_outcomes(bus: MessageBus) -> None:
     """Register handler for ``sms.dispatch.outcome`` (fire-and-forget subscription)."""
 
     async def _on_raw(payload: bytes) -> None:
+        logger.info(
+            "provider_consume_begin",
+            extra={
+                "topic": SMS_DISPATCH_OUTCOME,
+                "payload_bytes": len(payload),
+            },
+        )
         try:
             data = json.loads(payload.decode("utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError):

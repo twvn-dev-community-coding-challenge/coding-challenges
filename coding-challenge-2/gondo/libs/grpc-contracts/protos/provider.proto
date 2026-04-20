@@ -44,8 +44,25 @@ message SelectProviderResponse {
   string routing_rule_id = 5;
   int32 routing_rule_version = 6;
   google.protobuf.Timestamp selected_at = 7;
-  // True when policy_context.message_id was set and sms.dispatch.requested was published to the message bus.
+  // Deprecated: always false. Publish sms.dispatch.requested via PublishSmsDispatchRequested after charging.
   bool sms_dispatch_requested_published = 8;
+}
+
+// After SelectProvider and charging, notification-service calls this to publish sms.dispatch.requested.
+message PublishSmsDispatchRequestedRequest {
+  string message_id = 1;
+  string country_code = 2;
+  string carrier = 3;
+  string selected_provider_id = 4;
+  string selected_provider_code = 5;
+  int32 routing_rule_version = 6;
+  double estimated_cost = 7;
+  string currency = 8;
+  string charging_estimate_id = 9;
+}
+
+message PublishSmsDispatchRequestedResponse {
+  bool published = 1;
 }
 
 // One carrier reachable by a provider in a given country (registry / allowlist).
@@ -89,5 +106,6 @@ message GetProviderRegistryResponse {
 service ProviderService {
   rpc ResolveRouting(ResolveRoutingRequest) returns (ResolveRoutingResponse);
   rpc SelectProvider(SelectProviderRequest) returns (SelectProviderResponse);
+  rpc PublishSmsDispatchRequested(PublishSmsDispatchRequestedRequest) returns (PublishSmsDispatchRequestedResponse);
   rpc GetProviderRegistry(GetProviderRegistryRequest) returns (GetProviderRegistryResponse);
 }

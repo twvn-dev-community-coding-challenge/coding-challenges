@@ -16,6 +16,10 @@ class SmsDispatchRequested:
     provider_id: str
     provider_code: str
     api_endpoint: str
+    estimated_cost: float | None = None
+    currency: str | None = None
+    charging_estimate_id: str | None = None
+    routing_rule_version: int | None = None
 
 
 @dataclass(frozen=True)

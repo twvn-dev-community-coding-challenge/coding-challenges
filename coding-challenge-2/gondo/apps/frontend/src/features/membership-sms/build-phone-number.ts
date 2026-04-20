@@ -28,22 +28,38 @@ export const getE164PlaceholderForCountry = (isoCountryCode: string): string =>
   E164_PLACEHOLDER_BY_ISO_COUNTRY[isoCountryCode] ?? '+84901234567';
 
 /**
- * Builds E.164-style `phone_number` for the notification API: must start with a prefix
- * the backend maps to a carrier (+84, +1, …). If the user already entered `+…`, it is preserved.
+ * Builds E.164-style `phone_number` for the notification API: must contain real digits so
+ * the backend can resolve carrier prefixes. Masked strings (e.g. ``+84*****9999``) return
+ * ``''``. International input may use spaces; ``+`` forms are normalized to ``+<digits>``.
  */
 export const buildSmsPhoneNumber = (isoCountryCode: string, rawPhone: string): string => {
   const trimmed = rawPhone.trim();
-  if (trimmed.startsWith('+')) {
-    return trimmed;
+  if (!trimmed) {
+    return '';
   }
+  /** Redacted display placeholders — carrier lookup needs full MSISDN digits. */
+  if (/[*•·…]/u.test(trimmed)) {
+    return '';
+  }
+
   const prefix = DIALING_PREFIX_BY_ISO_COUNTRY[isoCountryCode];
   if (prefix === undefined) {
     return trimmed;
   }
+
   let digits = trimmed.replace(/\D/g, '');
   if (digits.length === 0) {
-    return trimmed;
+    return '';
   }
+
+  if (trimmed.startsWith('+')) {
+    // Already normalized E.164 (+ then digits only)
+    if (/^\+[0-9]+$/u.test(trimmed)) {
+      return trimmed;
+    }
+    return `+${digits}`;
+  }
+
   if (digits.startsWith('0')) {
     digits = digits.slice(1);
   }

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from models import Notification, TransitionEvent
+from pipeline_runtime import clear as clear_pipeline_events
 
 notifications: dict[str, Notification] = {}
 notifications_by_message_id: dict[str, str] = {}
@@ -14,6 +15,7 @@ def clear() -> None:
     notifications.clear()
     notifications_by_message_id.clear()
     transition_events.clear()
+    clear_pipeline_events()
 
 
 def create_notification(notification: Notification) -> None:

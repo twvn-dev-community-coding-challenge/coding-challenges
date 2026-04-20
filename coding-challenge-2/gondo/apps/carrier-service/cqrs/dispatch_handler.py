@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 import httpx
 
@@ -28,13 +30,39 @@ class _DispatchPayload:
 
 
 async def handle_dispatch_requested(raw: bytes) -> None:
+    logger.info(
+        "carrier_consume_begin",
+        extra={
+            "topic": "sms.dispatch.requested",
+            "payload_bytes": len(raw),
+        },
+    )
+    try:
+        await _handle_dispatch_requested_inner(raw)
+    except Exception:
+        logger.exception(
+            "carrier_dispatch_handler_failed",
+            extra={"payload_preview": payload_preview(raw)},
+        )
+
+
+async def _handle_dispatch_requested_inner(raw: bytes) -> None:
     try:
         data = json.loads(raw.decode("utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError):
         logger.warning("dispatch_malformed", extra={"raw": payload_preview(raw)})
         return
+    logger.info(
+        "carrier_dispatch_requested_parsed",
+        extra={
+            "message_id": data.get("message_id"),
+            "correlation_id": data.get("correlation_id"),
+            "provider_id": data.get("provider_id"),
+        },
+    )
     bus = get_message_bus()
     if bus is None:
+        logger.warning("carrier_dispatch_requested_no_bus")
         return
     payload = _DispatchPayload(
         message_id=str(data.get("message_id", "")),
@@ -47,6 +75,14 @@ async def handle_dispatch_requested(raw: bytes) -> None:
     )
     await acquire_send_slot()
     try:
+        logger.info(
+            "bus_publish_begin",
+            extra={
+                "topic": SMS_DISPATCH_RECEIVED,
+                "message_id": payload.message_id,
+                "correlation_id": payload.correlation_id,
+            },
+        )
         await publish_json(
             bus,
             SMS_DISPATCH_RECEIVED,
@@ -76,6 +112,14 @@ async def handle_dispatch_requested(raw: bytes) -> None:
             "detail": detail,
             "provider_id": payload.provider_id,
         }
+        logger.info(
+            "bus_publish_begin",
+            extra={
+                "topic": SMS_DISPATCH_OUTCOME,
+                "message_id": payload.message_id,
+                "status": status,
+            },
+        )
         await publish_json(bus, SMS_DISPATCH_OUTCOME, outcome)
         logger.info(
             "sms_dispatch_outcome_published",
@@ -92,8 +136,24 @@ def payload_preview(raw: bytes, n: int = 200) -> str:
         return repr(raw[:n])
 
 
+def _http_probe_skipped(api_endpoint: str) -> bool:
+    """Treat placeholder registry URLs as OK offline; optional env forces success for local dev."""
+    flag = os.environ.get("CARRIER_HTTP_PROBE_ALWAYS_OK", "").strip().lower()
+    if flag in ("1", "true", "yes"):
+        return True
+    if not api_endpoint.startswith("http"):
+        return False
+    try:
+        host = (urlparse(api_endpoint).hostname or "").lower()
+    except Exception:
+        return False
+    return host.endswith(".example.invalid") or host == "sms.example.invalid"
+
+
 async def _try_http_probe(api_endpoint: str) -> tuple[bool, str]:
     """Skeleton: GET to registry base URL — replace with real SMS API client."""
+    if _http_probe_skipped(api_endpoint):
+        return True, "probe_skipped_local_dev"
     if not api_endpoint or not api_endpoint.startswith("http"):
         return False, "invalid_api_endpoint"
     try:

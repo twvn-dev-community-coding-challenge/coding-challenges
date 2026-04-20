@@ -39,6 +39,10 @@ async def publish_sms_dispatch_requested(
     carrier: str,
     selected_provider_id: str,
     selected_provider_code: str,
+    estimated_cost: float | None = None,
+    currency: str | None = None,
+    charging_estimate_id: str | None = None,
+    routing_rule_version: int | None = None,
 ) -> bool:
     """Publish integration event; return True on success, False if bus is not connected."""
     bus = get_message_bus()
@@ -55,6 +59,19 @@ async def publish_sms_dispatch_requested(
         provider_id=selected_provider_id,
         provider_code=selected_provider_code,
         api_endpoint=endpoint or "https://sms.example.invalid",
+        estimated_cost=estimated_cost,
+        currency=currency,
+        charging_estimate_id=charging_estimate_id,
+        routing_rule_version=routing_rule_version,
+    )
+    logger.info(
+        "bus_publish_begin",
+        extra={
+            "topic": SMS_DISPATCH_REQUESTED,
+            "message_id": message_id,
+            "correlation_id": correlation_id,
+            "provider_id": selected_provider_id,
+        },
     )
     await publish_json(bus, SMS_DISPATCH_REQUESTED, event)
     logger.info(

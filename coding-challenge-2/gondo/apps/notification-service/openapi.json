@@ -119,6 +119,44 @@
         }
       }
     },
+    "/notifications/{notification_id}/pipeline-events": {
+      "get": {
+        "summary": "Get Pipeline Events Endpoint",
+        "description": "Runtime-aggregated SMS pipeline steps for the notification tracking UI.",
+        "operationId": "get_pipeline_events_endpoint_notifications__notification_id__pipeline_events_get",
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/notifications/{notification_id}/dispatch": {
       "post": {
         "summary": "Dispatch Notification",
