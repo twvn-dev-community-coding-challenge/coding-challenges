@@ -45,6 +45,7 @@ from store import (
 )
 from models import Notification, is_valid_transition
 from phone_validation import normalize_phone_number, validate_phone_number
+from cqrs.mock_scenario_loader import _load_raw_scenarios
 
 logger = logging.getLogger(__name__)
 
@@ -548,6 +549,12 @@ async def retry_notification(
     )
 
     return success_response(notification_to_dict(n))
+
+
+@app.get("/mock-scenarios")
+async def get_mock_scenarios() -> dict[str, object]:
+    scenarios = _load_raw_scenarios()
+    return success_response({"scenarios": scenarios})
 
 
 @app.post("/provider-callbacks")

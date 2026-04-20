@@ -2,6 +2,7 @@ import type {
   CreateNotificationRequest,
   DispatchRequest,
   ListNotificationsData,
+  MockScenariosData,
   NotificationResource,
   PipelineEventsData,
   Result,
@@ -328,9 +329,47 @@ export const createNotificationApi = () => {
     }
   };
 
+  const getMockScenarios = async (): Promise<Result<MockScenariosData>> => {
+    try {
+      const response = await fetch(`${BASE_URL}/mock-scenarios`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      const payload = (await readJson(response)) as {
+        readonly data?: MockScenariosData;
+        readonly error?: { readonly code: string; readonly message: string };
+      };
+      if (!response.ok) {
+        if (!payload.error) {
+          return {
+            ok: false,
+            error: { code: 'HTTP_ERROR', message: 'Request failed' },
+          };
+        }
+        return { ok: false, error: payload.error };
+      }
+      if (payload.data === undefined) {
+        return {
+          ok: false,
+          error: { code: 'INVALID_RESPONSE', message: 'Missing data' },
+        };
+      }
+      return { ok: true, value: payload.data };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        ok: false,
+        error: { code: 'NETWORK_ERROR', message },
+      };
+    }
+  };
+
   return {
     createNotification,
     dispatchNotification,
+    getMockScenarios,
     getNotification,
     getPipelineEvents,
     getSmsKpis,

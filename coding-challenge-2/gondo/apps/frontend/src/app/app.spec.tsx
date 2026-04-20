@@ -11,6 +11,10 @@ vi.mock('@gondo/ts-core', () => ({
   createNotificationApi: () => ({
     createNotification: vi.fn(),
     dispatchNotification: vi.fn(),
+    getMockScenarios: vi.fn().mockResolvedValue({
+      ok: true,
+      value: { scenarios: [] },
+    }),
     getNotification: vi.fn(),
     getSmsKpis: vi.fn().mockResolvedValue({
       ok: true,
@@ -56,7 +60,7 @@ describe('App', () => {
     );
 
     expect(screen.getByRole('navigation', { name: /main/i })).toBeTruthy();
-    expect(screen.getByText('Gondo SMS Platform')).toBeTruthy();
+    expect(screen.getByText('Gondo Platform')).toBeTruthy();
   });
 
   it('renders the Membership Registration page heading at /membership route', () => {
@@ -82,5 +86,17 @@ describe('App', () => {
       await screen.findByRole('heading', { name: /notification tracking/i }),
     ).toBeTruthy();
     await waitFor(() => expect(mockListNotifications).toHaveBeenCalled());
+  });
+
+  it('renders the Mocked Scenarios page heading at /mock-scenarios route', async () => {
+    renderWithTheme(
+      <MemoryRouter initialEntries={['/mock-scenarios']}>
+        <AppRoutes />
+      </MemoryRouter>,
+    );
+
+    expect(
+      await screen.findByRole('heading', { name: /mocked scenarios/i }),
+    ).toBeTruthy();
   });
 });

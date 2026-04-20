@@ -8,6 +8,7 @@ import {
 
 import { CountdownProvider } from '../context';
 import { MembershipRegistrationPage } from '../pages/membership-registration';
+import { MockedScenariosPage } from '../pages/mocked-scenarios';
 import { NotificationTrackingPage } from '../pages/notification-tracking';
 import { SmsKpisPage } from '../pages/sms-kpis';
 import { theme } from '../theme';
@@ -17,6 +18,7 @@ const navLinks = [
   { to: '/membership', label: 'Membership Registration' },
   { to: '/tracking', label: 'Notification Tracking' },
   { to: '/kpis', label: 'SMS KPIs' },
+  { to: '/mock-scenarios', label: 'Mocked Scenarios' },
 ] as const;
 
 export const AppRoutes = () => (
@@ -53,6 +55,14 @@ export const AppRoutes = () => (
           element={
             <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 2, sm: 3 } }}>
               <SmsKpisPage />
+            </Box>
+          }
+        />
+        <Route
+          path="/mock-scenarios"
+          element={
+            <Box sx={{ maxWidth: 1400, mx: 'auto', px: { xs: 2, sm: 3 } }}>
+              <MockedScenariosPage />
             </Box>
           }
         />

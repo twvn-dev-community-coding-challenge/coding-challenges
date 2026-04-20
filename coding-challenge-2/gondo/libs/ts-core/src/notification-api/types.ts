@@ -129,3 +129,20 @@ export interface SmsKpisData {
   readonly by_country: readonly SmsKpisByCountry[];
   readonly by_calling_domain: readonly SmsKpisByCallingDomain[];
 }
+
+export interface MockScenario {
+  readonly phone_number: string;
+  readonly country_code: string;
+  readonly carrier: string;
+  readonly expected_provider: string;
+  readonly outcome: string;
+  readonly description: string;
+  readonly user_story: string;
+  readonly calling_domain?: string;
+  readonly estimated_cost?: number;
+  readonly actual_cost?: number | null;
+}
+
+export interface MockScenariosData {
+  readonly scenarios: readonly MockScenario[];
+}

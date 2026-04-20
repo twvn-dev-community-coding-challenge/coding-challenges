@@ -45,6 +45,6 @@ describe('NavBar', () => {
         <NavBar links={links} />
       </MemoryRouter>,
     );
-    expect(screen.getByText('Gondo SMS Platform')).toBeTruthy();
+    expect(screen.getByText('Gondo Platform')).toBeTruthy();
   });
 });
