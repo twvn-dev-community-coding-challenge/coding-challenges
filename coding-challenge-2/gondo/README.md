@@ -135,7 +135,7 @@ Use the **same** **`NATS_URL`** for **provider**, **carrier**, and **notificatio
 To stop all services:
 
 ```bash
-yarn stop
+yarn stop && yarn docker:down
 ```
 
 ### Frontend (port 4200)
@@ -424,17 +424,17 @@ Generated Python stubs are written to `libs/grpc-contracts/generated/`.
 - **Message bus (`py_core.bus`)** with NATS as the default transport: logical topics in `infra/message-bus/topics.yaml`, subject prefix `gondo.*`; carrier dispatch is asynchronous to avoid blocking gRPC and to centralize outbound rate control
 
 ## Challenges Faced
-
-[What was hard? How did you overcome it?]
+- Time of commitments
+- Tests & debugging
+- ...
 
 ## What We Learned
-
-[New skills, technologies, or insights]
+- Apply python & gRPC
+- Built E2E solutions
+- ...
 
 ## With More Time, We Would...
-
-[Nice-to-haves you didn't implement]
+- Review and improve all functionalities defined in [Backlog](coding-challenge-2/gondo/docs/backlog/README.md)
 
 ## AI Tools Used (if any)
-
-[Which tools? How did they help?]
+- Cursor
