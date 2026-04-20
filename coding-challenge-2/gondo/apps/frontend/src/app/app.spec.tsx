@@ -16,6 +16,7 @@ vi.mock('@gondo/ts-core', () => ({
       ok: true,
       value: {
         source: 'in_memory_notifications',
+        created_at_filter: { from: null, to: null },
         currency_note: '',
         overall: {
           volume: 0,
@@ -34,6 +35,7 @@ vi.mock('@gondo/ts-core', () => ({
         },
         by_provider: [],
         by_country: [],
+        by_calling_domain: [],
       },
     }),
     listNotifications: mockListNotifications,

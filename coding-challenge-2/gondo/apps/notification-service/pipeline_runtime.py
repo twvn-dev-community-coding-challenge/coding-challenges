@@ -21,6 +21,12 @@ def clear() -> None:
         _buffers.clear()
 
 
+def pipe(notification_id: str, phase: str, **detail: object) -> None:
+    """Record one pipeline step; omits keys whose value is ``None``."""
+    payload = {k: v for k, v in detail.items() if v is not None}
+    append_pipeline_event(notification_id, phase, payload)
+
+
 def append_pipeline_event(
     notification_id: str,
     phase: str,

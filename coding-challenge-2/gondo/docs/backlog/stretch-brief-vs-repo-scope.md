@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | **Priority** | Stretch |
-| **Status** | **Open** (documentation) |
+| **Status** | **Partial** — `SUBMISSION.md` § Trade-offs & limitations already contrasts sim stack vs production; add one explicit sentence tying to **official brief** (“CLI/in-memory”) if reviewers want literal mapping |
 | **Challenge** | [Technical expectations & out-of-scope](../../../coding-challenge-2.md) |
 
 ## Problem
@@ -18,8 +18,8 @@ One short, honest narrative avoids confusion without refactoring the solution.
 
 ## Acceptance criteria
 
-- [ ] Add a subsection to **`SUBMISSION.md`** or **`README.md`** (“Challenge scope vs our build”) stating: REST/UI/DB are **deliberate** for platform-SMS storytelling; core **domain** behaviors still match routing, lifecycle, cost, callbacks.
-- [ ] Link [system-vs-program-requirements.md](../system-vs-program-requirements.md) **Minimal deployment** / anti–over-engineering section.
+- [x] Narrative exists: **`SUBMISSION.md`** § Trade-offs and limitations + design decisions cover REST/Postgres/NATS/UI vs simulation; optionally rename subsection to **“Challenge brief vs this repository”** for judges who skim only headings.
+- [x] Link [system-vs-program-requirements.md](../system-vs-program-requirements.md) judge quickstart + backlog [challenge-vs-repo-gap-scan.md](challenge-vs-repo-gap-scan.md).
 
 ## References
 

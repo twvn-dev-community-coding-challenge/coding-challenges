@@ -3,7 +3,7 @@
 This doc does three things:
 
 1. Align **TWVN program** expectations (submission + scoring mindset) with the **`gondo`** codebase.  
-2. Map the **challenge brief** ([`coding-challenge-2.md`](../coding-challenge-2.md)) epics and user stories to what is implemented vs missing.  
+2. Map the **challenge brief** ([`coding-challenge-2.md`](../../coding-challenge-2.md)) epics and user stories to what is implemented vs missing.  
 3. Provide a **prioritized improvement backlog** and **reviewer quickstart** so you can close gaps deliberately (not randomly).
 
 **Related:** [Program overview (process only)](coding-challenge-program-context.md).
@@ -16,12 +16,12 @@ This doc does three things:
 
 | Area | Strong fit | Main gap |
 |------|------------|----------|
-| **Program / PR hygiene** | Branch + folder layout; architecture README | Template sections + explicit trade-offs + AI disclosure in one place (`SUBMISSION.md` or README sections) |
-| **Challenge — routing & lifecycle** | Provider routing DB + YAML; NATS dispatch; notification states; **`cost_story`**; **`GET /notifications/kpis`** + KPI UI | Stretch: durable store / time-series reporting |
-| **Challenge — multi-domain SMS** | Single HTTP API entry (`notification-service`) reusable in principle | Document **domain-agnostic contract**; optional shared “client SDK” or OpenAPI narrative |
+| **Program / PR hygiene** | Branch + folder layout; architecture README + `SUBMISSION.md` | Fill **AI tools** in `SUBMISSION.md` if applicable |
+| **Challenge — routing & lifecycle** | Provider routing DB + YAML; NATS dispatch; notification states; **`cost_story`**; **`GET /notifications/kpis`** (`from`/`to`) + KPI UI | Stretch: durable store (**ST-01**) |
+| **Challenge — multi-domain SMS** | Single HTTP API entry (`notification-service`) reusable in principle | OpenAPI + `ts-core`; optional **`X-Calling-Domain`** on create → KPI **`by_calling_domain`** |
 | **Challenge — PH + VN rule updates** | Seed/migration data can encode rules | Verify seeds match **User Story 3** tables; document how ops would update rules |
-| **Tests (15 pts)** | Pytest across services | Add resilience tests + `run-many -t test` prerequisites doc |
-| **Docs (15 pts)** | Deep technical README | **Judge quickstart** + **limitations** paragraph + **demo script** |
+| **Tests (15 pts)** | Pytest across services; resilience paths covered in service tests | Keep CI green; extend edge cases if gaps appear |
+| **Docs (15 pts)** | Deep technical README; judge quickstart + limitations | **Demo script** still stretch (**ST-02**); see [challenge-vs-repo-gap-scan.md](backlog/challenge-vs-repo-gap-scan.md) |
 
 ---
 
@@ -57,7 +57,7 @@ The brief assumes OTP generation **out of scope** but requires **SMS capability*
 | SMS with messageId, country, phone, message | `POST /notifications` + dispatch | ✅ Core path exists |
 | Carrier from phone (simulation OK) | `derive_carrier` + prefixes | ✅ Document derivation rules vs brief examples |
 | Exactly one provider | `SelectProvider` + routing rules | ✅ Keep seeds aligned with brief |
-| Lifecycle through Send-success | States + NATS + callbacks | ⚠️ Ensure **cost estimate** appears when entering Send-to-provider; **actual cost** when reaching Send-success (see §4) |
+| Lifecycle through Send-success | States + NATS + callbacks | ✅ **`cost_story`** + charging gRPC — estimate at dispatch/retry (**Send-to-provider**); actual from callback (**Send-success** / failed) — see §4 |
 | OTP in SMS | UI generates OTP client-side today | ⚠️ Brief says OTP gen out of scope *for them* — your **delivery** story is still stronger if optional **server-side OTP** service documents verification separately |
 
 ### User Story 2 — Cross-domain SMS
@@ -65,20 +65,20 @@ The brief assumes OTP generation **out of scope** but requires **SMS capability*
 | Requirement | System behavior | Gap / improvement |
 |-------------|-------------------|-------------------|
 | Any domain triggers send | HTTP API on notification-service | ✅ |
-| Consistent routing/lifecycle/cost | Shared backend | ⚠️ Document **one contract** (OpenAPI) as the “platform API”; mention **caller identity / domain header** if you add it |
+| Consistent routing/lifecycle/cost | Shared backend | ✅ OpenAPI narrative ([`platform-sms-openapi.md`](platform-sms-openapi.md)); optional **`X-Calling-Domain`** header on create (see same doc) |
 
 ### User Story 3 — PH market + VN rule updates
 
 | Requirement | System behavior | Gap / improvement |
 |-------------|-------------------|-------------------|
-| PH + updated VN routing | PostgreSQL `routing_rules` + seeds | ✅ Reconcile **every** row with [`coding-challenge-2.md`](../coding-challenge-2.md) § User Story 3 |
+| PH + updated VN routing | PostgreSQL `routing_rules` + seeds | ✅ Reconcile **every** row with [`coding-challenge-2.md`](../../coding-challenge-2.md) § User Story 3 |
 | Operational change over time | Alembic + `as_of` on routing | ✅ Explain in README how ops rolls out new rules |
 
 ### User Story 4 — Lifecycle management
 
 | Requirement | System behavior | Gap / improvement |
 |-------------|-------------------|-------------------|
-| Listed states & retries | `models.py` + callbacks | ✅ Add tests for **illegal transitions** + **retry** |
+| Listed states & retries | `models.py` + callbacks + tests (carrier-rejected sim path, retries) | ✅ Core coverage; extend if new edge cases found |
 
 ---
 
@@ -163,21 +163,15 @@ Pipeline rows: **`state.Send-to-provider`** includes an estimate snapshot; **`ch
 
 ---
 
-## Prioritized backlog (suggested order)
+## Prioritized backlog
 
-**Detailed backlog cards (one Markdown file per item):** [`docs/backlog/README.md`](backlog/README.md).
+Shipped baseline (routing, lifecycle, costs, KPIs, OpenAPI, OTP service, tests) is summarized in §2–§4 above and [`docs/backlog/challenge-vs-repo-gap-scan.md`](backlog/challenge-vs-repo-gap-scan.md).
+
+**Active backlog cards:** [`docs/backlog/README.md`](backlog/README.md).
 
 | Priority | Item | Helps |
 |----------|------|-------|
-| **P0** | `SUBMISSION.md` + README reviewer/limitations/cost/minimal-deployment sections | Docs/scoring *(started — see repo `SUBMISSION.md` & main `README.md`)* |
-| **P0** | Judge quickstart + “limitations” (simulation, in-memory store) | Docs/scoring *(see README § For reviewers)* |
-| **P1** | Cost estimate/actual wired or explicitly documented gap | Challenge § cost *(**dispatch/retry** call `EstimateCost`; **Send-success** / **Send-failed** callback → `RecordActualCost` — see root README)* |
-| **P1** | Resilience tests (503, invalid transition) | Tests +5 *(503 existed; double-dispatch → 409 added)* |
-| **P1** | Verify routing seeds = User Story 3 | Core correctness *(see `docs/routing-vs-challenge-brief.md`)* |
-| **P1** | User Story 5 KPI aggregates | **`GET /notifications/kpis`** + `/kpis` UI — [`docs/backlog/p1-us5-cost-aggregates-kpis.md`](backlog/p1-us5-cost-aggregates-kpis.md) |
-| **P1** | User Story 4 **Carrier-rejected** path | **Done** — [`docs/backlog/p1-us4-carrier-rejected-path.md`](backlog/p1-us4-carrier-rejected-path.md) |
-| **P2** | Server-side OTP + TTL | **Implemented** — `apps/otp-service/` (hashed codes, `expires_at`, `OTP_TTL_SECONDS`, verify endpoint). Notification integrates via `issue_server_otp`; **disable** `OTP_EXPOSE_PLAINTEXT_TO_CLIENT` in production so browsers do not receive plaintext OTP in API responses. |
-| **P2** | OpenAPI export for “platform SMS API” | **Implemented** — generate (`yarn nx run notification-service:generate-openapi`), verify (`yarn verify-openapi`), catalog [`docs/openapi/README.md`](openapi/README.md), TS types (`yarn nx run ts-core:generate-openapi-types`). Narrative: [`platform-sms-openapi.md`](platform-sms-openapi.md). Details: [`docs/backlog/p2-openapi-platform-follow-ups.md`](backlog/p2-openapi-platform-follow-ups.md). |
+| **P0** *(minor)* | Complete **`AI tools used`** in `SUBMISSION.md` when applicable | Program disclosure |
 
 ### Stretch backlog *(optional — not implemented)*
 
@@ -186,7 +180,7 @@ Pipeline rows: **`state.Send-to-provider`** includes an estimate snapshot; **`ch
 | **Stretch** | Durable notification store | [`docs/backlog/stretch-notification-persistence.md`](backlog/stretch-notification-persistence.md) |
 | **Stretch** | Demo script (happy path + failure path) | [`docs/backlog/stretch-demo-script.md`](backlog/stretch-demo-script.md) |
 | **Stretch** | Program bonuses (TDD, peer review, …) | [`docs/backlog/stretch-program-bonuses.md`](backlog/stretch-program-bonuses.md) |
-| **Stretch** | Brief vs repo (CLI/in-memory vs REST/Postgres) — reviewer note | [`docs/backlog/stretch-brief-vs-repo-scope.md`](backlog/stretch-brief-vs-repo-scope.md) |
+| **Stretch** | Brief vs repo (CLI/in-memory vs REST/Postgres) — reviewer note | [`docs/backlog/stretch-brief-vs-repo-scope.md`](backlog/stretch-brief-vs-repo-scope.md) *(**Partial** — `SUBMISSION.md` trade-offs; optional heading tweak)* |
 
 ---
 

@@ -61,7 +61,7 @@ def test_callback_valid_transition_accepted() -> None:
     rec.idempotent_replay = False
 
     with patch(
-        "main.record_actual_cost_grpc",
+        "cqrs.charging_callbacks.record_actual_cost_grpc",
         new_callable=AsyncMock,
         return_value=rec,
     ):

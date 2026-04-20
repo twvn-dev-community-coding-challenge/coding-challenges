@@ -11,8 +11,10 @@ export type {
   RetryRequest,
   SmsChannelPayload,
   SmsKpisBucketRow,
+  SmsKpisByCallingDomain,
   SmsKpisByCountry,
   SmsKpisByProvider,
+  SmsKpisCreatedAtFilter,
   SmsKpisData,
   SmsKpisOverall,
 } from './types';

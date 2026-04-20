@@ -16,14 +16,22 @@ const readJson = async (response: Response): Promise<unknown> => response.json()
 export const createNotificationApi = () => {
   const createNotification = async (
     request: CreateNotificationRequest,
+    options?: {
+      readonly xCallingDomain?: string;
+    },
   ): Promise<Result<NotificationResource>> => {
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      };
+      const domain = options?.xCallingDomain?.trim();
+      if (domain) {
+        headers['X-Calling-Domain'] = domain;
+      }
       const response = await fetch(`${BASE_URL}/notifications`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+        headers,
         body: JSON.stringify(request),
       });
       const body = (await readJson(response)) as {
@@ -142,14 +150,28 @@ export const createNotificationApi = () => {
     }
   };
 
-  const getSmsKpis = async (): Promise<Result<SmsKpisData>> => {
+  const getSmsKpis = async (query?: {
+    readonly from?: string;
+    readonly to?: string;
+  }): Promise<Result<SmsKpisData>> => {
     try {
-      const response = await fetch(`${BASE_URL}/notifications/kpis`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
+      const params = new URLSearchParams();
+      if (query?.from !== undefined) {
+        params.set('from', query.from);
+      }
+      if (query?.to !== undefined) {
+        params.set('to', query.to);
+      }
+      const qs = params.toString();
+      const response = await fetch(
+        `${BASE_URL}/notifications/kpis${qs ? `?${qs}` : ''}`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
         },
-      });
+      );
       const payload = (await readJson(response)) as {
         readonly data?: SmsKpisData;
         readonly error?: { readonly code: string; readonly message: string };

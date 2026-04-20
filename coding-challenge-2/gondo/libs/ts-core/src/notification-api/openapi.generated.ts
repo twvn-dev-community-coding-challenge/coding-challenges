@@ -280,7 +280,9 @@ export interface operations {
     create_notification_endpoint_notifications_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                "X-Calling-Domain"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -312,7 +314,12 @@ export interface operations {
     };
     get_sms_kpis_endpoint_notifications_kpis_get: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description ISO 8601 inclusive lower bound on notification created_at (UTC; naive datetimes are interpreted as UTC). */
+                from?: string | null;
+                /** @description ISO 8601 inclusive upper bound on notification created_at (UTC). */
+                to?: string | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -328,6 +335,15 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

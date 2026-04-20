@@ -66,11 +66,9 @@ def should_autocomplete_delivery_success(
 
 async def apply_mock_send_success_if_eligible(message_id: str) -> None:
     """If notification is Send-to-carrier with a mock MSISDN, transition to Send-success."""
-    from main import (  # noqa: PLC0415  (avoid import cycle at startup)
-        ProviderCallbackRequest,
-        _record_transition,
-        record_actual_cost_after_callback,
-    )
+    from cqrs.charging_callbacks import record_actual_cost_after_callback
+    from cqrs.transitions import record_transition
+    from schemas import ProviderCallbackRequest
     from models import is_valid_transition
     from pipeline_runtime import append_pipeline_event
     from store import find_by_message_id, update_notification
@@ -96,7 +94,7 @@ async def apply_mock_send_success_if_eligible(message_id: str) -> None:
     n.state = "Send-success"
     n.updated_at = datetime.now(timezone.utc)
     update_notification(n)
-    _record_transition(
+    record_transition(
         n.notification_id,
         from_st,
         "Send-success",

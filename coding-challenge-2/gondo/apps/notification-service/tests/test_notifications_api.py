@@ -26,6 +26,43 @@ def test_create_notification_rejects_duplicate_message_id() -> None:
     assert dup.json()["error"]["code"] == "VALIDATION_ERROR"
 
 
+def test_create_notification_accepts_x_calling_domain_header() -> None:
+    client = _client()
+    body = {
+        "message_id": "msg-caller-1",
+        "channel_type": "SMS",
+        "recipient": "a",
+        "content": "hi",
+        "channel_payload": {"country_code": "US", "phone_number": "+15551234567"},
+    }
+    response = client.post(
+        "/notifications",
+        json=body,
+        headers={"X-Calling-Domain": "membership"},
+    )
+    assert response.status_code == 201
+    cp = response.json()["data"]["channel_payload"]
+    assert cp["calling_domain"] == "membership"
+
+
+def test_create_notification_rejects_oversized_x_calling_domain() -> None:
+    client = _client()
+    body = {
+        "message_id": "msg-caller-2",
+        "channel_type": "SMS",
+        "recipient": "a",
+        "content": "hi",
+        "channel_payload": {"country_code": "US", "phone_number": "+15551234567"},
+    }
+    response = client.post(
+        "/notifications",
+        json=body,
+        headers={"X-Calling-Domain": "x" * 200},
+    )
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "VALIDATION_ERROR"
+
+
 def test_create_notification_success() -> None:
     client = _client()
     body = {

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from main import cost_story_payload, notification_to_dict
+from serialization import cost_story_payload, notification_to_dict
 from models import Notification
 
 

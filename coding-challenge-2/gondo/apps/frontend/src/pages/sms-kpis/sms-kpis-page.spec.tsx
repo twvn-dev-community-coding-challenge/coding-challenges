@@ -14,6 +14,7 @@ vi.mock('@gondo/ts-core', () => ({
 
 const sampleKpis = {
   source: 'in_memory_notifications',
+  created_at_filter: { from: null, to: null },
   currency_note: 'note',
   overall: {
     volume: 2,
@@ -30,6 +31,7 @@ const sampleKpis = {
     terminal_success_rate: 1,
     terminal_failure_rate: 0,
   },
+  by_calling_domain: [],
   by_provider: [
     {
       provider_id: 'prv_01',

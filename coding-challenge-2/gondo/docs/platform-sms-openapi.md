@@ -46,6 +46,7 @@ Output: `libs/ts-core/src/notification-api/openapi.generated.ts` (regenerate aft
 1. Import `docs/openapi/notification-service.openapi.json` into an API client, mock server, or API catalog.
 2. Point the client at the deployed **notification-service** base URL (e.g. `http://localhost:8001` locally, or the mesh URL in Docker: `http://notification-service:8001` from sibling containers).
 3. For flows that issue a **server-side OTP**, ensure **otp-service** is reachable from notification-service (`OTP_SERVICE_BASE_URL`) and use `issue_server_otp` on create where applicable — see root README and `apps/otp-service/`.
+4. Optional **`X-Calling-Domain`** header on **`POST /notifications`** labels the logical caller (e.g. `membership`, `booking`). The value is stored as `channel_payload.calling_domain` on the resource and summarized under **`by_calling_domain`** on **`GET /notifications/kpis`** (notifications without the header count as **`unattributed`**).
 
 ## Scope note
 

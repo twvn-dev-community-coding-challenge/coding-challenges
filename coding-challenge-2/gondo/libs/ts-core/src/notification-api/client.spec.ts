@@ -64,6 +64,28 @@ describe('notification API client', () => {
       expect(JSON.parse(String(init?.body))).toEqual(minimalCreateRequest);
     });
 
+    it('sends X-Calling-Domain header when provided', async () => {
+      const mockFetch = vi.mocked(globalThis.fetch);
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 201,
+        statusText: 'Created',
+        json: () => ({ data: sampleNotification }),
+      } as Response);
+
+      const api = createNotificationApi();
+      await api.createNotification(minimalCreateRequest, {
+        xCallingDomain: 'booking',
+      });
+
+      const [, init] = mockFetch.mock.calls[0] as [string, RequestInit];
+      expect(init?.headers).toMatchObject({
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Calling-Domain': 'booking',
+      });
+    });
+
     it('includes channel_type in JSON body when provided', async () => {
       const mockFetch = vi.mocked(globalThis.fetch);
       mockFetch.mockResolvedValue({
@@ -251,6 +273,7 @@ describe('notification API client', () => {
   describe('getSmsKpis', () => {
     const kpisPayload: SmsKpisData = {
       source: 'in_memory_notifications',
+      created_at_filter: { from: null, to: null },
       currency_note: 'note',
       overall: {
         volume: 1,
@@ -269,6 +292,7 @@ describe('notification API client', () => {
       },
       by_provider: [],
       by_country: [],
+      by_calling_domain: [],
     };
 
     it('successful 200', async () => {
@@ -286,6 +310,27 @@ describe('notification API client', () => {
       expect(result).toEqual({ ok: true, value: kpisPayload });
       expect(mockFetch).toHaveBeenCalledWith(
         'http://localhost:8001/notifications/kpis',
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('passes optional from/to query params', async () => {
+      const mockFetch = vi.mocked(globalThis.fetch);
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        json: () => ({ data: kpisPayload }),
+      } as Response);
+
+      const api = createNotificationApi();
+      await api.getSmsKpis({
+        from: '2025-01-01T00:00:00Z',
+        to: '2025-01-31T23:59:59Z',
+      });
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://localhost:8001/notifications/kpis?from=2025-01-01T00%3A00%3A00Z&to=2025-01-31T23%3A59%3A59Z',
         expect.objectContaining({ method: 'GET' }),
       );
     });

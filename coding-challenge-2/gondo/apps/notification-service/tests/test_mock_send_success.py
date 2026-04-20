@@ -87,7 +87,7 @@ def test_mock_applies_send_success_and_pipeline(
     rec.message_id = "msg-mock-ok"
 
     with patch(
-        "main.record_actual_cost_grpc",
+        "cqrs.charging_callbacks.record_actual_cost_grpc",
         new_callable=AsyncMock,
         return_value=rec,
     ):

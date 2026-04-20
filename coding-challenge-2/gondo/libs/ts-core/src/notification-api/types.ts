@@ -107,11 +107,23 @@ export interface SmsKpisByCountry extends SmsKpisBucketRow {
   readonly country_code: string;
 }
 
+export interface SmsKpisByCallingDomain extends SmsKpisBucketRow {
+  readonly calling_domain: string;
+}
+
+/** Echo of optional `from` / `to` query window on `GET /notifications/kpis`. */
+export interface SmsKpisCreatedAtFilter {
+  readonly from: string | null;
+  readonly to: string | null;
+}
+
 /** Response body `data` from `GET /notifications/kpis`. */
 export interface SmsKpisData {
   readonly source: string;
+  readonly created_at_filter: SmsKpisCreatedAtFilter;
   readonly currency_note: string;
   readonly overall: SmsKpisOverall;
   readonly by_provider: readonly SmsKpisByProvider[];
   readonly by_country: readonly SmsKpisByCountry[];
+  readonly by_calling_domain: readonly SmsKpisByCallingDomain[];
 }

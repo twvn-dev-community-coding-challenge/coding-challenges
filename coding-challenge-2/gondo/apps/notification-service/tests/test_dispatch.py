@@ -71,9 +71,9 @@ def test_dispatch_happy_path() -> None:
     mock_pub.published = True
 
     with (
-        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch("cqrs.dispatch_pipeline.select_provider", new_callable=AsyncMock, return_value=mock_resp),
         patch(
-            "main.publish_sms_dispatch_via_provider",
+            "cqrs.dispatch_pipeline.publish_sms_dispatch_via_provider",
             new_callable=AsyncMock,
             return_value=mock_pub,
         ),
@@ -81,7 +81,7 @@ def test_dispatch_happy_path() -> None:
             "repository.resolve_carrier", new_callable=AsyncMock, return_value="VIETTEL"
         ),
         patch(
-            "main.estimate_cost_grpc",
+            "cqrs.dispatch_pipeline.estimate_cost_grpc",
             new_callable=AsyncMock,
             return_value=_sample_estimate_response(),
         ),
@@ -129,9 +129,9 @@ def test_dispatch_returns_503_when_dispatch_event_not_published() -> None:
     mock_pub.published = False
 
     with (
-        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch("cqrs.dispatch_pipeline.select_provider", new_callable=AsyncMock, return_value=mock_resp),
         patch(
-            "main.publish_sms_dispatch_via_provider",
+            "cqrs.dispatch_pipeline.publish_sms_dispatch_via_provider",
             new_callable=AsyncMock,
             return_value=mock_pub,
         ),
@@ -141,7 +141,7 @@ def test_dispatch_returns_503_when_dispatch_event_not_published() -> None:
             return_value="VIETTEL",
         ),
         patch(
-            "main.estimate_cost_grpc",
+            "cqrs.dispatch_pipeline.estimate_cost_grpc",
             new_callable=AsyncMock,
             return_value=_sample_estimate_response(),
         ),
@@ -179,9 +179,9 @@ def test_dispatch_rejects_when_notification_not_in_new_state() -> None:
     mock_pub.published = True
 
     with (
-        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch("cqrs.dispatch_pipeline.select_provider", new_callable=AsyncMock, return_value=mock_resp),
         patch(
-            "main.publish_sms_dispatch_via_provider",
+            "cqrs.dispatch_pipeline.publish_sms_dispatch_via_provider",
             new_callable=AsyncMock,
             return_value=mock_pub,
         ),
@@ -191,7 +191,7 @@ def test_dispatch_rejects_when_notification_not_in_new_state() -> None:
             return_value="VIETTEL",
         ),
         patch(
-            "main.estimate_cost_grpc",
+            "cqrs.dispatch_pipeline.estimate_cost_grpc",
             new_callable=AsyncMock,
             return_value=_sample_estimate_response(),
         ),
@@ -239,13 +239,13 @@ def test_dispatch_returns_502_when_charging_rate_not_found() -> None:
     mock_resp.routing_rule_version = 2
 
     with (
-        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch("cqrs.dispatch_pipeline.select_provider", new_callable=AsyncMock, return_value=mock_resp),
         patch(
             "main.derive_carrier",
             new_callable=AsyncMock,
             return_value="VIETTEL",
         ),
-        patch("main.estimate_cost_grpc", _raise_grpc_not_found),
+        patch("cqrs.dispatch_pipeline.estimate_cost_grpc", _raise_grpc_not_found),
     ):
         response = client.post(
             f"/notifications/{nid}/dispatch",
@@ -276,13 +276,13 @@ def test_dispatch_returns_502_when_charging_service_unavailable() -> None:
     mock_resp.routing_rule_version = 2
 
     with (
-        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch("cqrs.dispatch_pipeline.select_provider", new_callable=AsyncMock, return_value=mock_resp),
         patch(
             "main.derive_carrier",
             new_callable=AsyncMock,
             return_value="VIETTEL",
         ),
-        patch("main.estimate_cost_grpc", _raise_grpc_unavailable),
+        patch("cqrs.dispatch_pipeline.estimate_cost_grpc", _raise_grpc_unavailable),
     ):
         response = client.post(
             f"/notifications/{nid}/dispatch",
@@ -353,7 +353,7 @@ def test_dispatch_returns_502_when_provider_grpc_unavailable() -> None:
 
     with (
         patch(
-            "main.select_provider",
+            "cqrs.dispatch_pipeline.select_provider",
             AsyncMock(
                 side_effect=grpc.aio.AioRpcError(
                     grpc.StatusCode.UNAVAILABLE,

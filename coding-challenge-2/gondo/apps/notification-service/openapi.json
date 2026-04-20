@@ -29,36 +29,36 @@
       }
     },
     "/notifications": {
-      "get": {
-        "summary": "List Notifications Endpoint",
-        "operationId": "list_notifications_endpoint_notifications_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "additionalProperties": true,
-                  "type": "object",
-                  "title": "Response List Notifications Endpoint Notifications Get"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "summary": "Create Notification Endpoint",
         "operationId": "create_notification_endpoint_notifications_post",
+        "parameters": [
+          {
+            "name": "X-Calling-Domain",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Calling-Domain"
+            }
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateNotificationRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "201": {
@@ -80,6 +80,24 @@
             }
           }
         }
+      },
+      "get": {
+        "summary": "List Notifications Endpoint",
+        "operationId": "list_notifications_endpoint_notifications_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response List Notifications Endpoint Notifications Get"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/notifications/kpis": {
@@ -87,15 +105,63 @@
         "summary": "Get Sms Kpis Endpoint",
         "description": "Aggregate SMS cost/volume/success KPIs (User Story 5); reads in-memory notification store.",
         "operationId": "get_sms_kpis_endpoint_notifications_kpis_get",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO 8601 inclusive lower bound on notification created_at (UTC; naive datetimes are interpreted as UTC).",
+              "title": "From"
+            },
+            "description": "ISO 8601 inclusive lower bound on notification created_at (UTC; naive datetimes are interpreted as UTC)."
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO 8601 inclusive upper bound on notification created_at (UTC).",
+              "title": "To"
+            },
+            "description": "ISO 8601 inclusive upper bound on notification created_at (UTC)."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "additionalProperties": true,
                   "type": "object",
+                  "additionalProperties": true,
                   "title": "Response Get Sms Kpis Endpoint Notifications Kpis Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }

@@ -53,9 +53,9 @@ def test_queue_to_carrier_rejected_then_retry_round_trip() -> None:
     mock_pub.published = True
 
     with (
-        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch("cqrs.dispatch_pipeline.select_provider", new_callable=AsyncMock, return_value=mock_resp),
         patch(
-            "main.publish_sms_dispatch_via_provider",
+            "cqrs.dispatch_pipeline.publish_sms_dispatch_via_provider",
             new_callable=AsyncMock,
             return_value=mock_pub,
         ),
@@ -65,7 +65,7 @@ def test_queue_to_carrier_rejected_then_retry_round_trip() -> None:
             return_value="MOBIFONE",
         ),
         patch(
-            "main.estimate_cost_grpc",
+            "cqrs.dispatch_pipeline.estimate_cost_grpc",
             new_callable=AsyncMock,
             return_value=_estimate(),
         ),
@@ -92,14 +92,14 @@ def test_queue_to_carrier_rejected_then_retry_round_trip() -> None:
     assert "state.Carrier-rejected" in phases
 
     with (
-        patch("main.select_provider", new_callable=AsyncMock, return_value=mock_resp),
+        patch("cqrs.dispatch_pipeline.select_provider", new_callable=AsyncMock, return_value=mock_resp),
         patch(
-            "main.publish_sms_dispatch_via_provider",
+            "cqrs.dispatch_pipeline.publish_sms_dispatch_via_provider",
             new_callable=AsyncMock,
             return_value=mock_pub,
         ),
         patch(
-            "main.estimate_cost_grpc",
+            "cqrs.dispatch_pipeline.estimate_cost_grpc",
             new_callable=AsyncMock,
             return_value=_estimate(),
         ),

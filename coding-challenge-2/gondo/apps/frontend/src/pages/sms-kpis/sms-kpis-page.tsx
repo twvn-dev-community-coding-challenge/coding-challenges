@@ -118,7 +118,14 @@ export const SmsKpisPage = () => {
         {data.source === 'in_memory_notifications'
           ? 'Data is aggregated from the running notification-service in-memory store (resets on process restart or tests). '
           : ''}
-        {data.currency_note}
+        {data.currency_note}{' '}
+        {((data.created_at_filter?.from ?? null) !== null ||
+          (data.created_at_filter?.to ?? null) !== null) && (
+          <>
+            <strong>created_at window:</strong> from{' '}
+            {data.created_at_filter?.from ?? '—'} to {data.created_at_filter?.to ?? '—'}.
+          </>
+        )}
       </Alert>
 
       <Paper sx={{ p: 2, mb: 3 }} elevation={1}>
@@ -158,6 +165,44 @@ export const SmsKpisPage = () => {
             {data.by_provider.map((row) => (
               <TableRow key={row.provider_id}>
                 <TableCell>{row.provider_id}</TableCell>
+                <TableCell align="right">{row.volume}</TableCell>
+                <TableCell align="right">
+                  {formatCost(row.total_estimated_cost)}
+                </TableCell>
+                <TableCell align="right">
+                  {formatCost(row.total_actual_cost)}
+                </TableCell>
+                <TableCell align="right">
+                  {formatPct(row.terminal_success_rate)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Typography variant="h6" gutterBottom>
+        By calling domain (US2 —{' '}
+        <code>X-Calling-Domain</code> header on create)
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        Notifications created without the header roll into “unattributed”.
+      </Typography>
+      <TableContainer component={Paper} sx={{ mb: 3 }} elevation={1}>
+        <Table size="small" aria-label="KPI by calling domain">
+          <TableHead>
+            <TableRow>
+              <TableCell>Calling domain</TableCell>
+              <TableCell align="right">Volume</TableCell>
+              <TableCell align="right">Σ estimated</TableCell>
+              <TableCell align="right">Σ actual</TableCell>
+              <TableCell align="right">Success %</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {(data.by_calling_domain ?? []).map((row) => (
+              <TableRow key={row.calling_domain}>
+                <TableCell>{row.calling_domain}</TableCell>
                 <TableCell align="right">{row.volume}</TableCell>
                 <TableCell align="right">
                   {formatCost(row.total_estimated_cost)}
