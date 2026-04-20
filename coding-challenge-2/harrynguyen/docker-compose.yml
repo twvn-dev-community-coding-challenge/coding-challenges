@@ -1,0 +1,189 @@
+networks:
+  sms_otp_net:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sms_otp_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sms_otp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d sms_otp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgweb:
+    image: sosedoff/pgweb:0.16.2
+    container_name: sms_otp_pgweb
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    command:
+      - "--bind=0.0.0.0"
+      - "--url"
+      - "postgres://user:password@postgres:5432/sms_otp?sslmode=disable"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sms-otp-api:local
+    container_name: sms_otp_api
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/sms_otp?sslmode=disable
+      REDIS_URL: redis://redis:6379/0
+      QUEUE_NAME: sms_queue
+      LOG_FORMAT: json
+      ALLOW_TEST_SMS_HEADERS: "true"
+      SMS_INTERNAL_API_KEY: dev-local-sms-key
+      LOG_REGISTRATION_OTP: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - default
+      - sms_otp_net
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE: ${VITE_API_BASE:-}
+    image: sms-otp-web:local
+    container_name: sms_otp_web
+    ports:
+      # Nginx serves the SPA on 80 in-container; keep 5173 on the host for the same URL as the old Vite dev server.
+      - "5173:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: sms_otp_redis
+    # Allow other containers (e.g. Redis Insight) to connect; default protected-mode can deny non-localhost clients.
+    command: ["redis-server", "--bind", "0.0.0.0", "--protected-mode", "no", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - sms_otp_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  prometheus:
+    build:
+      context: ./deploy/prometheus
+      dockerfile: Dockerfile
+    image: sms-otp-prometheus:local
+    container_name: sms_otp_prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_data:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  grafana:
+    build:
+      context: ./deploy/grafana
+      dockerfile: Dockerfile
+    image: sms-otp-grafana:local
+    container_name: sms_otp_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_DEFAULT_THEME: dark
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+      GF_SERVER_ROOT_URL: http://localhost:3000
+      GF_CHECK_FOR_UPDATES: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      # Provisioning + dashboards are baked into the image (deploy/grafana/Dockerfile). Rebuild after changes:
+      #   docker compose build grafana && docker compose up -d grafana
+    depends_on:
+      - prometheus
+      - loki
+    restart: unless-stopped
+
+  loki:
+    build:
+      context: ./deploy/loki
+      dockerfile: Dockerfile
+    image: sms-otp-loki:local
+    container_name: sms_otp_loki
+    command: -config.file=/etc/loki/loki-config.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+    restart: unless-stopped
+
+  promtail:
+    build:
+      context: ./deploy/promtail
+      dockerfile: Dockerfile
+    image: sms-otp-promtail:local
+    container_name: sms_otp_promtail
+    command: -config.file=/etc/promtail/promtail.yml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki
+    restart: unless-stopped
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: sms_otp_redisinsight
+    ports:
+      - "5540:5540"
+    environment:
+      # Browser UI talks to the Insight API; these origins must be trusted or the UI stays empty / fails to load DBs.
+      RITRUSTEDORIGINS: "http://localhost:5540,http://127.0.0.1:5540"
+    volumes:
+      - redisinsight_data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - sms_otp_net
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  loki_data:
+  redisinsight_data:

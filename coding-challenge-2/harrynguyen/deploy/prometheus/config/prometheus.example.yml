@@ -1,0 +1,11 @@
+# Copy to prometheus.yml and adjust targets if needed.
+# Compose stack: use api:8080. Host-only API: use host.docker.internal:8080.
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: sms-otp-api
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - api:8080
