@@ -1,5 +1,5 @@
 # Standalone NATS (JetStream) for local dev — use with host-run services (Nx) or partial stacks.
-# Usage (cwd = gondo/): docker compose -f infra/docker-compose.nats.yml up -d
+# Usage (cwd = gondo/): docker-compose -f infra/docker-compose.nats.yml up -d
 # Client URL: nats://localhost:4222
 name: gondo-nats
 

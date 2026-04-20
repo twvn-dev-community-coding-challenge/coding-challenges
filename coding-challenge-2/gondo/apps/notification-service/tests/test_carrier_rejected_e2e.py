@@ -29,7 +29,7 @@ def _estimate() -> charging_pb2.EstimateCostResponse:
 
 
 def test_queue_to_carrier_rejected_then_retry_round_trip() -> None:
-    """090909094: bus ack → Send-to-carrier, then sim MNO reject → Carrier-rejected; retry → Queue."""
+    """0395000005 (mock_scenarios carrier_rejected): bus ack → Send-to-carrier → Carrier-rejected; retry → Queue."""
     clear()
     client = TestClient(app)
 
@@ -40,7 +40,7 @@ def test_queue_to_carrier_rejected_then_retry_round_trip() -> None:
             "channel_type": "SMS",
             "recipient": "u",
             "content": "hello",
-            "channel_payload": {"country_code": "VN", "phone_number": "090909094"},
+            "channel_payload": {"country_code": "VN", "phone_number": "0395000005"},
         },
     ).json()
     nid = created["data"]["notification_id"]
@@ -121,7 +121,7 @@ def test_queue_to_carrier_rejected_then_retry_round_trip() -> None:
 
 
 def test_carrier_dispatch_received_magic_number_mno_reject_after_send_to_carrier() -> None:
-    """090909094: still passes through Send-to-carrier, then MNO-simulated Carrier-rejected."""
+    """VN MSISDN in mock_scenarios (carrier_rejected): Queue → Send-to-carrier → Carrier-rejected."""
     clear()
     now = datetime.now(timezone.utc)
     n = Notification(
@@ -130,10 +130,11 @@ def test_carrier_dispatch_received_magic_number_mno_reject_after_send_to_carrier
         channel_type="SMS",
         recipient="u",
         content="hello",
-        channel_payload={"country_code": "VN", "phone_number": "090909094"},
+        channel_payload={"country_code": "VN", "phone_number": "0395000005"},
         state="Queue",
         attempt=1,
         selected_provider_id="prv_01",
+        selected_provider_code=None,
         routing_rule_version=2,
         created_at=now,
         updated_at=now,

@@ -39,7 +39,7 @@ def integration_session() -> str:
     if not _want_integration():
         _emit("RUN_INTEGRATION_TESTS not set — skipping integration session")
         pytest.skip(
-            "Set RUN_INTEGRATION_TESTS=1 and start the stack (e.g. docker compose up).",
+            "Set RUN_INTEGRATION_TESTS=1 and start the stack (e.g. docker-compose up).",
         )
     base = notification_base_url()
     _emit(f"Probing notification health: GET {base}/health")

@@ -24,7 +24,7 @@ for svc in provider-service charging-service notification-service otp-service; d
   svc_dir="${ROOT}/apps/${svc}"
   if [[ -d "${svc_dir}/alembic" ]]; then
     echo -e "${YELLOW}Migrating ${svc}...${NC}"
-    (cd "${svc_dir}" && python -m alembic upgrade head)
+    (cd "${svc_dir}" && python3 -m alembic upgrade head)
     echo -e "${GREEN}${svc} migrations applied.${NC}"
   else
     echo -e "${YELLOW}No alembic/ directory for ${svc}, skipping.${NC}"

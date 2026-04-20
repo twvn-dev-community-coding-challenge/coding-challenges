@@ -1,5 +1,5 @@
 # Optional overlay: bind-mount provider YAML registry (paths relative to this file → use from gondo/).
-# Usage (cwd = gondo/): docker compose -f docker-compose.yml -f infra/docker-compose.provider-registry.yml up -d provider-service
+# Usage (cwd = gondo/): docker-compose -f docker-compose.yml -f infra/docker-compose.provider-registry.yml up -d provider-service
 services:
   provider-service:
     volumes:

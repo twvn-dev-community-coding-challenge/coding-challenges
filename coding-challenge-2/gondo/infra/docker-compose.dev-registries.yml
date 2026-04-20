@@ -1,6 +1,6 @@
 # Convenience overlay: live-edit provider registry, carrier registry, and mock credentials in one -f.
 # Usage (cwd = gondo/):
-#   docker compose -f docker-compose.yml -f infra/docker-compose.dev-registries.yml up -d
+#   docker-compose -f docker-compose.yml -f infra/docker-compose.dev-registries.yml up -d
 services:
   provider-service:
     volumes:

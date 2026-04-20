@@ -95,20 +95,42 @@ source "${ROOT}/.venv/bin/activate"
 export PYTHONPATH="${ROOT}/libs/grpc-contracts:${ROOT}/libs/py-core${PYTHONPATH:+:${PYTHONPATH}}"
 export PYTHONUNBUFFERED=1
 
+# Port helpers: local infra may run Postgres/NATS from another compose project (same host ports).
+tcp_port_listening() {
+  local port=$1
+  lsof -nP -iTCP:"${port}" -sTCP:LISTEN >/dev/null 2>&1
+}
+
+# True when Postgres accepts connections for gondo@gondo (any container or host).
+pg_ready() {
+  if command -v pg_isready >/dev/null 2>&1; then
+    pg_isready -h 127.0.0.1 -p 5432 -U gondo -d gondo >/dev/null 2>&1
+    return $?
+  fi
+  docker run --rm --add-host=host.docker.internal:host-gateway \
+    postgres:16-alpine pg_isready -h host.docker.internal -p 5432 -U gondo -d gondo >/dev/null 2>&1
+}
+
 # --- Postgres check & migrate ---
 export DATABASE_URL="${DATABASE_URL:-postgresql://gondo:gondo@localhost:5432/gondo}"
 
 echo -e "${YELLOW}Checking Postgres...${NC}"
-if ! docker-compose ps postgres --format '{{.State}}' 2>/dev/null | grep -qi running; then
+if pg_ready; then
+  echo -e "${GREEN}Postgres already reachable on 5432 (existing instance).${NC}"
+elif docker-compose ps postgres --format '{{.State}}' 2>/dev/null | grep -qi running; then
+  :
+elif ! tcp_port_listening 5432; then
   echo -e "${YELLOW}Starting Postgres via docker-compose...${NC}"
   docker-compose up -d postgres
+else
+  echo -e "${YELLOW}Port 5432 is in use; waiting for existing Postgres...${NC}"
 fi
 wait_for_health_pg() {
   local attempt=0
   local max=60
   echo -e "${YELLOW}Waiting for Postgres health...${NC}"
   while ((attempt < max)); do
-    if docker-compose exec -T postgres pg_isready -U gondo -d gondo >/dev/null 2>&1; then
+    if pg_ready; then
       echo -e "${GREEN}Postgres is ready.${NC}"
       return 0
     fi
@@ -121,7 +143,11 @@ wait_for_health_pg() {
 wait_for_health_pg || { cleanup; exit 1; }
 
 echo -e "${YELLOW}Checking NATS (notification-service message bus)...${NC}"
-if ! docker-compose ps nats --format '{{.State}}' 2>/dev/null | grep -qi running; then
+if tcp_port_listening 4222; then
+  echo -e "${GREEN}NATS port 4222 already in use (using existing broker).${NC}"
+elif docker-compose ps nats --format '{{.State}}' 2>/dev/null | grep -qi running; then
+  :
+else
   echo -e "${YELLOW}Starting NATS via docker-compose...${NC}"
   docker-compose up -d nats
 fi
@@ -152,7 +178,11 @@ s.close()
 wait_for_nats_tcp || { cleanup; exit 1; }
 
 echo -e "${YELLOW}Running database migrations...${NC}"
-"${ROOT}/scripts/db-migrate.sh"
+if ! "${ROOT}/scripts/db-migrate.sh"; then
+  echo -e "${RED}Database migrations failed! Aborting.${NC}" >&2
+  cleanup
+  exit 1
+fi
 echo -e "${GREEN}Migrations complete.${NC}"
 echo ""
 # --- End Postgres check ---
@@ -214,7 +244,7 @@ start_uvicorn() {
   (
     cd "${ROOT}/${app_dir}" || exit 1
     export DATABASE_URL="${DATABASE_URL:-postgresql://gondo:gondo@localhost:5432/gondo}"
-    exec python -m uvicorn main:app --reload --port "${port}"
+    exec python3 -m uvicorn main:app --reload --port "${port}"
   ) > >(prefix_pipe "${tag}" "${color}") 2>&1 &
   PIDS+=($!)
 }

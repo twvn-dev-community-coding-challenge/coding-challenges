@@ -61,6 +61,15 @@ const renderFeature = () =>
     </MemoryRouter>,
   );
 
+const fillRequiredFields = (overrides?: { recipient?: string; phone?: string }): void => {
+  fireEvent.change(screen.getByLabelText(/recipient/i), {
+    target: { value: overrides?.recipient ?? 'user@test.com' },
+  });
+  fireEvent.change(screen.getByLabelText(/phone number/i), {
+    target: { value: overrides?.phone ?? '+84901234567' },
+  });
+};
+
 describe('MembershipSmsFeature', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -72,8 +81,28 @@ describe('MembershipSmsFeature', () => {
     expect(screen.getByLabelText(/message id/i)).toBeTruthy();
   });
 
+  it('requires all fields before calling the API', async () => {
+    renderFeature();
+
+    fireEvent.change(screen.getByLabelText(/recipient/i), { target: { value: '' } });
+    fireEvent.change(screen.getByLabelText(/message content/i), { target: { value: '' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeTruthy();
+    });
+
+    expect(screen.getByRole('alert').textContent).toMatch(/recipient is required/i);
+    expect(mockCreateNotification).not.toHaveBeenCalled();
+    expect(mockDispatchNotification).not.toHaveBeenCalled();
+  });
+
   it('requires a phone number before calling the API', async () => {
     renderFeature();
+
+    fireEvent.change(screen.getByLabelText(/recipient/i), { target: { value: 'user@test.com' } });
+
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {
@@ -82,6 +111,48 @@ describe('MembershipSmsFeature', () => {
 
     expect(mockCreateNotification).not.toHaveBeenCalled();
     expect(mockDispatchNotification).not.toHaveBeenCalled();
+  });
+
+  it('does not call the API when the phone number length is invalid for the country', async () => {
+    renderFeature();
+    fillRequiredFields({ phone: '+8490123456' });
+
+    fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeTruthy();
+    });
+
+    expect(mockCreateNotification).not.toHaveBeenCalled();
+    expect(mockDispatchNotification).not.toHaveBeenCalled();
+  });
+
+  it('shows masked phone validation error and does not call the API', async () => {
+    renderFeature();
+    fillRequiredFields({ phone: '+84*****9999' });
+
+    fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(
+        /masked phone numbers cannot be validated/i,
+      );
+    });
+
+    expect(mockCreateNotification).not.toHaveBeenCalled();
+  });
+
+  it('shows phone field helper text after blur when the number is invalid', async () => {
+    renderFeature();
+    const phoneInput = screen.getByLabelText(/phone number/i);
+    fireEvent.change(phoneInput, { target: { value: '+84901' } });
+    fireEvent.blur(phoneInput);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Enter a valid phone number for the selected country.'),
+      ).toBeTruthy();
+    });
   });
 
   it('submits the form: creates notification then dispatches', async () => {
@@ -95,10 +166,7 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
-
-    fireEvent.change(screen.getByLabelText(/phone number/i), {
-      target: { value: '+84901234567' },
-    });
+    fillRequiredFields();
 
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
@@ -109,7 +177,7 @@ describe('MembershipSmsFeature', () => {
     expect(mockCreateNotification).toHaveBeenCalledTimes(1);
     expect(mockCreateNotification).toHaveBeenCalledWith({
       message_id: expect.any(String),
-      recipient: '',
+      recipient: 'user@test.com',
       content: expect.stringContaining('{{OTP}}'),
       channel_payload: {
         country_code: 'VN',
@@ -132,10 +200,7 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
-
-    fireEvent.change(screen.getByLabelText(/phone number/i), {
-      target: { value: '0901234567' },
-    });
+    fillRequiredFields({ phone: '0901234567' });
 
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
@@ -160,10 +225,13 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
+    fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toBeTruthy();
+      expect(screen.getByRole('alert').textContent).toMatch(
+        /message_id already exists/i,
+      );
     });
   });
 
@@ -178,9 +246,7 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
-    fireEvent.change(screen.getByLabelText(/phone number/i), {
-      target: { value: '+84901234567' },
-    });
+    fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {
@@ -204,9 +270,7 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
-    fireEvent.change(screen.getByLabelText(/phone number/i), {
-      target: { value: '+84901234567' },
-    });
+    fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {
@@ -227,9 +291,7 @@ describe('MembershipSmsFeature', () => {
     });
 
     renderFeature();
-    fireEvent.change(screen.getByLabelText(/phone number/i), {
-      target: { value: '+84901234567' },
-    });
+    fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /send sms/i }));
 
     await waitFor(() => {

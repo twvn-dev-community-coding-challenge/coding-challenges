@@ -338,6 +338,26 @@
         }
       }
     },
+    "/mock-scenarios": {
+      "get": {
+        "summary": "Get Mock Scenarios",
+        "operationId": "get_mock_scenarios_mock_scenarios_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Mock Scenarios Mock Scenarios Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/provider-callbacks": {
       "post": {
         "summary": "Provider Callbacks",

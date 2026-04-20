@@ -30,16 +30,38 @@ const resolveVariant = (statusLabel: string): BadgeVariant => {
 const variantToChipColor = (
   variant: BadgeVariant,
 ): 'success' | 'error' | 'warning' | 'default' | 'info' => {
-  if (variant === 'neutral') {
-    return 'default';
+  switch (variant) {
+    case 'neutral':
+      return 'default';
+    case 'success':
+      return 'success';
+    case 'error':
+      return 'error';
+    case 'warning':
+    default:
+      return 'warning';
   }
-  if (variant === 'success') {
-    return 'success';
+};
+
+const getLabel = (statusLabel: string): string => {
+  switch (statusLabel) {
+    case 'Send-success':
+      return 'Success';
+    case 'Send-failed':
+      return 'Failed';
+    case 'Carrier-rejected':
+      return 'Carrier Rejected';
+    case 'New':
+      return 'New';
+    case 'Send-to-provider':
+      return 'Provider Received';
+    case 'Queue':
+      return 'Queued';
+    case 'Send-to-carrier':
+      return 'Carrier Received';
+    default:
+      return 'Unknown';
   }
-  if (variant === 'error') {
-    return 'error';
-  }
-  return 'warning';
 };
 
 export const NotificationStatusBadge = ({
@@ -50,7 +72,7 @@ export const NotificationStatusBadge = ({
   return (
     <Chip
       size="small"
-      label={statusLabel}
+      label={getLabel(statusLabel)}
       color={variantToChipColor(variant)}
       variant="outlined"
     />

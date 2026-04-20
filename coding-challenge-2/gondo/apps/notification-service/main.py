@@ -13,11 +13,18 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from google.protobuf import timestamp_pb2
 from cqrs.charging_callbacks import record_actual_cost_after_callback
-from cqrs.dispatch_pipeline import iso_string_to_timestamp, orchestrate_select_charge_publish
+from cqrs.dispatch_pipeline import (
+    iso_string_to_timestamp,
+    orchestrate_select_charge_publish,
+)
 from cqrs.transitions import record_transition
 from kpis import build_sms_kpis, parse_iso_datetime
 from lifespan import notification_lifespan
-from otp_http_client import OtpIssueError, issue_challenge_http, substitute_otp_in_content
+from otp_http_client import (
+    OtpIssueError,
+    issue_challenge_http,
+    substitute_otp_in_content,
+)
 from pipeline_runtime import list_pipeline_events, pipe
 from py_core.app import create_app
 from py_core.logging import _should_log_payloads, configure_logging
@@ -37,6 +44,8 @@ from store import (
     update_notification,
 )
 from models import Notification, is_valid_transition
+from phone_validation import normalize_phone_number, validate_phone_number
+from cqrs.mock_scenario_loader import _load_raw_scenarios
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +69,11 @@ def _normalize_x_calling_domain(raw: str | None) -> str | None:
         raise ValueError("X-Calling-Domain contains invalid characters")
     return s
 
-RETRYABLE_STATES: frozenset[str] = frozenset({"Send-failed", "Carrier-rejected"})
+RETRYABLE_STATES: frozenset[str] = frozenset({
+    "Send-failed",
+    "Carrier-rejected",
+    "Send-to-carrier" # TODO remove — only needed for "retry_then_success" demo scenario
+ })
 
 
 _LOGS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
@@ -135,11 +148,31 @@ async def create_notification_endpoint(
             status.HTTP_422_UNPROCESSABLE_CONTENT,
             {"message_id": body.message_id},
         )
+
+    normalized_phone = normalize_phone_number(
+        body.channel_payload.country_code,
+        body.channel_payload.phone_number,
+    )
+    phone_error = validate_phone_number(
+        body.channel_payload.country_code,
+        normalized_phone,
+    )
+    if phone_error is not None:
+        return error_response(
+            "VALIDATION_ERROR",
+            phone_error,
+            status.HTTP_422_UNPROCESSABLE_CONTENT,
+            {
+                "phone_number": body.channel_payload.phone_number,
+                "country_code": body.channel_payload.country_code,
+            },
+        )
+
     now = datetime.now(timezone.utc)
     nid = str(uuid.uuid4())
     payload = {
         "country_code": body.channel_payload.country_code,
-        "phone_number": body.channel_payload.phone_number,
+        "phone_number": normalized_phone,
     }
     if calling_domain is not None:
         payload["calling_domain"] = calling_domain
@@ -174,6 +207,7 @@ async def create_notification_endpoint(
         state="New",
         attempt=0,
         selected_provider_id=None,
+        selected_provider_code=None,
         routing_rule_version=None,
         created_at=now,
         updated_at=now,
@@ -345,6 +379,7 @@ async def dispatch_notification(
     from_new = n.state
     n.state = "Send-to-provider"
     n.selected_provider_id = response.selected_provider_id
+    n.selected_provider_code = response.selected_provider_code
     n.routing_rule_version = int(response.routing_rule_version)
     n.updated_at = datetime.now(timezone.utc)
     update_notification(n)
@@ -473,6 +508,7 @@ async def retry_notification(
     n.state = "Send-to-provider"
     n.attempt += 1
     n.selected_provider_id = response.selected_provider_id
+    n.selected_provider_code = response.selected_provider_code
     n.routing_rule_version = int(response.routing_rule_version)
     n.updated_at = datetime.now(timezone.utc)
     update_notification(n)
@@ -513,6 +549,12 @@ async def retry_notification(
     )
 
     return success_response(notification_to_dict(n))
+
+
+@app.get("/mock-scenarios")
+async def get_mock_scenarios() -> dict[str, object]:
+    scenarios = _load_raw_scenarios()
+    return success_response({"scenarios": scenarios})
 
 
 @app.post("/provider-callbacks")

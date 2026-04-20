@@ -15,22 +15,22 @@ const expectChipHasColorClass = (
 describe('NotificationStatusBadge', () => {
   it('renders the status label text', () => {
     renderWithTheme(<NotificationStatusBadge statusLabel="Queue" />);
-    expect(screen.getByText('Queue')).toBeTruthy();
+    expect(screen.getByText('Queued')).toBeTruthy();
   });
 
   it('applies success styling for Send-success', () => {
     renderWithTheme(<NotificationStatusBadge statusLabel="Send-success" />);
-    expectChipHasColorClass('Send-success', 'MuiChip-colorSuccess');
+    expectChipHasColorClass('Success', 'MuiChip-colorSuccess');
   });
 
   it('applies error styling for Send-failed', () => {
     renderWithTheme(<NotificationStatusBadge statusLabel="Send-failed" />);
-    expectChipHasColorClass('Send-failed', 'MuiChip-colorError');
+    expectChipHasColorClass('Failed', 'MuiChip-colorError');
   });
 
   it('applies warning styling for Carrier-rejected', () => {
     renderWithTheme(<NotificationStatusBadge statusLabel="Carrier-rejected" />);
-    expectChipHasColorClass('Carrier-rejected', 'MuiChip-colorWarning');
+    expectChipHasColorClass('Carrier Rejected', 'MuiChip-colorWarning');
   });
 
   it('applies default/neutral styling for other states', () => {

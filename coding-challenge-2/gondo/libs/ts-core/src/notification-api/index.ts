@@ -4,6 +4,8 @@ export type {
   CreateNotificationRequest,
   DispatchRequest,
   ListNotificationsData,
+  MockScenario,
+  MockScenariosData,
   NotificationResource,
   PipelineEvent,
   PipelineEventsData,

@@ -35,6 +35,7 @@ const sampleKpis = {
   by_provider: [
     {
       provider_id: 'prv_01',
+      provider_code: 'prv_01',
       volume: 2,
       total_estimated_cost: 0.04,
       total_actual_cost: 0.03,

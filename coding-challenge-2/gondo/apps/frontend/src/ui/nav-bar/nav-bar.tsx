@@ -41,7 +41,7 @@ export const NavBar = ({ links }: NavBarProps) => {
         >
           <SmsOutlined sx={{ fontSize: 28, opacity: 0.95 }} aria-hidden />
           <Typography variant="h6" component="span" noWrap>
-            Gondo SMS Platform
+            Gondo Platform
           </Typography>
         </Box>
         <Box

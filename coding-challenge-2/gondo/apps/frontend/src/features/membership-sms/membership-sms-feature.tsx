@@ -14,7 +14,7 @@ import { createNotificationApi } from '@gondo/ts-core';
 
 import { DEFAULT_COUNTDOWN_DURATION, useCountdown } from '../../context';
 import { OtpDisplay } from '../../ui/otp-display/otp-display';
-import { buildSmsPhoneNumber } from './build-phone-number';
+import { buildSmsPhoneNumber, validatePhoneNumber } from './build-phone-number';
 import { MembershipSmsForm } from './membership-sms-form';
 import { SmsTypeSelector } from './sms-type-selector';
 import type { ClientPhase, MembershipSmsFormValues, SmsScenarioId } from './types';
@@ -30,6 +30,8 @@ const createInitialFormValues = (): MembershipSmsFormValues => ({
   content: DEFAULT_MESSAGE_TEMPLATE,
 });
 
+type FieldErrors = Readonly<Partial<Record<keyof MembershipSmsFormValues, string>>>;
+
 interface FeatureState {
   readonly phase: ClientPhase;
   readonly formValues: MembershipSmsFormValues;
@@ -37,6 +39,7 @@ interface FeatureState {
   readonly otp: string | null;
   readonly notificationId: string | null;
   readonly error: string | null;
+  readonly fieldErrors: FieldErrors;
 }
 
 type Action =
@@ -51,6 +54,8 @@ type Action =
       };
     }
   | { readonly type: 'submit_fail'; readonly message: string }
+  | { readonly type: 'validation_fail'; readonly message: string; readonly fieldErrors: FieldErrors }
+  | { readonly type: 'set_field_errors'; readonly fieldErrors: FieldErrors }
   | { readonly type: 'new_sms' };
 
 const buildInitialState = (): FeatureState => ({
@@ -60,19 +65,35 @@ const buildInitialState = (): FeatureState => ({
   otp: null,
   notificationId: null,
   error: null,
+  fieldErrors: {},
 });
 
 const reducer = (state: FeatureState, action: Action): FeatureState => {
   switch (action.type) {
-    case 'update_form':
+    case 'update_form': {
+      const changedKeys = Object.keys(action.patch) as (keyof MembershipSmsFormValues)[];
+      const nextFieldErrors = { ...state.fieldErrors };
+      for (const key of changedKeys) {
+        delete nextFieldErrors[key];
+      }
+      if ('countryCode' in action.patch) {
+        delete nextFieldErrors.phoneNumber;
+      }
       return {
         ...state,
         formValues: { ...state.formValues, ...action.patch },
+        fieldErrors: nextFieldErrors,
       };
+    }
     case 'set_scenario':
       return { ...state, scenario: action.scenario };
     case 'submit_start':
-      return { ...state, phase: 'submitting', error: null };
+      return {
+        ...state,
+        phase: 'submitting',
+        error: null,
+        fieldErrors: {},
+      };
     case 'submit_success':
       return {
         ...state,
@@ -80,9 +101,24 @@ const reducer = (state: FeatureState, action: Action): FeatureState => {
         notificationId: action.payload.notificationId,
         otp: action.payload.otp,
         error: null,
+        fieldErrors: {},
       };
     case 'submit_fail':
-      return { ...state, phase: 'idle', error: action.message };
+      return {
+        ...state,
+        phase: 'idle',
+        error: action.message,
+        fieldErrors: {},
+      };
+    case 'validation_fail':
+      return {
+        ...state,
+        phase: 'idle',
+        error: action.message,
+        fieldErrors: action.fieldErrors,
+      };
+    case 'set_field_errors':
+      return { ...state, fieldErrors: action.fieldErrors };
     case 'new_sms':
       return buildInitialState();
   }
@@ -108,16 +144,51 @@ export const MembershipSmsFeature = ({
     dispatch({ type: 'set_scenario', scenario });
   }, []);
 
+  const handlePhoneBlur = useCallback(() => {
+    const phoneNumber = state.formValues.phoneNumber.trim();
+    if (!phoneNumber) {
+      dispatch({ type: 'set_field_errors', fieldErrors: { phoneNumber: 'Phone number is required.' } });
+      return;
+    }
+    const phoneMsg = validatePhoneNumber(
+      state.formValues.countryCode,
+      state.formValues.phoneNumber,
+    );
+    dispatch({
+      type: 'set_field_errors',
+      fieldErrors: phoneMsg ? { phoneNumber: phoneMsg } : {},
+    });
+  }, [state.formValues.countryCode, state.formValues.phoneNumber]);
+
   const handleSubmit = useCallback(async () => {
     if (state.phase !== 'idle') {
       return;
     }
 
-    if (!state.formValues.phoneNumber.trim()) {
-      dispatch({
-        type: 'submit_fail',
-        message: 'Phone number is required.',
-      });
+    const errors: Partial<Record<keyof MembershipSmsFormValues, string>> = {};
+
+    if (!state.formValues.messageId.trim()) {
+      errors.messageId = 'Message ID is required.';
+    }
+    if (!state.formValues.recipient.trim()) {
+      errors.recipient = 'Recipient is required.';
+    }
+    if (!state.formValues.content.trim()) {
+      errors.content = 'Message content is required.';
+    }
+
+    const phoneMsg = validatePhoneNumber(
+      state.formValues.countryCode,
+      state.formValues.phoneNumber,
+    );
+    if (phoneMsg) {
+      errors.phoneNumber = phoneMsg;
+    }
+
+    const errorKeys = Object.keys(errors) as (keyof MembershipSmsFormValues)[];
+    if (errorKeys.length > 0) {
+      const firstError = errors[errorKeys[0] as keyof typeof errors] as string;
+      dispatch({ type: 'validation_fail', message: firstError, fieldErrors: errors });
       return;
     }
 
@@ -227,6 +298,8 @@ export const MembershipSmsFeature = ({
           onChange={handleFormChange}
           onSubmit={handleSubmit}
           disabled={formDisabled}
+          fieldErrors={state.fieldErrors}
+          onPhoneBlur={handlePhoneBlur}
         />
       </Paper>
 

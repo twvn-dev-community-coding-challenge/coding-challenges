@@ -31,6 +31,7 @@ def _sample_notification(
         state="New",
         attempt=0,
         selected_provider_id=None,
+        selected_provider_code=None,
         routing_rule_version=None,
         created_at=now,
         updated_at=now,
