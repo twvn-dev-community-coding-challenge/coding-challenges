@@ -1,0 +1,73 @@
+{
+  "name": "notification-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/notification-service",
+  "implicitDependencies": ["grpc-contracts", "py-core"],
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m uvicorn main:app --reload --port 8001",
+        "cwd": "apps/notification-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
+        }
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m pytest",
+        "cwd": "apps/notification-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m ruff check .",
+        "cwd": "apps/notification-service"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build", "grpc-contracts:generate"],
+      "inputs": ["default", "^default"],
+      "options": {
+        "command": "../../.venv/bin/python3 -m ruff check . && ../../.venv/bin/python3 -c \"from main import app\"",
+        "cwd": "apps/notification-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
+        }
+      }
+    },
+    "generate-openapi": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 generate_openapi.py",
+        "cwd": "apps/notification-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
+        }
+      },
+      "outputs": [
+        "{projectRoot}/openapi.json",
+        "{workspaceRoot}/docs/openapi/notification-service.openapi.json"
+      ]
+    },
+    "verify-openapi": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 verify_openapi.py",
+        "cwd": "apps/notification-service",
+        "env": {
+          "PYTHONPATH": "../../libs/grpc-contracts:../../libs/py-core"
+        }
+      }
+    }
+  },
+  "tags": ["python", "fastapi"]
+}

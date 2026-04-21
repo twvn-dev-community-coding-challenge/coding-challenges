@@ -1,0 +1,24 @@
+# NATS + message-bus-gateway only (no Postgres / app images). Handy for bus tooling + gateway tests.
+# Usage (cwd = gondo/): docker-compose -f infra/docker-compose.messaging.yml up -d --build
+name: gondo-messaging
+
+services:
+  nats:
+    image: nats:2.10-alpine
+    ports:
+      - "4222:4222"
+    command: ["-js", "-m", "8222"]
+
+  message-bus-gateway:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: message-bus-gateway
+        PORT: "8010"
+    ports:
+      - "8010:8010"
+    environment:
+      - NATS_URL=nats://nats:4222
+    depends_on:
+      - nats

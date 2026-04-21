@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/carrier/sms"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "mock": true,
+      "status": "accepted",
+      "detail": "wiremock stub for carrier HTTP probe"
+    }
+  }
+}

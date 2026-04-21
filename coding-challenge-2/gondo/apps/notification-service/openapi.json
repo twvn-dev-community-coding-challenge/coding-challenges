@@ -1,0 +1,581 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Notification Service",
+    "description": "SMS lifecycle orchestration; subscribes to sms.dispatch.received (NATS) for Queue \u2192 Send-to-carrier",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "post": {
+        "summary": "Create Notification Endpoint",
+        "operationId": "create_notification_endpoint_notifications_post",
+        "parameters": [
+          {
+            "name": "X-Calling-Domain",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Calling-Domain"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List Notifications Endpoint",
+        "operationId": "list_notifications_endpoint_notifications_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response List Notifications Endpoint Notifications Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/kpis": {
+      "get": {
+        "summary": "Get Sms Kpis Endpoint",
+        "description": "Aggregate SMS cost/volume/success KPIs (User Story 5); reads in-memory notification store.",
+        "operationId": "get_sms_kpis_endpoint_notifications_kpis_get",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO 8601 inclusive lower bound on notification created_at (UTC; naive datetimes are interpreted as UTC).",
+              "title": "From"
+            },
+            "description": "ISO 8601 inclusive lower bound on notification created_at (UTC; naive datetimes are interpreted as UTC)."
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO 8601 inclusive upper bound on notification created_at (UTC).",
+              "title": "To"
+            },
+            "description": "ISO 8601 inclusive upper bound on notification created_at (UTC)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Sms Kpis Endpoint Notifications Kpis Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/{notification_id}": {
+      "get": {
+        "summary": "Get Notification Endpoint",
+        "operationId": "get_notification_endpoint_notifications__notification_id__get",
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/{notification_id}/pipeline-events": {
+      "get": {
+        "summary": "Get Pipeline Events Endpoint",
+        "description": "Runtime-aggregated SMS pipeline steps for the notification tracking UI.",
+        "operationId": "get_pipeline_events_endpoint_notifications__notification_id__pipeline_events_get",
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/{notification_id}/dispatch": {
+      "post": {
+        "summary": "Dispatch Notification",
+        "operationId": "dispatch_notification_notifications__notification_id__dispatch_post",
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/{notification_id}/retry": {
+      "post": {
+        "summary": "Retry Notification",
+        "operationId": "retry_notification_notifications__notification_id__retry_post",
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mock-scenarios": {
+      "get": {
+        "summary": "Get Mock Scenarios",
+        "operationId": "get_mock_scenarios_mock_scenarios_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Mock Scenarios Mock Scenarios Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/provider-callbacks": {
+      "post": {
+        "summary": "Provider Callbacks",
+        "operationId": "provider_callbacks_provider_callbacks_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderCallbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Provider Callbacks Provider Callbacks Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateNotificationRequest": {
+        "properties": {
+          "message_id": {
+            "type": "string",
+            "title": "Message Id"
+          },
+          "channel_type": {
+            "type": "string",
+            "title": "Channel Type",
+            "default": "SMS"
+          },
+          "recipient": {
+            "type": "string",
+            "title": "Recipient"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "channel_payload": {
+            "$ref": "#/components/schemas/SmsChannelPayload"
+          },
+          "issue_server_otp": {
+            "type": "boolean",
+            "title": "Issue Server Otp",
+            "description": "If true, call otp-service to generate a code (hashed at rest with TTL); substitutes {{OTP}} in content.",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "message_id",
+          "recipient",
+          "content",
+          "channel_payload"
+        ],
+        "title": "CreateNotificationRequest"
+      },
+      "DispatchRequest": {
+        "properties": {
+          "as_of": {
+            "type": "string",
+            "title": "As Of",
+            "description": "ISO 8601 datetime string"
+          }
+        },
+        "type": "object",
+        "required": [
+          "as_of"
+        ],
+        "title": "DispatchRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ProviderCallbackRequest": {
+        "properties": {
+          "message_id": {
+            "type": "string",
+            "title": "Message Id"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "new_state": {
+            "type": "string",
+            "title": "New State"
+          },
+          "actual_cost": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Cost",
+            "description": "Billed amount for charging-service RecordActualCost. Send-success: optional (falls back to estimated_cost). Send-failed: omit to skip RecordActualCost."
+          }
+        },
+        "type": "object",
+        "required": [
+          "message_id",
+          "provider",
+          "new_state"
+        ],
+        "title": "ProviderCallbackRequest"
+      },
+      "RetryRequest": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          }
+        },
+        "type": "object",
+        "title": "RetryRequest"
+      },
+      "SmsChannelPayload": {
+        "properties": {
+          "country_code": {
+            "type": "string",
+            "title": "Country Code"
+          },
+          "phone_number": {
+            "type": "string",
+            "title": "Phone Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "country_code",
+          "phone_number"
+        ],
+        "title": "SmsChannelPayload"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

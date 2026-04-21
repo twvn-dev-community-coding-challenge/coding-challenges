@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package gondo.provider;
+
+import "google/protobuf/timestamp.proto";
+
+message RoutingCandidate {
+  string provider_id = 1;
+  string provider_code = 2;
+  string routing_rule_id = 3;
+  int32 routing_rule_version = 4;
+  google.protobuf.Timestamp effective_from = 5;
+  google.protobuf.Timestamp effective_to = 6;
+  google.protobuf.Timestamp resolved_at = 7;
+}
+
+message PolicyContext {
+  string policy = 1;
+  string message_id = 2;
+}
+
+message ResolveRoutingRequest {
+  string country_code = 1;
+  string carrier = 2;
+  google.protobuf.Timestamp as_of = 3;
+}
+
+message ResolveRoutingResponse {
+  repeated RoutingCandidate candidates = 1;
+}
+
+message SelectProviderRequest {
+  string country_code = 1;
+  string carrier = 2;
+  google.protobuf.Timestamp as_of = 3;
+  PolicyContext policy_context = 4;
+}
+
+message SelectProviderResponse {
+  string selected_provider_id = 1;
+  string selected_provider_code = 2;
+  string selection_policy = 3;
+  string selection_reason = 4;
+  string routing_rule_id = 5;
+  int32 routing_rule_version = 6;
+  google.protobuf.Timestamp selected_at = 7;
+  // Deprecated: always false. Publish sms.dispatch.requested via PublishSmsDispatchRequested after charging.
+  bool sms_dispatch_requested_published = 8;
+}
+
+// After SelectProvider and charging, notification-service calls this to publish sms.dispatch.requested.
+message PublishSmsDispatchRequestedRequest {
+  string message_id = 1;
+  string country_code = 2;
+  string carrier = 3;
+  string selected_provider_id = 4;
+  string selected_provider_code = 5;
+  int32 routing_rule_version = 6;
+  double estimated_cost = 7;
+  string currency = 8;
+  string charging_estimate_id = 9;
+}
+
+message PublishSmsDispatchRequestedResponse {
+  bool published = 1;
+}
+
+// One carrier reachable by a provider in a given country (registry / allowlist).
+message ConnectableCarrier {
+  string country_code = 1;
+  string carrier_code = 2;
+}
+
+// Provider-level config plus which carriers it can reach (per country).
+message ProviderRegistryConfig {
+  string provider_id = 1;
+  string provider_code = 2;
+  string display_name = 3;
+  string api_endpoint = 4;
+  repeated string supported_policies = 5;
+  string service_status = 6;
+  // JSON object for arbitrary metadata (webhook path, auth hints, region, etc.).
+  string extra_config_json = 7;
+  repeated ConnectableCarrier connectable_carriers = 8;
+  // Logical secret id (e.g. provider/prv_01) — never returns secret material.
+  string credentials_ref = 9;
+  bool credentials_configured = 10;
+  string credentials_backend = 11;
+}
+
+message GetProviderRegistryRequest {
+  // Required: ISO 3166-1 alpha-2 (e.g. VN).
+  string country_code = 1;
+  // Optional: restrict to one MNO (e.g. VIETTEL).
+  string carrier = 2;
+  // Optional: business provider id (e.g. prv_01).
+  string provider_id = 3;
+  // Optional: only providers that declare this policy (e.g. highest_precedence).
+  string policy = 4;
+}
+
+message GetProviderRegistryResponse {
+  repeated ProviderRegistryConfig configs = 1;
+}
+
+service ProviderService {
+  rpc ResolveRouting(ResolveRoutingRequest) returns (ResolveRoutingResponse);
+  rpc SelectProvider(SelectProviderRequest) returns (SelectProviderResponse);
+  rpc PublishSmsDispatchRequested(PublishSmsDispatchRequestedRequest) returns (PublishSmsDispatchRequestedResponse);
+  rpc GetProviderRegistry(GetProviderRegistryRequest) returns (GetProviderRegistryResponse);
+}
