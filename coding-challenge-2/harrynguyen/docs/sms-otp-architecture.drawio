@@ -1,0 +1,230 @@
+<mxfile host="65bd71144e">
+    <diagram name="Page-1" id="TPtN1dSgBXaA9h2atl4I">
+        <mxGraphModel dx="959" dy="-354" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-148" value="Clients&#10;• Browser (web SPA)&#10;• API clients / stress tools" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="747.5" y="1302.5" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-149" value="&lt;b&gt;API process&lt;/b&gt;&lt;br&gt;&lt;b&gt;Middleware:&lt;/b&gt; RequestID, CorrelationID, AccessLog, CORS, Echo→Prometheus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;verticalAlign=top;align=left;spacingLeft=8;spacingTop=30;" parent="1" vertex="1">
+                    <mxGeometry x="970" y="1220" width="510" height="355" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-150" value="&lt;b&gt;AuthHandler&lt;/b&gt;&lt;br&gt;&lt;b&gt;register&lt;/b&gt; → {&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;username&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;password&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;phone_number&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;country&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;otp_ttl_seconds?&lt;/div&gt;&lt;div&gt;}&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;verify&lt;/b&gt; → {username, otp_code}&lt;br&gt;&lt;b&gt;login&lt;/b&gt; → {username, password}&lt;br&gt;&lt;b&gt;login/verify&lt;/b&gt; → {username, otp_code}&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="1230" y="1360" width="220" height="192.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-151" value="&lt;b&gt;SMSHandler&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b style=&quot;&quot;&gt;W&lt;/b&gt;&lt;b style=&quot;font-size: 11px;&quot;&gt;ebhook:&lt;/b&gt;&lt;span style=&quot;font-size: 11px;&quot;&gt;&amp;nbsp;POST&amp;nbsp;&lt;/span&gt;&lt;i style=&quot;font-size: 11px;&quot;&gt;/api/sms/callback&lt;/i&gt;&lt;div&gt;{&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;message_id&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;status&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;actual_cost&lt;/div&gt;&lt;div&gt;}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="987.5" y="1430" width="230" height="122.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-152" value="&lt;b&gt;SMS Core Service&lt;/b&gt;&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=20;" parent="1" vertex="1">
+                    <mxGeometry x="1015" y="1712.5" width="260" height="255" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-154" value="&lt;b&gt;PLUG IN — SMS Provider&lt;/b&gt;&lt;div&gt;interface&amp;nbsp;&lt;b&gt;SMSProvider&lt;/b&gt;&amp;nbsp;{&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;Send(ctx, country, carrier, phone E.164, content)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;→ providerMsgID, estimatedCost, err&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;GetProviderName() Provider&lt;/div&gt;&lt;div&gt;}&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;interface &lt;b&gt;ProviderRouter&amp;nbsp;&lt;/b&gt;&amp;nbsp;{&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;RegisterRouter(string country, Carrier carrier)&lt;br&gt;&lt;/div&gt;&lt;div&gt;}&lt;/div&gt;&lt;div&gt;&lt;br&gt;Provider: TwilioAdapter, MockProvider, FlakyProvider…&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;dashed=1;dashPattern=8 8;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="1590" width="285" height="162.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-156" value="&lt;b&gt;PLUG IN — Auth &amp;amp; SMS Core Service&lt;/b&gt;&lt;div&gt;interface&amp;nbsp;&lt;b&gt;Observers&lt;/b&gt;&amp;nbsp;{&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;OnMessageUpdated(SMSMessage msg)&lt;/div&gt;&lt;div&gt;}&lt;br&gt;interface&amp;nbsp;&lt;b&gt;SMSCoreService &lt;/b&gt;{&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;RegisterGlobalObserver(Observer obs)&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;RegisterSourceObserver(Source src, Observer obs)&lt;/div&gt;&lt;div&gt;}&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;dashed=1;dashPattern=8 8;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="1530" y="1520" width="295" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-157" value="&lt;b&gt;SMS Repository&lt;/b&gt; (GORM)&lt;br&gt;Create/Update/Get/List messages&lt;br&gt;AddStatusLog / GetStatusLogs&lt;br&gt;Maps domain ↔ &lt;i&gt;sms_messages&lt;/i&gt; + &lt;i&gt;sms_status_logs&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1057.5" y="2040" width="175" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-158" value="&lt;b&gt;UserRepository&lt;/b&gt;&lt;br&gt;CRUD &lt;i&gt;User&lt;/i&gt; + OTP fields&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1350" y="1700" width="130" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-159" value="&lt;b&gt;SMS&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1350" y="2030" width="120" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-160" value="&lt;b&gt;users&lt;/b&gt;&lt;br&gt;id&lt;br&gt;username&lt;br&gt;password_hash&lt;br&gt;phone_number&lt;br&gt;country&lt;br&gt;status&lt;br&gt;otp_code&lt;br&gt;otp_expires_at&lt;br&gt;created_at&lt;br&gt;updated_at&lt;br&gt;deleted_at" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.025;fillColor=#fff9e6;strokeColor=#d6b656;size=10;fontSize=10;align=left;spacingLeft=6;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="1752.5" width="200" height="165" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-161" value="&lt;b&gt;sms_messages&lt;/b&gt;&lt;br&gt;id&lt;br&gt;provider_message_id&lt;br&gt;send_source&lt;br&gt;country&lt;br&gt;phone_number&lt;br&gt;content&lt;br&gt;carrier&lt;br&gt;provider&lt;br&gt;status&lt;br&gt;estimated_cost&lt;br&gt;actual_cost&lt;br&gt;created_at&lt;br&gt;updated_at&lt;br&gt;&lt;br&gt;&lt;b&gt;sms_status_logs&lt;/b&gt;&lt;br&gt;id&lt;br&gt;sms_id&lt;br&gt;status&lt;br&gt;timestamp&lt;br&gt;metadata" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff9e6;strokeColor=#d6b656;size=10;fontSize=10;align=left;spacingLeft=6;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1540" y="1935" width="255" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-162" value="&lt;b&gt;Redis&lt;/b&gt;&lt;br&gt;• Rate limiter (SMS per phone/hour;&#10;reg/login per IP or device)&lt;br&gt;• BullMQ &lt;i&gt;worker&lt;/i&gt; on same Redis (generic jobs; not SMS send)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1520" y="1240" width="275" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-163" value="Prometheus / Grafana / Loki&#10;(metrics scrape, log aggregation)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontStyle=2;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1520" y="1330" width="260" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-164" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-148" target="WOtmB972dMmZ_2nzG1XU-217" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-9" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WOtmB972dMmZ_2nzG1XU-164" connectable="0" vertex="1">
+                    <mxGeometry x="-0.1036" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-167" value="3 - SendSMS" style="endArrow=classic;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;endFill=1;startArrow=none;startFill=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-150" target="WOtmB972dMmZ_2nzG1XU-152" edge="1">
+                    <mxGeometry x="-0.1401" y="-3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-168" value="11 - Handle callback" style="endArrow=classic;html=1;exitX=0.659;exitY=1.01;exitDx=0;exitDy=0;startArrow=none;startFill=0;endFill=1;exitPerimeter=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-151" edge="1">
+                    <mxGeometry x="0.2322" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                        <mxPoint x="1140" y="1710" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-170" value="4 &amp;amp; 12" style="endArrow=classic;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-152" target="WOtmB972dMmZ_2nzG1XU-157" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1117.5" y="1840" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-172" value="5 - Job" style="endArrow=classic;html=1;entryX=1;entryY=0.51;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="WOtmB972dMmZ_2nzG1XU-189" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1010" y="1754" as="sourcePoint"/>
+                        <mxPoint x="905" y="1885" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-173" value="" style="endArrow=classic;html=1;entryX=0.566;entryY=0.03;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="WOtmB972dMmZ_2nzG1XU-158" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1419" y="1550" as="sourcePoint"/>
+                        <mxPoint x="1419" y="1681" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-174" value="2 - Create User" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WOtmB972dMmZ_2nzG1XU-173" connectable="0" vertex="1">
+                    <mxGeometry x="0.3455" y="-1" relative="1" as="geometry">
+                        <mxPoint y="-35" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-175" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-182" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1420" y="1840" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-176" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-157" target="WOtmB972dMmZ_2nzG1XU-159" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-177" value="schema" style="endArrow=none;dashed=1;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-182" target="WOtmB972dMmZ_2nzG1XU-160" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-178" value="schema" style="endArrow=none;dashed=1;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-159" target="WOtmB972dMmZ_2nzG1XU-161" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-179" value="" style="endArrow=classic;html=1;exitX=0.998;exitY=0.156;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-149" target="WOtmB972dMmZ_2nzG1XU-162" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-180" value="&lt;b&gt;Cinema user registration&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#999999;fontSize=17;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="740" y="1120" width="212.5" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-181" value="" style="endArrow=classic;html=1;exitX=0.445;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-158" target="WOtmB972dMmZ_2nzG1XU-182" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1410" y="1730" as="sourcePoint"/>
+                        <mxPoint x="1420" y="1840" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-182" value="&lt;b&gt;Users&lt;/b&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1350" y="1790" width="120" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-184" target="WOtmB972dMmZ_2nzG1XU-190" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-13" value="9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="GR7xTXuPnt8SWQjx9kEQ-4" connectable="0" vertex="1">
+                    <mxGeometry x="-0.3" y="-2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-184" target="WOtmB972dMmZ_2nzG1XU-157" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-15" value="8 - Update SMS status and estimated cost" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="GR7xTXuPnt8SWQjx9kEQ-6" connectable="0" vertex="1">
+                    <mxGeometry x="-0.8197" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-184" value="&lt;b&gt;SMS worker: Dispatch to gateway&lt;/b&gt;&lt;br&gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=8;fillColor=#b0e3e6;strokeColor=#0e8088;verticalAlign=top;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="562.5" y="1860" width="195" height="92.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-187" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="WOtmB972dMmZ_2nzG1XU-186" target="WOtmB972dMmZ_2nzG1XU-182" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-186" value="&lt;b&gt;Users worker&lt;/b&gt;&lt;div&gt;&lt;b&gt;- OTP expired cron job&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;align=left;spacingLeft=8;fillColor=#b0e3e6;strokeColor=#0e8088;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="1910" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-189" value="" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#00188D;shape=mxgraph.azure.queue_generic;gradientColor=none;labelBackgroundColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="757.5" y="1730.25" width="157.5" height="47.25" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-192" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-190" target="WOtmB972dMmZ_2nzG1XU-151" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="840" y="1483"/>
+                            <mxPoint x="840" y="1452"/>
+                        </Array>
+                        <mxPoint x="820" y="1490" as="sourcePoint"/>
+                        <mxPoint x="900" y="1410" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-193" value="10 - Webhook callback" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WOtmB972dMmZ_2nzG1XU-192" connectable="0" vertex="1">
+                    <mxGeometry x="-0.6" y="2" relative="1" as="geometry">
+                        <mxPoint x="70" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-190" value="&lt;b&gt;SMS provider&amp;nbsp; (External)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="775" y="1482.5" width="155" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-198" value="&lt;b&gt;Message status recovery&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1035" y="1800" width="155" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-200" value="Observers" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;textDirection=vertical-lr;rotation=90;horizontal=0;" parent="1" vertex="1">
+                    <mxGeometry x="1167.5" y="1845" width="40" height="135" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-204" value="" style="endArrow=classic;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-200" target="WOtmB972dMmZ_2nzG1XU-150" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1340" y="1590" as="sourcePoint"/>
+                        <mxPoint x="1366" y="1757" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-205" value="13 - SMS success handler" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WOtmB972dMmZ_2nzG1XU-204" connectable="0" vertex="1">
+                    <mxGeometry x="0.3455" y="-1" relative="1" as="geometry">
+                        <mxPoint x="28" y="-4" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="WOtmB972dMmZ_2nzG1XU-212" target="WOtmB972dMmZ_2nzG1XU-184" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-212" value="&lt;b&gt;ProviderRouter&lt;/b&gt;&lt;br&gt;&lt;br&gt;(country ISO, Carrier) → Provider&lt;br&gt;Rules for VN, TH, SG, PH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="1841.88" width="175" height="128.75" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-213" value="&lt;b&gt;CarrierResolver&lt;/b&gt;&lt;br&gt;Resolve(E.164) →&lt;i&gt;Carrier&lt;/i&gt;&lt;br&gt;&lt;br&gt;&lt;i&gt;PrefixCarrierResolver&lt;/i&gt;:&lt;br&gt;digit-prefix rules&lt;br&gt;VN, TH, SG, PH (simulation)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="1867.5" width="150" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="WOtmB972dMmZ_2nzG1XU-217" value="&lt;b&gt;Rate limiter&lt;/b&gt; (Redis token bucket)&lt;br&gt;SMS: per canonical phone / hour&lt;br&gt;Auth: reg per IP &amp; device fingerprint;&lt;br&gt;login + login/verify per IP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="1297.5" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-1" value="7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.643;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-213" target="WOtmB972dMmZ_2nzG1XU-184" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="WOtmB972dMmZ_2nzG1XU-189" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="720" y="1754"/>
+                            <mxPoint x="720" y="1860"/>
+                        </Array>
+                        <mxPoint x="810" y="1753.9523809523807" as="sourcePoint"/>
+                        <mxPoint x="720" y="1860" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-11" value="6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="GR7xTXuPnt8SWQjx9kEQ-5" connectable="0" vertex="1">
+                    <mxGeometry x="-0.1351" y="-1" relative="1" as="geometry">
+                        <mxPoint y="22" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-7" value="&lt;b&gt;SendSMS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;spacingLeft=8;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1035" y="1760" width="115" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-17" value="&lt;b&gt;jobs&lt;/b&gt;&lt;div&gt;messageID&lt;/div&gt;&lt;div&gt;requestID&lt;/div&gt;&lt;div&gt;correlationID&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.025;fillColor=#fff9e6;strokeColor=#d6b656;size=10;fontSize=10;align=left;spacingLeft=6;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="810" y="1660" width="90" height="57.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="GR7xTXuPnt8SWQjx9kEQ-22" value="Providers" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;rotation=90;horizontal=0;" parent="1" vertex="1">
+                    <mxGeometry x="412.5" y="1872.5" width="40" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#505050;shape=mxgraph.mscae.enterprise.settings" vertex="1" parent="1">
+                    <mxGeometry x="712.5" y="1915.5" width="35" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#505050;shape=mxgraph.mscae.enterprise.settings" vertex="1" parent="1">
+                    <mxGeometry x="1465" y="1911" width="25" height="28" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

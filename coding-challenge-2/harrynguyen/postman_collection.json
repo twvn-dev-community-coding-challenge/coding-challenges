@@ -1,0 +1,197 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789012",
+		"name": "SMS OTP System",
+		"description": "Collection for testing the SMS core service endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"password123\",\n  \"phone_number\": \"+84961111222\",\n  \"country\": \"VN\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify OTP",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"testuser\",\n  \"otp_code\": \"123456\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/verify",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"verify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send SMS",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{SMS_INTERNAL_API_KEY}}",
+						"description": "Required when API server has SMS_INTERNAL_API_KEY set"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"country\": \"VN\",\n  \"phone_number\": \"+84961111222\",\n  \"content\": \"Your OTP is 123456\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sms/send",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sms",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Messages",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{SMS_INTERNAL_API_KEY}}",
+						"description": "Required when API server has SMS_INTERNAL_API_KEY set"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/sms/messages",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sms",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Provider Callback (Simulate Webhook)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Callback-Secret",
+						"value": "{{SMS_CALLBACK_SECRET}}",
+						"description": "Required when API server has SMS_CALLBACK_SECRET set"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"message_id\": \"PASTE_PROVIDER_MSG_ID_HERE\",\n  \"status\": \"Send-success\",\n  \"actual_cost\": 0.0145\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sms/callback",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sms",
+						"callback"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get SMS Stats (Cost & Volume)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{SMS_INTERNAL_API_KEY}}",
+						"description": "Required when API server has SMS_INTERNAL_API_KEY set"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/sms/stats",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sms",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "SMS_INTERNAL_API_KEY",
+			"value": "dev-local-sms-key",
+			"type": "string"
+		},
+		{
+			"key": "SMS_CALLBACK_SECRET",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
