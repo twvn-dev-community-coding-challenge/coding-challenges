@@ -1,0 +1,43 @@
+# Ensures notification-service OpenAPI JSON artifacts match FastAPI app.openapi().
+name: Verify OpenAPI
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'coding-challenge-2/gondo/apps/notification-service/**'
+      - 'coding-challenge-2/gondo/docs/openapi/**'
+      - 'coding-challenge-2/gondo/libs/grpc-contracts/**'
+      - 'coding-challenge-2/gondo/libs/py-core/**'
+      - '.github/workflows/openapi-verify.yml'
+  pull_request:
+    paths:
+      - 'coding-challenge-2/gondo/apps/notification-service/**'
+      - 'coding-challenge-2/gondo/docs/openapi/**'
+      - 'coding-challenge-2/gondo/libs/grpc-contracts/**'
+      - 'coding-challenge-2/gondo/libs/py-core/**'
+      - '.github/workflows/openapi-verify.yml'
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: coding-challenge-2/gondo/apps/notification-service
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        working-directory: coding-challenge-2/gondo
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r apps/notification-service/requirements.txt
+
+      - name: Verify OpenAPI JSON matches app
+        env:
+          PYTHONPATH: ${{ github.workspace }}/coding-challenge-2/gondo/libs/grpc-contracts:${{ github.workspace }}/coding-challenge-2/gondo/libs/py-core
+        run: python verify_openapi.py

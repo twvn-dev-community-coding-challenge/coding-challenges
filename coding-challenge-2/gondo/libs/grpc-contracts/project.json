@@ -1,0 +1,31 @@
+{
+  "name": "grpc-contracts",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/grpc-contracts",
+  "targets": {
+    "generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 scripts/generate_protos.py",
+        "cwd": "libs/grpc-contracts"
+      },
+      "outputs": ["{projectRoot}/generated"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m ruff check scripts tests __init__.py reflection.py",
+        "cwd": "libs/grpc-contracts"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m pytest tests",
+        "cwd": "libs/grpc-contracts"
+      }
+    }
+  },
+  "tags": ["python", "grpc"]
+}

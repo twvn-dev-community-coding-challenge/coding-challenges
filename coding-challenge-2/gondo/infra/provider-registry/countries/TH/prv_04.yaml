@@ -1,0 +1,14 @@
+provider_id: prv_04
+provider_code: AWS_SNS
+display_name: AWS SNS
+api_endpoint: https://sns.us-east-1.amazonaws.com
+supported_policies:
+  - highest_precedence
+  - round_robin
+  - lowest_cost_healthy
+service_status: active
+extra:
+  webhook_path: /callbacks/sms
+  region: us-east-1
+coverage:
+  - carriers: [DTAC]

@@ -1,0 +1,49 @@
+{
+  "name": "carrier-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/carrier-service",
+  "implicitDependencies": ["py-core"],
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m uvicorn main:app --reload --port 8004",
+        "cwd": "apps/carrier-service",
+        "env": {
+          "PYTHONPATH": "../../libs/py-core"
+        }
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m pytest",
+        "cwd": "apps/carrier-service",
+        "env": {
+          "PYTHONPATH": "../../libs/py-core"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "../../.venv/bin/python3 -m ruff check .",
+        "cwd": "apps/carrier-service"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^default"],
+      "options": {
+        "command": "../../.venv/bin/python3 -m ruff check . && ../../.venv/bin/python3 -c \"from main import app\"",
+        "cwd": "apps/carrier-service",
+        "env": {
+          "PYTHONPATH": "../../libs/py-core"
+        }
+      }
+    }
+  },
+  "tags": ["python", "fastapi"]
+}

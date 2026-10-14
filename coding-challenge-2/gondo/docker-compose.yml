@@ -1,0 +1,206 @@
+services:
+  # Local AWS emulator (Secrets Manager, etc.) — https://floci.io/ — same :4566 as AWS SDK expects.
+  # Start with: docker-compose --profile mock-cloud up -d floci
+  floci:
+    image: hectorvent/floci:latest
+    ports:
+      - "4566:4566"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    profiles:
+      - mock-cloud
+
+  nats:
+    image: nats:2.10-alpine
+    ports:
+      - "4222:4222"
+    command: ["-js", "-m", "8222"]
+
+  # Mocks outbound provider HTTP used by carrier-service (GET api_endpoint from dispatch payload).
+  # Stubs live under infra/wiremock/; provider-service sets CARRIER_HTTP_PROBE_URL to point here.
+  wiremock:
+    image: wiremock/wiremock:3.3.1
+    ports:
+      - "18080:8080"
+    volumes:
+      - ./infra/wiremock:/home/wiremock
+
+  message-bus-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: message-bus-gateway
+        PORT: "8010"
+    ports:
+      - "8010:8010"
+    environment:
+      - NATS_URL=nats://nats:4222
+    depends_on:
+      - nats
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: gondo
+      POSTGRES_PASSWORD: gondo
+      POSTGRES_DB: gondo
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gondo -d gondo"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  charging-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: charging-service
+        PORT: "8003"
+    ports:
+      - "8003:8003"
+      - "50052:50052"
+    environment:
+      - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  otp-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: otp-service
+        PORT: "8007"
+    ports:
+      - "8007:8007"
+    environment:
+      - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
+      # Override in real deployments; dev default also exists in code if unset.
+      - OTP_HASH_PEPPER=${OTP_HASH_PEPPER:-docker-dev-otp-pepper}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8007/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  provider-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: provider-service
+        PORT: "8002"
+    ports:
+      - "8002:8002"
+      - "50051:50051"
+    environment:
+      - CHARGING_GRPC_TARGET=charging-service:50052
+      - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
+      - PROVIDER_REGISTRY_ROOT=/app/infra/provider-registry
+      - NATS_URL=nats://nats:4222
+      - CREDENTIALS_BACKEND=mock
+      - MOCK_CREDENTIALS_PATH=/app/infra/credentials/mock/secrets.json
+      # Carrier GET probe targets WireMock instead of real Vonage/Twilio URLs from YAML.
+      - CARRIER_HTTP_PROBE_URL=http://wiremock:8080/carrier/sms
+      # With profile mock-cloud + Floci: set CREDENTIALS_BACKEND=aws_secrets_manager, AWS_ENDPOINT_URL=http://floci:4566
+    depends_on:
+      nats:
+        condition: service_started
+      charging-service:
+        condition: service_healthy
+      wiremock:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  carrier-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: carrier-service
+        PORT: "8004"
+    ports:
+      - "8004:8004"
+    environment:
+      - NATS_URL=nats://nats:4222
+      - CARRIER_MAX_CONCURRENT_SENDS=4
+      - CARRIER_REGISTRY_ROOT=/app/infra/carrier-registry
+      - CREDENTIALS_BACKEND=mock
+      - MOCK_CREDENTIALS_PATH=/app/infra/credentials/mock/secrets.json
+    depends_on:
+      nats:
+        condition: service_started
+      wiremock:
+        condition: service_started
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: notification-service
+        PORT: "8001"
+    ports:
+      - "8001:8001"
+    environment:
+      - PROVIDER_GRPC_TARGET=provider-service:50051
+      - CHARGING_GRPC_TARGET=charging-service:50052
+      - DATABASE_URL=postgresql://gondo:gondo@postgres:5432/gondo
+      - NATS_URL=nats://nats:4222
+      - OTP_SERVICE_BASE_URL=http://otp-service:8007
+      # Demo: set to "false" so the API does not return otp_plaintext to browsers.
+      - OTP_EXPOSE_PLAINTEXT_TO_CLIENT=${OTP_EXPOSE_PLAINTEXT_TO_CLIENT:-true}
+    depends_on:
+      nats:
+        condition: service_started
+      otp-service:
+        condition: service_healthy
+      provider-service:
+        condition: service_healthy
+      charging-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_NOTIFICATION_SERVICE_URL: http://localhost:8001
+    ports:
+      - "4200:80"
+    depends_on:
+      notification-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

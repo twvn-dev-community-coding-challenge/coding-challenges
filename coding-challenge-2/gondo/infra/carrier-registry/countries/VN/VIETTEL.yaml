@@ -1,0 +1,8 @@
+# Vietnam / Viettel — routing hints + optional carrier-scoped credentials (carrier bounded context).
+country_code: VN
+carrier_code: VIETTEL
+carrier_credentials_ref: carrier/VN/VIETTEL
+routing_hints:
+  max_concat_segments: "6"
+  unicode_policy: "auto"
+  notes: "Example carrier-specific hints — tune per MNO in production."
