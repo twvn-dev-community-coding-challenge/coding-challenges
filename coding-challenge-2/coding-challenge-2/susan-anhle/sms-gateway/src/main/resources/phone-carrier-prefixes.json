@@ -1,0 +1,22 @@
+[
+  { "prefix": "+8491", "carrierId": "Viettel" },
+  { "prefix": "+8496", "carrierId": "Viettel" },
+  { "prefix": "+8497", "carrierId": "Viettel" },
+  { "prefix": "+8490", "carrierId": "Mobifone" },
+  { "prefix": "+8493", "carrierId": "Mobifone" },
+  { "prefix": "+8488", "carrierId": "Vinaphone" },
+  { "prefix": "+8494", "carrierId": "Vinaphone" },
+  { "prefix": "+6681", "carrierId": "AIS" },
+  { "prefix": "+6682", "carrierId": "AIS" },
+  { "prefix": "+6683", "carrierId": "DTAC" },
+  { "prefix": "+6684", "carrierId": "DTAC" },
+  { "prefix": "+6591", "carrierId": "Singtel" },
+  { "prefix": "+6592", "carrierId": "Singtel" },
+  { "prefix": "+6581", "carrierId": "StarHub" },
+  { "prefix": "+6582", "carrierId": "StarHub" },
+  { "prefix": "+6391", "carrierId": "Globe" },
+  { "prefix": "+6392", "carrierId": "Globe" },
+  { "prefix": "+6394", "carrierId": "Smart" },
+  { "prefix": "+6395", "carrierId": "Smart" },
+  { "prefix": "+6389", "carrierId": "DITO" }
+]
