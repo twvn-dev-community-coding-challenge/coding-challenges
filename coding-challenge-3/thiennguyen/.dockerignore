@@ -1,0 +1,11 @@
+.git
+.idea
+.claude
+**/.gradle
+**/build
+**/src/test
+**/src/testFixtures
+**/src/integrationTest
+docs
+scripts
+*.md

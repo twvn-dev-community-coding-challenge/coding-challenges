@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: ride-hailing
+  config:
+    import: classpath:cache.yml
+  threads:
+    virtual:
+      enabled: true
+  docker:
+    compose:
+      lifecycle-management: start-only
+  mvc:
+    problemdetails:
+      enabled: true
+  flyway:
+    locations:
+      - classpath:db/migration/common
+      - classpath:db/migration/driver
+      - classpath:db/migration/ride
+      - classpath:db/migration/dispatch
+      - classpath:db/seed
+  kafka:
+    admin:
+      # Apply the topic settings in MessagingConfig (retention) to topics that already exist, not only to new ones.
+      modify-topic-configs: true
+    consumer:
+      auto-offset-reset: earliest
+    producer:
+      acks: all
+      properties:
+        # OutboxRelay sends a whole batch before waiting for it; idempotence keeps each partition in send order.
+        "[enable.idempotence]": true
+    listener:
+      ack-mode: record
+      concurrency: 3
+
+server:
+  shutdown: graceful
+
+ride:
+  undispatched-after: 30s
+  undispatched-sweep-interval-ms: 5000
+  undispatched-batch-size: 50
+
+dispatch:
+  max-radius-km: 2.0
+  offer-timeout: 30s
+  expiry-poll-interval-ms: 1000
+  sweeper-interval-ms: 5000
+  sweeper-stale-after: 10s
+  sweeper-batch-size: 50
+
+outbox:
+  relay:
+    interval-ms: 200
+    batch-size: 100
+  backlog:
+    # How often OutboxBacklog refreshes the ridehailing.outbox.pending and .oldest.age gauges.
+    interval-ms: 5000
+
+events:
+  retention:
+    interval-ms: 3600000
+    # Published rows only help debugging, and their payloads hold locations (GDPR).
+    published-outbox: 1d
+    # Must outlive any redelivery: twice the 7-day retention of every topic and DLT (Topics.RETENTION_DAYS).
+    processed-events: 14d
+    batch-size: 1000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,modulith
+  endpoint:
+    health:
+      probes:
+        enabled: true

@@ -1,0 +1,15 @@
+spring:
+  data:
+    redis:
+      timeout: 100ms
+      connect-timeout: 100ms
+
+cache:
+  ride-ttl: 30s
+  driver-ttl: 30s
+  idempotency-ttl: 24h
+
+management:
+  health:
+    redis:
+      enabled: false
