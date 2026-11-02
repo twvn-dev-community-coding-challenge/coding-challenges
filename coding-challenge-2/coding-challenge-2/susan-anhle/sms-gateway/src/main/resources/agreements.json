@@ -1,0 +1,72 @@
+[
+  {
+    "carrierId": "Viettel",
+    "carrierName": "Viettel",
+    "providerId": "Vonage",
+    "country": "VN",
+    "price": 0.030
+  },
+  {
+    "carrierId": "Mobifone",
+    "carrierName": "Mobifone",
+    "providerId": "Infobip",
+    "country": "VN",
+    "price": 0.019
+  },
+  {
+    "carrierId": "Vinaphone",
+    "carrierName": "Vinaphone",
+    "providerId": "Twilio",
+    "country": "VN",
+    "price": 0.015
+  },
+  {
+    "carrierId": "AIS",
+    "carrierName": "AIS",
+    "providerId": "Infobip",
+    "country": "TH",
+    "price": 0.025
+  },
+  {
+    "carrierId": "DTAC",
+    "carrierName": "DTAC",
+    "providerId": "AWSSNS",
+    "country": "TH",
+    "price": 0.022
+  },
+  {
+    "carrierId": "Singtel",
+    "carrierName": "Singtel",
+    "providerId": "Twilio",
+    "country": "SG",
+    "price": 0.035
+  },
+  {
+    "carrierId": "StarHub",
+    "carrierName": "StarHub",
+    "providerId": "Telnyx",
+    "country": "SG",
+    "price": 0.030
+  },
+  {
+    "carrierId": "Globe",
+    "carrierName": "Globe",
+    "providerId": "MessageBird",
+    "country": "PH",
+    "price": 0.028
+  },
+  {
+    "carrierId": "Smart",
+    "carrierName": "Smart",
+    "providerId": "Sinch",
+    "country": "PH",
+    "price": 0.026
+  },
+  {
+    "carrierId": "DITO",
+    "carrierName": "DITO",
+    "providerId": "MessageBird",
+    "country": "PH",
+    "price": 0.028
+  }
+]
