@@ -1,0 +1,47 @@
+# Build outputs
+[Oo]bj/
+[Bb]in/
+[Dd]ebug/
+[Rr]elease/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Core
+appsettings.Development.json
+*.db
+*.db-shm
+*.db-wal
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Rider / IntelliJ
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Generated files
+*.GeneratedMSBuildEditorConfig.editorconfig

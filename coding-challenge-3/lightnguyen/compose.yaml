@@ -1,0 +1,63 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    environment:
+      RABBITMQ_DEFAULT_USER: challenge
+      RABBITMQ_DEFAULT_PASS: challenge
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+  driver-management:
+    build:
+      context: .
+      dockerfile: CodingChallenge.DriverManagement/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      Database__Path: /data/Driver.db
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__UserName: challenge
+      RabbitMq__Password: challenge
+    ports:
+      - "5081:8080"
+    volumes:
+      - driver_data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  ride-management:
+    build:
+      context: .
+      dockerfile: CodingChallenge.RideManagement/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      Database__Path: /data/Ride.db
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__UserName: challenge
+      RabbitMq__Password: challenge
+    ports:
+      - "5080:8080"
+    volumes:
+      - ride_data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  driver_data:
+  ride_data:
+  rabbitmq_data:

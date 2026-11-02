@@ -1,0 +1,17 @@
+@RideService_HostAddress = http://localhost:5028
+@RideId = 00000000-0000-0000-0000-000000000001
+@DriverId = 00000000-0000-0000-0000-000000000002
+
+POST {{RideService_HostAddress}}/Rides/{{RideId}}/offers/{{DriverId}}/accept
+
+###
+
+POST {{RideService_HostAddress}}/Rides/{{RideId}}/offers/{{DriverId}}/reject
+
+###
+
+POST {{RideService_HostAddress}}/Rides/{{RideId}}/cancel
+
+###
+
+POST {{RideService_HostAddress}}/Rides/{{RideId}}/complete
