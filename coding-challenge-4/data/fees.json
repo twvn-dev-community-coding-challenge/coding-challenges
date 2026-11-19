@@ -1,0 +1,42 @@
+{
+  "first_block_g": 1000,
+  "extra_block_g": 500,
+  "lanes": {
+    "LOCAL": {
+      "first_block": 15000,
+      "per_extra_block": 3000,
+      "vehicle": "motorbike",
+      "transit_days": 0
+    },
+    "SAME_PROVINCE": {
+      "first_block": 22000,
+      "per_extra_block": 4000,
+      "vehicle": "motorbike",
+      "transit_days": 1
+    },
+    "SAME_REGION": {
+      "first_block": 30000,
+      "per_extra_block": 5000,
+      "vehicle": "truck",
+      "transit_days": 2
+    },
+    "CROSS_REGION": {
+      "first_block": 38000,
+      "per_extra_block": 6000,
+      "vehicle": "truck",
+      "transit_days": 3
+    }
+  },
+  "fuel": {
+    "motorbike": {
+      "type": "petrol",
+      "reference_price": 20000
+    },
+    "truck": {
+      "type": "diesel",
+      "reference_price": 18000
+    }
+  },
+  "surcharge_percent_per_step": 3,
+  "cap_percent": 15
+}

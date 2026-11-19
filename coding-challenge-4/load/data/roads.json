@@ -1,0 +1,29 @@
+{
+  "effective_from": "2025-09-01",
+  "motorbike_max_km": 35,
+  "extra_day_km": 500,
+  "roads": [
+    {"from": "Hà Nội", "to": "Ninh Bình", "km": 95},
+    {"from": "Ninh Bình", "to": "Thanh Hóa", "km": 60},
+    {"from": "Hà Nội", "to": "Thanh Hóa", "km": 160},
+    {"from": "Thanh Hóa", "to": "Nghệ An", "km": 140},
+    {"from": "Nghệ An", "to": "Huế", "km": 365},
+    {"from": "Huế", "to": "Đà Nẵng", "km": 95},
+    {"from": "Đà Nẵng", "to": "Quảng Nam", "km": 70},
+    {"from": "Quảng Nam", "to": "Quảng Ngãi", "km": 60},
+    {"from": "Quảng Ngãi", "to": "Khánh Hòa", "km": 400},
+    {"from": "Quảng Ngãi", "to": "Đắk Lắk", "km": 380},
+    {"from": "Khánh Hòa", "to": "Đắk Lắk", "km": 190},
+    {"from": "Khánh Hòa", "to": "Lâm Đồng", "km": 135},
+    {"from": "Khánh Hòa", "to": "Bình Thuận", "km": 250},
+    {"from": "Đắk Lắk", "to": "Lâm Đồng", "km": 200},
+    {"from": "Đắk Lắk", "to": "Bình Phước", "km": 250},
+    {"from": "Lâm Đồng", "to": "Đồng Nai", "km": 270},
+    {"from": "Bình Thuận", "to": "Đồng Nai", "km": 165},
+    {"from": "Bình Phước", "to": "Bình Dương", "km": 85},
+    {"from": "Bình Phước", "to": "Đồng Nai", "km": 120},
+    {"from": "Bình Dương", "to": "Đồng Nai", "km": 25},
+    {"from": "Bình Dương", "to": "Hồ Chí Minh", "km": 30},
+    {"from": "Đồng Nai", "to": "Hồ Chí Minh", "km": 35}
+  ]
+}

@@ -1,0 +1,764 @@
+[
+ {
+  "name": "order-0001",
+  "orders": [
+   {
+    "order_id": "order-0001",
+    "created_at": "2025-06-30",
+    "weight_g": 1500,
+    "from": {
+     "ward": "Phú Cường",
+     "district": "Thủ Dầu Một",
+     "province": "Bình Dương"
+    },
+    "to": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0001",
+    "status": "quoted",
+    "lane": "SAME_REGION",
+    "chargeable_g": 1500,
+    "base": 35000,
+    "surcharge": 1050,
+    "total": 36000,
+    "distance_km": null,
+    "pickup_date": "2025-06-30",
+    "promised_date": "2025-07-02",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0002",
+  "orders": [
+   {
+    "order_id": "order-0002",
+    "created_at": "2025-06-30",
+    "weight_g": 800,
+    "from": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Bến Thành",
+     "district": "Q.1",
+     "province": "TP Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0002",
+    "status": "quoted",
+    "lane": "LOCAL",
+    "chargeable_g": 800,
+    "base": 15000,
+    "surcharge": 450,
+    "total": 15000,
+    "distance_km": null,
+    "pickup_date": "2025-06-30",
+    "promised_date": "2025-06-30",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0003",
+  "orders": [
+   {
+    "order_id": "order-0003",
+    "created_at": "2025-06-30",
+    "weight_g": 2200,
+    "from": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Tân Phong",
+     "district": "Quận 7",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0003",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 2200,
+    "base": 34000,
+    "surcharge": 1020,
+    "total": 35000,
+    "distance_km": null,
+    "pickup_date": "2025-06-30",
+    "promised_date": "2025-07-01",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0004",
+  "orders": [
+   {
+    "order_id": "order-0004",
+    "created_at": "2025-06-20",
+    "weight_g": 1500,
+    "from": {
+     "ward": "Phú Cường",
+     "district": "Thủ Dầu Một",
+     "province": "Bình Dương"
+    },
+    "to": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0004",
+    "status": "rejected",
+    "lane": null,
+    "chargeable_g": null,
+    "base": null,
+    "surcharge": null,
+    "total": null,
+    "distance_km": null,
+    "pickup_date": null,
+    "promised_date": null,
+    "duplicate": false,
+    "reason": "NO_PRICE_BOARD"
+   }
+  ]
+ },
+ {
+  "name": "order-0005",
+  "orders": [
+   {
+    "order_id": "order-0005",
+    "created_at": "2025-06-30",
+    "weight_g": 1000,
+    "from": {
+     "ward": "Hàng Bạc",
+     "district": "Hoàn Kiếm",
+     "province": "Hà Nội"
+    },
+    "to": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0005",
+    "status": "quoted",
+    "lane": "CROSS_REGION",
+    "chargeable_g": 1000,
+    "base": 38000,
+    "surcharge": 1140,
+    "total": 39000,
+    "distance_km": null,
+    "pickup_date": "2025-06-30",
+    "promised_date": "2025-07-03",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0006",
+  "orders": [
+   {
+    "order_id": "order-0006",
+    "created_at": "2025-06-30",
+    "weight_g": 800,
+    "from": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Bến Thành",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    },
+    "length_cm": 30,
+    "width_cm": 20,
+    "height_cm": 20
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0006",
+    "status": "quoted",
+    "lane": "LOCAL",
+    "chargeable_g": 2400,
+    "base": 24000,
+    "surcharge": 720,
+    "total": 25000,
+    "distance_km": null,
+    "pickup_date": "2025-06-30",
+    "promised_date": "2025-06-30",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0011 to 0013",
+  "orders": [
+   {
+    "order_id": "order-0011",
+    "created_at": "2025-06-28",
+    "weight_g": 25000,
+    "from": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Tân Phong",
+     "district": "Quận 7",
+     "province": "Hồ Chí Minh"
+    }
+   },
+   {
+    "order_id": "order-0012",
+    "created_at": "2025-06-28",
+    "weight_g": 25000,
+    "from": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Tân Phong",
+     "district": "Quận 7",
+     "province": "Hồ Chí Minh"
+    }
+   },
+   {
+    "order_id": "order-0013",
+    "created_at": "2025-06-28",
+    "weight_g": 25000,
+    "from": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Tân Phong",
+     "district": "Quận 7",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0011",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 25000,
+    "base": 214000,
+    "surcharge": 6420,
+    "total": 220000,
+    "distance_km": null,
+    "pickup_date": "2025-06-28",
+    "promised_date": "2025-06-29",
+    "duplicate": false,
+    "reason": null
+   },
+   {
+    "order_id": "order-0012",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 25000,
+    "base": 214000,
+    "surcharge": 6420,
+    "total": 220000,
+    "distance_km": null,
+    "pickup_date": "2025-06-28",
+    "promised_date": "2025-06-29",
+    "duplicate": false,
+    "reason": null
+   },
+   {
+    "order_id": "order-0013",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 25000,
+    "base": 214000,
+    "surcharge": 6420,
+    "total": 220000,
+    "distance_km": null,
+    "pickup_date": "2025-06-29",
+    "promised_date": "2025-06-30",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0015",
+  "orders": [
+   {
+    "order_id": "order-0015",
+    "created_at": "2025-06-30",
+    "weight_g": 25000,
+    "from": {
+     "ward": "Phú Cường",
+     "district": "Thủ Dầu Một",
+     "province": "Bình Dương"
+    },
+    "to": {
+     "ward": "Lái Thiêu",
+     "district": "Thuận An",
+     "province": "Bình Dương"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0015",
+    "status": "rejected",
+    "lane": null,
+    "chargeable_g": null,
+    "base": null,
+    "surcharge": null,
+    "total": null,
+    "distance_km": null,
+    "pickup_date": null,
+    "promised_date": null,
+    "duplicate": false,
+    "reason": "TOO_HEAVY"
+   }
+  ]
+ },
+ {
+  "name": "order-0016 and 0017",
+  "orders": [
+   {
+    "order_id": "order-0016",
+    "created_at": "2025-06-30",
+    "weight_g": 15000,
+    "from": {
+     "ward": "Phú Cường",
+     "district": "Thủ Dầu Một",
+     "province": "Bình Dương"
+    },
+    "to": {
+     "ward": "Lái Thiêu",
+     "district": "Thuận An",
+     "province": "Bình Dương"
+    }
+   },
+   {
+    "order_id": "order-0017",
+    "created_at": "2025-06-30",
+    "weight_g": 15000,
+    "from": {
+     "ward": "Phú Cường",
+     "district": "Thủ Dầu Một",
+     "province": "Bình Dương"
+    },
+    "to": {
+     "ward": "Lái Thiêu",
+     "district": "Thuận An",
+     "province": "Bình Dương"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0016",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 15000,
+    "base": 134000,
+    "surcharge": 4020,
+    "total": 138000,
+    "distance_km": null,
+    "pickup_date": "2025-06-30",
+    "promised_date": "2025-07-01",
+    "duplicate": false,
+    "reason": null
+   },
+   {
+    "order_id": "order-0017",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 15000,
+    "base": 134000,
+    "surcharge": 4020,
+    "total": 138000,
+    "distance_km": null,
+    "pickup_date": "2025-07-01",
+    "promised_date": "2025-07-02",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0007",
+  "orders": [
+   {
+    "order_id": "order-0007",
+    "created_at": "2025-07-07",
+    "weight_g": 1500,
+    "from": {
+     "ward": "Phú Cường",
+     "district": "Thủ Dầu Một",
+     "province": "Bình Dương"
+    },
+    "to": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0007",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 1500,
+    "base": 26000,
+    "surcharge": 0,
+    "total": 26000,
+    "distance_km": null,
+    "pickup_date": "2025-07-07",
+    "promised_date": "2025-07-08",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0008",
+  "orders": [
+   {
+    "order_id": "order-0008",
+    "created_at": "2025-07-07",
+    "weight_g": 1500,
+    "from": {
+     "ward": "Thủ Dầu Một",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Sài Gòn",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0008",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 1500,
+    "base": 26000,
+    "surcharge": 0,
+    "total": 26000,
+    "distance_km": null,
+    "pickup_date": "2025-07-07",
+    "promised_date": "2025-07-08",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0009",
+  "orders": [
+   {
+    "order_id": "order-0009",
+    "created_at": "2025-07-07",
+    "weight_g": 800,
+    "from": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Bến Thành",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0009",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 800,
+    "base": 22000,
+    "surcharge": 0,
+    "total": 22000,
+    "distance_km": null,
+    "pickup_date": "2025-07-07",
+    "promised_date": "2025-07-08",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0010",
+  "orders": [
+   {
+    "order_id": "order-0010",
+    "created_at": "2025-07-07",
+    "weight_g": 800,
+    "from": {
+     "ward": "Tân Phong",
+     "district": "Quận 7",
+     "province": "Hồ Chí Minh"
+    },
+    "to": {
+     "ward": "Tân Quy",
+     "district": "Quận 7",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0010",
+    "status": "quoted",
+    "lane": "LOCAL",
+    "chargeable_g": 800,
+    "base": 15000,
+    "surcharge": 0,
+    "total": 15000,
+    "distance_km": null,
+    "pickup_date": "2025-07-07",
+    "promised_date": "2025-07-07",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0014",
+  "orders": [
+   {
+    "order_id": "order-0014",
+    "created_at": "2025-07-01",
+    "weight_g": 25000,
+    "from": {
+     "ward": "Phú Cường",
+     "district": "Thủ Dầu Một",
+     "province": "Bình Dương"
+    },
+    "to": {
+     "ward": "Bến Nghé",
+     "district": "Quận 1",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0014",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 25000,
+    "base": 214000,
+    "surcharge": 6420,
+    "total": 220000,
+    "distance_km": null,
+    "pickup_date": "2025-07-01",
+    "promised_date": "2025-07-02",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0018",
+  "orders": [
+   {
+    "order_id": "order-0018",
+    "created_at": "2025-09-08",
+    "weight_g": 1500,
+    "from": {
+     "ward": "Trấn Biên",
+     "province": "Đồng Nai"
+    },
+    "to": {
+     "ward": "Sài Gòn",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0018",
+    "status": "quoted",
+    "lane": "SAME_REGION",
+    "chargeable_g": 1500,
+    "base": 35000,
+    "surcharge": 1050,
+    "total": 36000,
+    "distance_km": 35,
+    "pickup_date": "2025-09-08",
+    "promised_date": "2025-09-10",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0019",
+  "orders": [
+   {
+    "order_id": "order-0019",
+    "created_at": "2025-09-08",
+    "weight_g": 2200,
+    "from": {
+     "ward": "Hội An",
+     "province": "Đà Nẵng"
+    },
+    "to": {
+     "ward": "Hải Châu",
+     "province": "Đà Nẵng"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0019",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 2200,
+    "base": 34000,
+    "surcharge": 2040,
+    "total": 36000,
+    "distance_km": 70,
+    "pickup_date": "2025-09-08",
+    "promised_date": "2025-09-09",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0020",
+  "orders": [
+   {
+    "order_id": "order-0020",
+    "created_at": "2025-09-08",
+    "weight_g": 1000,
+    "from": {
+     "ward": "Bình Phước",
+     "province": "Đồng Nai"
+    },
+    "to": {
+     "ward": "Trấn Biên",
+     "province": "Đồng Nai"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0020",
+    "status": "quoted",
+    "lane": "SAME_PROVINCE",
+    "chargeable_g": 1000,
+    "base": 22000,
+    "surcharge": 1320,
+    "total": 23000,
+    "distance_km": 110,
+    "pickup_date": "2025-09-08",
+    "promised_date": "2025-09-09",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0021",
+  "orders": [
+   {
+    "order_id": "order-0021",
+    "created_at": "2025-09-08",
+    "weight_g": 1000,
+    "from": {
+     "ward": "Hoàn Kiếm",
+     "province": "Hà Nội"
+    },
+    "to": {
+     "ward": "Sài Gòn",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0021",
+    "status": "quoted",
+    "lane": "CROSS_REGION",
+    "chargeable_g": 1000,
+    "base": 38000,
+    "surcharge": 2280,
+    "total": 40000,
+    "distance_km": 1630,
+    "pickup_date": "2025-09-08",
+    "promised_date": "2025-09-14",
+    "duplicate": false,
+    "reason": null
+   }
+  ]
+ },
+ {
+  "name": "order-0022",
+  "orders": [
+   {
+    "order_id": "order-0022",
+    "created_at": "2025-09-08",
+    "weight_g": 1000,
+    "from": {
+     "ward": "Phú Quốc",
+     "province": "An Giang"
+    },
+    "to": {
+     "ward": "Sài Gòn",
+     "province": "Hồ Chí Minh"
+    }
+   }
+  ],
+  "expected": [
+   {
+    "order_id": "order-0022",
+    "status": "rejected",
+    "lane": null,
+    "chargeable_g": null,
+    "base": null,
+    "surcharge": null,
+    "total": null,
+    "distance_km": null,
+    "pickup_date": null,
+    "promised_date": null,
+    "duplicate": false,
+    "reason": "NO_ROUTE"
+   }
+  ]
+ }
+]

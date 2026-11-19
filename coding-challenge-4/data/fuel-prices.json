@@ -1,0 +1,23 @@
+[
+  {
+    "effective_from": "2025-06-26",
+    "petrol_grade": "RON95-III",
+    "petrol": 21507,
+    "diesel_grade": "DO 0.05S",
+    "diesel": 19707
+  },
+  {
+    "effective_from": "2025-07-03",
+    "petrol_grade": "RON95-III",
+    "petrol": 19906,
+    "diesel_grade": "DO 0.05S",
+    "diesel": 18408
+  },
+  {
+    "effective_from": "2025-08-28",
+    "petrol_grade": "RON95-III",
+    "petrol": 21150,
+    "diesel_grade": "DO 0.05S",
+    "diesel": 20480
+  }
+]

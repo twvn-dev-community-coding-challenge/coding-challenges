@@ -1,0 +1,32 @@
+[
+  {
+    "effective_from": "2025-06-01",
+    "motorbike_kg_per_day": {
+      "Hồ Chí Minh": 60,
+      "Bình Dương": 20,
+      "Đồng Nai": 40,
+      "Hà Nội": 60,
+      "Đà Nẵng": 40,
+      "Quảng Nam": 20
+    },
+    "truck_kg_per_day": {
+      "Nam": 100,
+      "Trung": 60,
+      "Bắc": 100
+    }
+  },
+  {
+    "effective_from": "2025-07-01",
+    "motorbike_kg_per_day": {
+      "Hồ Chí Minh": 80,
+      "Đồng Nai": 40,
+      "Hà Nội": 60,
+      "Đà Nẵng": 60
+    },
+    "truck_kg_per_day": {
+      "Nam": 100,
+      "Trung": 60,
+      "Bắc": 100
+    }
+  }
+]
