@@ -1,6 +1,6 @@
-# Coding Challenge #4: Merger Day at Mini Delivery/works
+# 🚚 Coding Challenge #4: Merger Day at Mini Delivery/works
 
-## 1. Context
+## 🎯 1. Context
 
 ### 1.1 Introduction
 
@@ -8,9 +8,11 @@ Mini Delivery/works is a fictional delivery company in Vietnam. When a shop send
 
 On 1 July 2025 Vietnam merged its 63 provinces into 34 and removed the district level. Your engine serves orders from both sides of that day, and two months later it takes one more rule change.
 
-Plan for 6 to 8 hours in total. We expect you to work with an AI coding assistant and explain how your team used it during the presentation.
+> ⏱️ **Timebox: 6–8 hours total.**
 
-### 1.2 System overview
+We expect you to work with an AI coding assistant and explain how your team used it during the presentation.
+
+### 1.2 System Overview
 
 ```
   order ──> pricing ──> dispatch ──> quote
@@ -25,9 +27,11 @@ Plan for 6 to 8 hours in total. We expect you to work with an AI coding assistan
 
 A quote depends only on the order, the data files, and the earlier orders of the same run. The engine never asks what day it is today: the date on the order decides which rules apply.
 
-## 2. Details
+---
 
-### 2.1 Example data
+## 🧩 2. Details
+
+### 2.1 Example Data
 
 The folder [`data/`](data/) holds an example data set. The format is fixed but the values are only examples: the judges use their own folder, so no value from these files belongs in your code. You may build your own data sets, as long as your README says where the values come from.
 
@@ -44,7 +48,7 @@ A board applies from its date until the next board. Look up fuel prices with the
 
 Every data set keeps a few promises. Each capacity board is complete: it lists every hub, except that a hub retired by the merger is left out from the merger date. The first capacity board is no later than the first fuel board. A later board never lowers a hub, a merged hub is at least as large as each hub it takes over, and orders only use hubs that are in the file. So a hub never gets smaller on a later day. A new ward name appears once per province. All wards of an old province go to one new province, all old wards of a new ward come from one old province, and no ward is split. No two roads join the same pair. Names are in Unicode NFC, and input names differ from them only by prefix, case and spacing. Hyphenated names never appear in the input.
 
-### 2.2 Pricing rules
+### 2.2 Pricing Rules
 
 1. Start with the lane (AC-01), which says how the two addresses relate.
 
@@ -94,7 +98,7 @@ hub of 60 kg per day, three orders of 25 kg on 06-28
 06-29  [25]
 ```
 
-### 2.4 Merger day (AC-06)
+### 2.4 Merger Day (AC-06)
 
 The merger date is the `effective_from` of `mapping.csv`. Read it from the file and never write it in your code.
 
@@ -131,7 +135,7 @@ Bình Phước ───120─── Đồng Nai        direct road            1
 
 You may build your own `roads.json` from a map or a geocoding service. The engine still reads distances from its data folder.
 
-### 2.6 Worked examples
+### 2.6 Worked Examples
 
 Each block starts from empty hubs. All 22 example orders, with the lines to print, are in [`examples/worked-examples.json`](examples/worked-examples.json).
 
@@ -154,7 +158,7 @@ order-0018  2025-09-08  1,500 g  Trấn Biên, Đồng Nai -> Sài Gòn, Hồ Ch
   dated 08-31                 truck, diesel 20,480, 2 steps, 6% = 2,100, total 37,000
 ```
 
-### 2.7 Input and output
+### 2.7 Input and Output
 
 Your `run.sh` (or `run.cmd`) reads one order per line as JSON on stdin and writes one quote per line on stdout. It takes the data from `./data`, or from the folder given as its first argument.
 
@@ -202,16 +206,18 @@ A quoted order has `reason: null`. `distance_km` is null before the distance rul
 | NO_ROUTE | no route between the two depots |
 | TOO_HEAVY | heavier than the daily capacity of the hub |
 
-### 2.8 Running as a service
+### 2.8 Running as a Service
 
 1. Shops sometimes send an order twice (AC-08). When an `order_id` was already seen in this run, quoted or rejected, print its first output line again with `duplicate: true`, even if the rest of the order is different. A duplicate takes no capacity.
 2. On the 11.11 sale day the shops send 1,000,000 orders (AC-09). `./run.sh load/data < load/orders-1m.jsonl` must finish in under 60 seconds on a laptop. Unzip the file in `load/` first. The hubs fill up for a week.
 
-### 2.9 Out of scope
+### 🚫 2.9 Out of Scope
 
 You do not need live fuel prices or free-text addresses. Parcels are not routed from hub to hub. There is no second merger round. Payment, a database, an API, login and a UI are not needed.
 
-## 3. Others
+---
+
+## 📋 3. Deliverables and Evaluation
 
 ### 3.1 Deliverables
 
@@ -228,7 +234,7 @@ At the demo, the judge hands you one small rule change. You get 10 minutes, with
 
 The scale question: next year the sale brings 20,000,000 orders in one day, on several machines. Which parts can run in parallel, which must keep the order of arrival, and where does the state live?
 
-### 3.2 Evaluation
+### 🏆 3.2 Evaluation
 
 **The submission accounts for 70% of the score. The remaining 30% comes from the team presentation.**
 
@@ -260,7 +266,7 @@ Correct results are required. We also look for these design choices:
 - **Temporal design:** one "latest board on or before the date" lookup serves fuel and capacity. The order date chooses the rule set, and the merger and roads dates are read from data and handled the same way. Pricing before the merger does not convert addresses. Nothing reads the system clock.
 - **Service design:** the first output of each `order_id` is kept by key. Input is read and written one line at a time. Data is loaded once, and a distance is searched once per pair of depots.
 
-### 3.3 Creative bonus ideas
+### 💡 3.3 Creative Bonus Ideas
 
 - An LLM that turns a messy address into the structured input
 - Your own `roads.json` for all 63 provinces, built from a map or from coordinates
